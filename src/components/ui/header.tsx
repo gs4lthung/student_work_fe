@@ -122,8 +122,17 @@ export default function Header() {
   }
 
   return (
-    <div className="container mx-auto px-4 md:px-6 lg:px-8">
-      <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6">
+    <>
+      <div className="h-10 w-full bg-gradient-to-b from-white to-green-50">
+        <div className="flex h-full items-center justify-center gap-4">
+          <p className="text-sm text-green-800 font-semibold">
+            Nền tảng tuyển dụng thông minh - Hỗ trợ tìm kiếm việc làm
+            <strong> Part-time</strong> một cách dễ dàng
+          </p>
+          <Button className="h-5 text-xs">Tìm việc ngay</Button>
+        </div>
+      </div>
+      <header className="sticky top-0 bg-white overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
         <Link
           href="/"
           className="mr-6 hidden lg:flex items-center gap-2"
@@ -240,6 +249,6 @@ export default function Header() {
           </DropdownMenu>
         </div>
       </header>
-    </div>
+    </>
   );
 }
