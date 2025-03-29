@@ -1,6 +1,14 @@
+'use client"';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/ui/header";
+import ScrollToTopButton from "@/components/ui/button-scroll-to-top";
+import dynamic from "next/dynamic";
+
+const TopProgressBar = dynamic(
+  () => import("@/components/ui/top-progress-bar")
+);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +35,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Header />
+        <TopProgressBar />
         {children}
+        <ScrollToTopButton />
       </body>
     </html>
   );
