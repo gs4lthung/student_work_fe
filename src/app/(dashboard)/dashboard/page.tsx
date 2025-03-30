@@ -175,7 +175,7 @@ export default async function DashBoard() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
         <TypographyH2 className="">Lam Tien Hung</TypographyH2>
-        <Badge className="bg-green-500 text-white">HR</Badge>
+        <Badge className="bg-green-500 dark:bg-green-300 text-white">HR</Badge>
       </div>
 
       <Tabs defaultValue="account">
@@ -183,7 +183,7 @@ export default async function DashBoard() {
           {tabItems.map((tab) => (
             <TabsTrigger
               key={tab.value}
-              className="data-[state=active]:bg-green-300"
+              className="data-[state=active]:bg-green-300 dark:data-[state=active]:bg-green-400"
               value={tab.value}
             >
               {tab.title}

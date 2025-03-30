@@ -1,10 +1,11 @@
-'use client"';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/ui/header";
 import ScrollToTopButton from "@/components/ui/button-scroll-to-top";
 import dynamic from "next/dynamic";
+import Footer from "@/components/ui/footer";
+import { ThemeProvider } from "@/components/provider/theme-provider";
 
 const TopProgressBar = dynamic(
   () => import("@/components/ui/top-progress-bar")
@@ -31,14 +32,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans bg-white dark:bg-gray-950 text-gray-950 dark:text-zinc-50 min-h-screen flex flex-col`}
       >
-        <Header />
-        <TopProgressBar />
-        {children}
-        <ScrollToTopButton />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          <TopProgressBar />
+          {children}
+          <ScrollToTopButton />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -49,7 +49,10 @@ export default function DashboardPost() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <TypographyH2 className="">Danh sách</TypographyH2>
-        <Button variant={"outline"} className="hover:bg-green-300">
+        <Button
+          variant={"outline"}
+          className="hover:bg-green-300 hover:dark:bg-green-400"
+        >
           <Plus />
         </Button>
       </div>
@@ -72,19 +75,27 @@ export default function DashboardPost() {
               <TableCell>{post.title}</TableCell>
               <TableCell>
                 {post.service === "Standard" ? (
-                  <Badge className="bg-blue-400">Cơ bản</Badge>
+                  <Badge className="bg-blue-400 dark:bg-blue-300">Cơ bản</Badge>
                 ) : post.service === "Premium" ? (
-                  <Badge className="bg-yellow-400">Nâng cao</Badge>
+                  <Badge className="bg-yellow-400 dark:bg-yellow-300">
+                    Nâng cao
+                  </Badge>
                 ) : post.service === "Featured" ? (
-                  <Badge className="bg-green-400">Nổi bật</Badge>
+                  <Badge className="bg-green-400 dark:bg-green-300">
+                    Nổi bật
+                  </Badge>
                 ) : (
-                  <Badge className="bg-red-400">Doanh nghiệp</Badge>
+                  <Badge className="bg-red-400 dark:bg-red-300">
+                    Doanh nghiệp
+                  </Badge>
                 )}
               </TableCell>
               <TableCell>{post.created_at}</TableCell>
               <TableCell>
                 {post.status === "Open" ? (
-                  <Badge className="bg-green-600">Đang mở</Badge>
+                  <Badge className="bg-green-600 dark:bg-green-300">
+                    Đang mở
+                  </Badge>
                 ) : (
                   <Badge variant="default">Đã đóng</Badge>
                 )}
@@ -93,10 +104,16 @@ export default function DashboardPost() {
                 <Button variant={"outline"}>
                   <Eye />
                 </Button>
-                <Button variant={"outline"} className="hover:bg-blue-500">
+                <Button
+                  variant={"outline"}
+                  className="hover:bg-blue-500 hover:dark:bg-blue-300"
+                >
                   <Pencil />
                 </Button>
-                <Button variant={"outline"} className="hover:bg-red-500">
+                <Button
+                  variant={"outline"}
+                  className="hover:bg-red-500 hover:dark:bg-red-300"
+                >
                   <Trash2 />
                 </Button>
               </TableCell>

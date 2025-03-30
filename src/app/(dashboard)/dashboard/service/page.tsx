@@ -63,7 +63,7 @@ export default function DashboardService() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <TypographyH2 className="">Danh sách</TypographyH2>
-        <Button variant={"outline"} className="hover:bg-green-300">
+        <Button variant={"outline"} className="hover:bg-green-300 hover:dark:bg-green-400">
           <Plus />
         </Button>
       </div>
@@ -80,12 +80,8 @@ export default function DashboardService() {
         </TableHeader>
         <TableBody>
           {services.map((service, index) => (
-            <TableRow
-              key={index}
-            >
-              <TableCell className="font-semibold">
-                {index + 1}
-              </TableCell>
+            <TableRow key={index}>
+              <TableCell className="font-semibold">{index + 1}</TableCell>
               <TableCell>{service.label}</TableCell>
               <TableCell>{service.price}</TableCell>
               <TableCell>
@@ -96,13 +92,19 @@ export default function DashboardService() {
                 ))}
               </TableCell>
               <TableCell className="flex gap-2">
-              <Button variant={"outline"}>
+                <Button variant={"outline"}>
                   <Eye />
                 </Button>
-                <Button variant={"outline"} className="hover:bg-blue-500">
+                <Button
+                  variant={"outline"}
+                  className="hover:bg-blue-500 hover:dark:bg-blue-300"
+                >
                   <Pencil />
                 </Button>
-                <Button variant={"outline"} className="hover:bg-red-500">
+                <Button
+                  variant={"outline"}
+                  className="hover:bg-red-500 hover:dark:bg-red-300"
+                >
                   <Trash2 />
                 </Button>
               </TableCell>

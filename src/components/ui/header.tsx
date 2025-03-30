@@ -6,6 +6,7 @@ import Image from "next/image";
 import { TypographyH2 } from "./typography";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Bell,
   Briefcase,
   CircleUserRound,
   FileUser,
@@ -13,6 +14,7 @@ import {
   LayoutDashboard,
   Lock,
   LogOut,
+  MessageCircle,
   Settings,
 } from "lucide-react";
 import {
@@ -24,6 +26,9 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { Badge } from "./badge";
+import { ModeToggle } from "./mode-toggle";
+import { useEffect } from "react";
+import { useTheme } from "next-themes";
 
 const items = [
   {
@@ -103,7 +108,10 @@ const profileItems = [
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-
+  const { theme } = useTheme();
+  useEffect(() => {
+    console.log("Current theme:", theme);
+  }, [theme]);
   const nonDashboardPaths = [
     "/dashboard",
     "/login",
@@ -123,23 +131,22 @@ export default function Header() {
 
   return (
     <>
-      <div className="h-10 w-full bg-gradient-to-b from-white to-green-50">
+      <div className="h-10 w-full bg-gradient-to-r from-white to-green-200 dark:bg-gradient-to-r dark:from-green-900 dark:to-black">
         <div className="flex h-full items-center justify-center gap-4">
-          <p className="text-sm text-green-800 font-semibold">
+          <p className="text-sm text-green-800 dark:text-green-500 font-semibold">
             Nền tảng tuyển dụng thông minh - Hỗ trợ tìm kiếm việc làm
             <strong> Part-time</strong> một cách dễ dàng
           </p>
           <Button className="h-5 text-xs">Tìm việc ngay</Button>
         </div>
       </div>
-      <header className="sticky top-0 bg-white overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
+      <header className="bg-white dark:bg-gray-950 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
         <Link
           href="/"
           className="mr-6 hidden lg:flex items-center gap-2"
           prefetch={false}
         >
           <Image
-            className="bg-white"
             src="https://greenempowerment.org/wp-content/uploads/2022/01/GE__Sun-Mark-GE-Green.png"
             alt="Logo"
             width={60}
@@ -154,7 +161,7 @@ export default function Header() {
               <Link
                 key={item.title}
                 href={item.url}
-                className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
+                className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-green-500"
                 prefetch={false}
               >
                 {item.title}
@@ -164,7 +171,7 @@ export default function Header() {
                 <DropdownMenuTrigger>
                   <Link
                     href={item.url}
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
+                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-green-500"
                     prefetch={false}
                   >
                     {item.title}
@@ -173,15 +180,13 @@ export default function Header() {
                 <DropdownMenuContent>
                   {item.subMenu.map((subItem, index) => (
                     <div key={index} className="font-bold">
-                      <DropdownMenuItem>
-                        <Link
-                          href={subItem.url}
-                          className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-                          prefetch={false}
-                        >
-                          {subItem.title}
-                        </Link>
-                      </DropdownMenuItem>
+                      <Link
+                        href={subItem.url}
+                        className="inline-flex h-9 w-full items-center justify-start rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        prefetch={false}
+                      >
+                        <DropdownMenuItem>{subItem.title}</DropdownMenuItem>
+                      </Link>
                       {index !== item.subMenu.length - 1 && (
                         <DropdownMenuSeparator className="my-1" />
                       )}
@@ -209,6 +214,13 @@ export default function Header() {
           >
             Đăng ký
           </Button>
+          <Button variant="outline" className="hidden md:flex">
+            <Bell size={20} />
+          </Button>
+          <Button variant="outline" className="hidden md:flex">
+            <MessageCircle size={20} />
+          </Button>
+          <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Link href={"/dashboard"}>
@@ -235,15 +247,12 @@ export default function Header() {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               {profileItems.map((item) => (
-                <DropdownMenuItem key={item.title}>
-                  <Link
-                    href={item.url}
-                    className="flex flex-row items-center gap-2"
-                  >
-                    <DropdownMenuShortcut>{item.icon}</DropdownMenuShortcut>
+                <Link key={item.title} href={item.url}>
+                  <DropdownMenuItem>
                     {item.title}
-                  </Link>
-                </DropdownMenuItem>
+                    <DropdownMenuShortcut>{item.icon}</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </Link>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>

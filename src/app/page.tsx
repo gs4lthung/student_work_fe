@@ -25,7 +25,7 @@ const specialJob = {
 
 const SpecialJobCard = ({ specialJob }) => {
   return (
-    <Card className="fixed bottom-4 right-4 w-[400px] shadow-lg bg-gradient-to-r from-[#86efac] to-[#bbf7d0]">
+    <Card className="fixed bottom-4 right-4 w-[400px] shadow-lg bg-gradient-to-r from-[#86efac] to-[#bbf7d0] dark:bg-gradient-to-r dark:from-[#166534] dark:to-[#16a34a]">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -35,7 +35,7 @@ const SpecialJobCard = ({ specialJob }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-4xl bg-green-200 hover:bg-green-300"
+            className="rounded-4xl bg-green-200 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-700"
           >
             <X size={16} />
           </Button>
