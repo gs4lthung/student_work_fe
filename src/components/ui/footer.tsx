@@ -156,6 +156,7 @@ export default function Footer() {
     "/verify-email",
     "/verify-email/success",
     "/verify-email/verify",
+    "/chat"
   ];
   const isDashboard = nonDashboardPaths.some((path) =>
     pathname.startsWith(path)

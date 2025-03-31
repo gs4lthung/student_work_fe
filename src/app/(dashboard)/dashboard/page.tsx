@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -79,10 +80,10 @@ const AccountTab = () => {
         <h2 className="text-lg font-semibold mb-4 text-gray-600">
           Ảnh đại diện
         </h2>
-        <Avatar className="w-24 h-24">
+        <Avatar className="w-40 h-40">
           <AvatarFallback>👤</AvatarFallback>
         </Avatar>
-        <Button className="w-1/3">Chỉnh sửa ảnh</Button>
+        <FileUpload />
       </div>
     </div>
   );
@@ -151,7 +152,9 @@ const CompanyTab = () => {
       </div>
       <div className="col-span-3 flex flex-col gap-2 items-center">
         <h2 className="text-lg font-semibold mb-4 text-gray-600">Trạng thái</h2>
-        <Badge className="bg-green-500 text-white">Đã xác thực</Badge>
+        <Badge className="bg-green-500 dark:bg-green-300 text-white">
+          Đã xác thực
+        </Badge>
       </div>
     </div>
   );

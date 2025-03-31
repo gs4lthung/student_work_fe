@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/ui/app-sidebar";
+import { AppSidebar } from "@/components/ui/sidebar-app";
 import DynamicBreadcrumb from "@/components/ui/breadcrumb-dynamic";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 export default function DashBoardLayout({
@@ -9,7 +9,7 @@ export default function DashBoardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full min-h-screen bg-background p-5">
+      <main className="w-full bg-background p-5">
         <SidebarTrigger />
         <DynamicBreadcrumb />
         {children}

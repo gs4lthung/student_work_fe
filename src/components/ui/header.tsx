@@ -7,6 +7,7 @@ import { TypographyH2 } from "./typography";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
+  BellIcon,
   Briefcase,
   CircleUserRound,
   FileUser,
@@ -21,6 +22,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
@@ -105,6 +107,21 @@ const profileItems = [
   },
 ];
 
+const notificationItems = [
+  {
+    title: "Thông báo",
+    description: "Có thông báo mới từ nhà tuyển dụng",
+    url: "/dashboard/notifications",
+    icon: <BellIcon />,
+  },
+  {
+    title: "Tin nhắn",
+    description: "Có tin nhắn mới từ nhà tuyển dụng",
+    url: "/dashboard/messages",
+    icon: <MessageCircle />,
+  },
+];
+
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
@@ -121,6 +138,7 @@ export default function Header() {
     "/verify-email",
     "/verify-email/success",
     "/verify-email/verify",
+    "/chat",
   ];
   const isDashboard = nonDashboardPaths.some((path) =>
     pathname.startsWith(path)
@@ -140,7 +158,7 @@ export default function Header() {
           <Button className="h-5 text-xs">Tìm việc ngay</Button>
         </div>
       </div>
-      <header className="bg-white dark:bg-gray-950 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
+      <header className="bg-white dark:bg-gray-950 opacity-95 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
         <Link
           href="/"
           className="mr-6 hidden lg:flex items-center gap-2"
@@ -182,10 +200,10 @@ export default function Header() {
                     <div key={index} className="font-bold">
                       <Link
                         href={subItem.url}
-                        className="inline-flex h-9 w-full items-center justify-start rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        className="inline-flex h-9 w-full items-center justify-start rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                         prefetch={false}
                       >
-                        <DropdownMenuItem>{subItem.title}</DropdownMenuItem>
+                        {subItem.title}
                       </Link>
                       {index !== item.subMenu.length - 1 && (
                         <DropdownMenuSeparator className="my-1" />
@@ -214,11 +232,55 @@ export default function Header() {
           >
             Đăng ký
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="hidden md:flex">
+                <Bell size={20} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-4 w-[500px] max-w-[300px]">
+              <DropdownMenuLabel>
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  Thông báo
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Bạn có {notificationItems.length} thông báo mới
+                </p>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {notificationItems.map((item) => (
+                <DropdownMenuItem
+                  key={item.title}
+                  className="flex items-center gap-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400">
+                      {item.icon}
+                    </div>
+                    <div className="flex flex-col">
+                      <Link href={item.url} className="text-sm font-medium">
+                        {item.title}
+                      </Link>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator className="my-1" />
+              <Button variant="outline" className="w-full text-left mb-1">
+                Xem tất cả thông báo
+              </Button>
+              <Button className="w-full text-left">
+                Đánh dấu tất cả đã đọc
+              </Button>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button variant="outline" className="hidden md:flex">
-            <Bell size={20} />
-          </Button>
-          <Button variant="outline" className="hidden md:flex">
-            <MessageCircle size={20} />
+            <Link href="/chat" prefetch={false}>
+              <MessageCircle size={20} />
+            </Link>
           </Button>
           <ModeToggle />
           <DropdownMenu>
