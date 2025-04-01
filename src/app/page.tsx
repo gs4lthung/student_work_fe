@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { InfiniteMovingCards } from "@/components/ui/cards-infinite-moving";
 import { ColourfulText } from "@/components/ui/text-colorful";
 import { TypographyH2 } from "@/components/ui/typography";
 import { Sparkles, X } from "lucide-react";
@@ -28,7 +29,7 @@ const specialJob = {
 const SpecialJobCard = ({ specialJob }) => {
   return (
     <div className="fixed bottom-4 right-4">
-      <BackgroundGradient className="rounded-[22px] w-[400px]">
+      <BackgroundGradient className="rounded-[22px] w-[400px] max-w-sm bg-white dark:bg-zinc-900">
         <Card
           className="bg-transparent border-none"
           style={{
@@ -70,7 +71,7 @@ const SpecialJobCard = ({ specialJob }) => {
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {specialJob.company}
               </p>
-              <div>
+              <div className="text-xl">
                 <ColourfulText text={specialJob.salary} />
               </div>
               <div className="flex gap-2 mt-2 flex-wrap">
@@ -81,7 +82,12 @@ const SpecialJobCard = ({ specialJob }) => {
           </CardContent>
 
           <CardFooter className="flex justify-between items-center px-4 pb-4">
-            <Button variant={"outline"}>Ứng tuyển ngay</Button>
+            <Button
+              variant={"default"}
+              className="bg-green-500 dark:bg-green-300"
+            >
+              Ứng tuyển ngay
+            </Button>
             <Button variant="ghost" className=" hover:underline">
               Xem chi tiết
             </Button>
@@ -91,45 +97,48 @@ const SpecialJobCard = ({ specialJob }) => {
     </div>
   );
 };
+
+const feedbacks = [
+  {
+    quote:
+      "Tôi đã tìm được công việc mơ ước của mình nhờ vào trang web này. Cảm ơn các bạn rất nhiều!",
+    name: "Nguyễn Văn A",
+    title: "Senior Software Engineer",
+  },
+  {
+    quote:
+      "Trang web này đã giúp tôi tìm được công việc phù hợp với mình. Tôi rất hài lòng với dịch vụ của các bạn.",
+    name: "Nguyễn Văn B",
+    title: "Junior Software Engineer",
+  },
+  {
+    quote: "Cảm ơn các bạn đã giúp tôi tìm được công việc mơ ước của mình.",
+    name: "Nguyễn Văn C",
+    title: "Product Manager",
+  },
+];
+
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <SpecialJobCard specialJob={specialJob} />
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
-      <p className="text-2xl text-center">sdsd</p>
+      <p>s</p>
+      <p>s</p>
+      <p>s</p>
+      <p>s</p>
+      <p>s</p>
+      <p>s</p>
+      <div className="flex flex-col items-center justify-center gap-4">
+        <TypographyH2>
+          Chúng tôi đã giúp hàng ngàn người tìm được việc làm mơ ước
+        </TypographyH2>
+        <InfiniteMovingCards
+          className="-z-10"
+          items={feedbacks}
+          direction="right"
+          speed="slow"
+        />
+      </div>
     </div>
   );
 }
