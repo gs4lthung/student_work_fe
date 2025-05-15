@@ -53,10 +53,6 @@ const items = [
         title: "Tạo tin tuyển dụng",
         url: "/post/add",
       },
-      {
-        title: "Chọn dịch vụ tuyển dụng",
-        url: "/service",
-      },
     ],
   },
   {
