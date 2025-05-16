@@ -241,18 +241,21 @@ const CommentSection = () => {
   );
 };
 
-export default function JobDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+
+export default function JobDetailPage({ params }: Props) {
+  const { slug } = params;
+
+  // You can fetch job data using the slug here
   return (
-    <div className="sm:p-12 lg:p-8 min-h-screen">
+    <>
       <FirstSection />
-      <Separator className="my-4" />
       <SecondSection />
-      <Separator className="my-4" />
-      <CommentSection />
-    </div>
+      {/* Add other sections as needed */}
+    </>
   );
 }
