@@ -3,32 +3,26 @@
 import React from "react";
 import { MultiStepLoader } from "./multi-step-loader";
 import { Button } from "./button";
-import { SquareX, SquareXIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 
 const loadingStates = [
   {
-    text: "Buying a condo",
+    text: "Tạo tài khoản ứng viên",
   },
   {
-    text: "Travelling in a flight",
+    text: "Cập nhật hồ sơ cá nhân",
   },
   {
-    text: "Meeting Tyler Durden",
+    text: "Tìm kiếm công việc phù hợp",
   },
   {
-    text: "He makes soap",
+    text: "Nộp hồ sơ ứng tuyển",
   },
   {
-    text: "We goto a bar",
+    text: "Theo dõi trạng thái ứng tuyển",
   },
   {
-    text: "Start a fight",
-  },
-  {
-    text: "We like it",
-  },
-  {
-    text: "Welcome to F**** C***",
+    text: "Đi làm ngay thôi ❤️",
   },
 ];
 export default function HowToUseLoader() {
@@ -41,10 +35,10 @@ export default function HowToUseLoader() {
         duration={2000}
       />
       <Button variant="outline" onClick={() => setLoading((prev) => !prev)}>
-        Hướng dẫn sử dụng
+        Hướng dẫn
       </Button>
 
-            {loading && (
+      {loading && (
         <Button
           className="fixed top-4 right-4 z-[120]"
           onClick={() => setLoading(false)}

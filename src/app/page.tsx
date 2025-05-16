@@ -10,10 +10,20 @@ import {
 } from "@/components/ui/card";
 import { InfiniteMovingCards } from "@/components/ui/cards-infinite-moving";
 import HowToUseLoader from "@/components/ui/how-to-use-loader";
+import { Input } from "@/components/ui/input";
 import { OrbitingCircles } from "@/components/ui/orbiting-circles";
 import { ColourfulText } from "@/components/ui/text-colorful";
 import { TypographyH2 } from "@/components/ui/typography";
-import { Building, Building2, File, Search, Settings, Sparkles, X } from "lucide-react";
+import {
+  Briefcase,
+  Building,
+  CheckCircle2,
+  Search,
+  Sparkles,
+  TrendingUp,
+  Users,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 
 const specialJob = {
@@ -122,61 +132,180 @@ const feedbacks = [
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-24 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <SpecialJobCard specialJob={specialJob} />
-      <div className="flex flerx-row justify-between items-center gap-4 w-full">
-        <div className="flex flex-col items-start gap-4">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
-            Tìm kiếm công việc Part-time tốt nhất
-          </h1>
-          <p className="text-gray-500 w-1/2">
-            Chúng tôi giúp bạn tìm kiếm các công việc part-time linh hoạt nhất,
-            phù hợp với thời gian của bạn
-          </p>
-          <div className="flex gap-4">
-            <HowToUseLoader />
-            <Button variant="default">Tìm việc ngay</Button>
-          </div>
-        </div>
-        <Image
-          src={
-            "https://www.glassdoor.com/job-search-next/assets/birdwatcher.png"
-          }
-          alt="Hero"
-          width={250}
-          height={250}
-          className="bg-white rounded-full shadow-md hover:scale-105 transition-transform"
-        />
-      </div>
+      <HeroSection />
+      <HowItWorkSection />
+      <ForCustomerSection />
+      <StatisticsSection />
       <CompanySection />
-      <div className="flex flex-col items-center justify-center gap-4">
-        <TypographyH2>
-          Chúng tôi đã giúp hàng ngàn người tìm được việc làm mơ ước
-        </TypographyH2>
-        <InfiniteMovingCards
-          className="-z-10"
-          items={feedbacks}
-          direction="right"
-          speed="slow"
-        />
-      </div>
+      <ReviewSection />
+      <RegisterSection />
     </div>
   );
 }
 
+const HeroSection = () => {
+  return (
+    <section className="flex flerx-row justify-between items-center gap-4 w-full">
+      <div className="flex flex-col items-start gap-4">
+        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
+          Tìm kiếm công việc Part-time tốt nhất
+        </h1>
+        <p className="text-gray-500 w-1/2">
+          Chúng tôi giúp bạn tìm kiếm các công việc part-time linh hoạt nhất,
+          phù hợp với thời gian của bạn
+        </p>
+        <div className="flex gap-4">
+          <HowToUseLoader />
+          <Input
+            type="text"
+            className="w-[300px]"
+            placeholder="Nhập từ khóa tìm kiếm"
+          />
+          <Button variant="default">
+            <Search />
+          </Button>
+        </div>
+        <div className="flex gap-4">
+          <p className="text-gray-500 dark:text-gray-400">Phổ biến: </p>
+          {["Lập trình viên", "Thiết kế", "Marketing"].map((item, index) => (
+            <Badge key={index} variant="secondary">
+              {item}
+            </Badge>
+          ))}
+        </div>
+      </div>
+      <Image
+        src={"https://www.glassdoor.com/job-search-next/assets/birdwatcher.png"}
+        alt="Hero"
+        width={250}
+        height={250}
+        className="bg-white rounded-full shadow-md"
+      />
+    </section>
+  );
+};
+
+const HowItWorkSection = () => {
+  return (
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-green-50 dark:bg-gray-900">
+      <div className="container px-4 md:px-6">
+        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl dark:text-white">
+              Cách chúng tôi giúp bạn tìm việc làm
+            </h2>
+            <p className="max-w-[700px] text-muted-foreground md:text-xl dark:text-gray-300">
+              Cung cấp cho bạn một nền tảng tìm kiếm việc làm đơn giản và hiệu
+              quả, giúp bạn tìm được công việc phù hợp với mình trong thời gian
+              ngắn nhất.
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+          {[
+            {
+              title: "Tạo hồ sơ của bạn",
+              description:
+                "Tạo hồ sơ cá nhân của bạn với thông tin chi tiết về kỹ năng và kinh nghiệm.",
+              icon: (
+                <Users className="h-12 w-12 text-green-500 dark:text-green-400" />
+              ),
+              step: "1",
+            },
+            {
+              title: "Tìm kiếm việc làm",
+              description:
+                "Tìm kiếm việc làm phù hợp với bạn bằng cách sử dụng các bộ lọc thông minh.",
+              icon: (
+                <Search className="h-12 w-12 text-green-500 dark:text-green-400" />
+              ),
+              step: "2",
+            },
+            {
+              title: "Ứng tuyển dễ dàng",
+              description:
+                "Ứng tuyển vào các công việc mà bạn quan tâm chỉ với một cú nhấp chuột.",
+              icon: (
+                <Briefcase className="h-12 w-12 text-green-500 dark:text-green-400" />
+              ),
+              step: "3",
+            },
+          ].map((step, index) => (
+            <div key={index} className="flex flex-col items-center text-center">
+              <div className="flex flex-col items-center">
+                {/* Step number badge */}
+                <div className="w-8 h-8 mb-3 rounded-full bg-green-500 dark:bg-green-600 flex items-center justify-center text-white font-bold">
+                  {step.step}
+                </div>
+                {/* Icon circle */}
+                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-white dark:bg-gray-800 border-2 border-green-200 dark:border-green-800 mb-4">
+                  {step.icon}
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-2 dark:text-white">
+                {step.title}
+              </h3>
+              <p className="text-muted-foreground dark:text-gray-300">
+                {step.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const RegisterSection = () => {
+  return (
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-green-500 dark:bg-green-800 text-white">
+      <div className="container px-4 md:px-6">
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+          <div className="flex flex-col justify-center space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Tìm kiếm việc làm bán thời gian dễ dàng hơn bao giờ hết
+              </h2>
+              <p className="max-w-[600px] md:text-xl dark:text-green-100">
+                Chúng tôi cung cấp cho bạn một nền tảng tìm kiếm việc làm đơn
+                giản và hiệu quả, giúp bạn tìm được công việc phù hợp với mình
+                trong thời gian ngắn nhất.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <Button variant={"secondary"}>Đăng ký tài khoản miễn phí</Button>
+            </div>
+          </div>
+          <div className="space-y-4 bg-white/10 dark:bg-green-700/50 rounded-lg p-6">
+            <h3 className="text-xl font-bold">
+              Tham gia bản tin của chúng tôi
+            </h3>
+            <p className="text-green-100 dark:text-green-100">
+              Nhận thông tin mới nhất về việc làm, mẹo phỏng vấn và nhiều hơn
+              nữa!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Input type="email" placeholder="Nhập email của bạn" />
+              <Button variant={"secondary"}>Đăng ký</Button>
+            </div>
+            <p className="text-xs dark:text-green-200">
+              Bằng cách nhấp vào nút Đăng ký, bạn đồng ý với các điều khoản dịch
+              vụ và chính sách bảo mật của chúng tôi.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const CompanySection = () => {
   return (
-    <>
-    <TypographyH2 className="mb-0">
-      Đối tác hàng đầu của chúng tôi
-    </TypographyH2>
-      <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">
-        <Button
-          variant="ghost"
-        >
-          <Building/>
-          <span className="">Công ty</span>
-        </Button>
+    <section className="flex flex-col items-center justify-center">
+      <TypographyH2>Đối tác hàng đầu của chúng tôi</TypographyH2>
+      <div className="-z-1 relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">
         <OrbitingCircles iconSize={50}>
           <Image
             src={
@@ -246,6 +375,108 @@ const CompanySection = () => {
           />
         </OrbitingCircles>
       </div>
-    </>
+      <Button variant={"outline"}>
+        <Building />
+        Xem tất cả đối tác
+      </Button>
+    </section>
+  );
+};
+
+const ReviewSection = () => {
+  return (
+    <section className="flex flex-col items-center justify-center gap-4">
+      <TypographyH2>
+        Chúng tôi đã giúp hàng ngàn người tìm được việc làm mơ ước
+      </TypographyH2>
+      <InfiniteMovingCards
+        className="-z-10"
+        items={feedbacks}
+        direction="right"
+        speed="slow"
+      />
+    </section>
+  );
+};
+
+const ForCustomerSection = () => {
+  return (
+    <section className="flex justify-around gap-4 w-full">
+      <div className="flex flex-col items-start gap-4">
+        <TypographyH2>Dành cho ứng viên tìm việc</TypographyH2>
+        {[
+          "Tiếp cận hàng ngàn cơ hội bán thời gian linh hoạt",
+          "Đề xuất công việc được cá nhân hóa dựa trên hồ sơ của bạn",
+          "Quy trình ứng dụng dễ dàng với một cú nhấp chuột áp dụng",
+          "Thông báo việc làm cho các vị trí mới phù hợp với tiêu chí của bạn",
+          "Các nguồn lực để giúp bạn thành công trong việc tìm kiếm việc làm",
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 text-gray-500 dark:text-gray-300"
+          >
+            <Sparkles className="h-4 w-4 text-green-500 dark:text-green-400" />
+            <p>{item}</p>
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-col items-start gap-4">
+        <TypographyH2>Dành cho nhà tuyển dụng</TypographyH2>
+        {[
+          "Tiếp cận với một lượng lớn các ứng viên bán thời gian đủ điều kiện",
+          "Bảng điều khiển dễ sử dụng để quản lý các bài đăng công việc và ứng dụng",
+          "Quảng cáo việc làm có mục tiêu để tiếp cận đúng ứng viên",
+          "Công cụ sàng lọc để xác định các kết quả phù hợp nhất",
+          "Hỗ trợ tận tình để giúp bạn tìm thấy sự phù hợp hoàn hảo",
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 text-gray-500 dark:text-gray-300"
+          >
+            <Sparkles className="h-4 w-4 text-green-500 dark:text-green-400" />
+            <p>{item}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const StatisticsSection = () => {
+  return (
+    <section className="w-full py-12 md:py-24 bg-green-50 dark:bg-gray-900">
+      <div className="container px-4 md:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            {
+              icon: <Briefcase className="h-8 w-8 mx-auto text-primary" />,
+              value: "10,000+",
+              label: "Công việc",
+            },
+            {
+              icon: <Users className="h-8 w-8 mx-auto text-primary" />,
+              value: "50,000+",
+              label: "Ứng viên",
+            },
+            {
+              icon: <TrendingUp className="h-8 w-8 mx-auto text-primary" />,
+              value: "5,000+",
+              label: "Nhà tuyển dụng",
+            },
+            {
+              icon: <CheckCircle2 className="h-8 w-8 mx-auto text-primary" />,
+              value: "25,000+",
+              label: "Đơn ứng tuyển",
+            },
+          ].map((stat, index) => (
+            <div key={index} className="flex flex-col items-center">
+              {stat.icon}
+              <h3 className="mt-4 text-3xl font-bold">{stat.value}</h3>
+              <p className="text-muted-foreground">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };

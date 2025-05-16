@@ -14,6 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyH2 } from "@/components/ui/typography";
+import Image from "next/image";
 import React from "react";
 
 const AccountTab = () => {
@@ -152,6 +153,13 @@ const CompanyTab = () => {
       </div>
       <div className="col-span-3 flex flex-col gap-2 items-center">
         <h2 className="text-lg font-semibold mb-4 text-gray-600">Trạng thái</h2>
+        <Image 
+          src="https://career.fpt-software.com/wp-content/themes/jobcareer/fpt_landing_page/taste-vietnam/images/user/11125/Logo_fpt_software.png"
+          alt="verified"
+          width={100}
+          height={100}
+          className="w-30 h-30 mb-2"
+        />
         <Badge className="bg-green-500 dark:bg-green-300 text-white">
           Đã xác thực
         </Badge>
@@ -186,7 +194,7 @@ export default async function DashBoard() {
           {tabItems.map((tab) => (
             <TabsTrigger
               key={tab.value}
-              className="data-[state=active]:bg-green-300 dark:data-[state=active]:bg-green-400"
+              className="data-[state=active]:bg-green-300 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-green-500 dark:data-[state=active]:border-green-300"
               value={tab.value}
             >
               {tab.title}
