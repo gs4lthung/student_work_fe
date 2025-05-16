@@ -247,6 +247,7 @@ export default function JobDetailPage({
 }) {
   return (
     <div className="sm:p-12 lg:p-8 min-h-screen">
+      {params.slug}
       <FirstSection />
       <Separator className="my-4" />
       <SecondSection />
