@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TypographyH2 } from "@/components/ui/typography";
+import { PageProps } from "@/interfaces/page-props";
 import { History, MapPin, MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -240,12 +241,8 @@ const CommentSection = () => {
   );
 };
 
-export default function JobDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
+export default async function JobDetailPage(props: PageProps) {
+  const { slug } = await props.params;
 
   // You can use `slug` to fetch data here or in generateStaticParams
   return (
