@@ -10,13 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { InfiniteMovingCards } from "@/components/ui/cards-infinite-moving";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+
 import HowToUseLoader from "@/components/ui/how-to-use-loader";
 import { Input } from "@/components/ui/input";
 import { OrbitingCircles } from "@/components/ui/orbiting-circles";
@@ -46,7 +40,18 @@ const specialJob = {
   experience: "3+ năm",
 };
 
-const SpecialJobCard = ({ specialJob }) => {
+type SpecialJob = {
+  title: string;
+  url: string;
+  company: string;
+  companyLogo: string;
+  companyUrl: string;
+  location: string;
+  salary: string;
+  experience: string;
+};
+
+const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
   return (
     <div className="fixed bottom-4 right-4">
       <BackgroundGradient className="rounded-[22px] w-[400px] max-w-sm bg-white dark:bg-zinc-900">
