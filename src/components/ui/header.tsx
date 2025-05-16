@@ -154,7 +154,7 @@ export default function Header() {
           <Button className="h-5 text-xs">Tìm việc ngay</Button>
         </div>
       </div>
-      <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
+      <header className="z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
         <Link
           href="/"
           className="mr-6 hidden lg:flex items-center gap-2"

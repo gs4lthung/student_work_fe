@@ -1,5 +1,6 @@
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { Badge } from "@/components/ui/badge";
+import { Banner } from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,6 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { InfiniteMovingCards } from "@/components/ui/cards-infinite-moving";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import HowToUseLoader from "@/components/ui/how-to-use-loader";
 import { Input } from "@/components/ui/input";
 import { OrbitingCircles } from "@/components/ui/orbiting-circles";
@@ -147,10 +155,10 @@ export default function Home() {
 
 const HeroSection = () => {
   return (
-    <section className="flex flerx-row justify-between items-center gap-4 w-full">
+    <section className="flex flerx-row justify-between items-center gap-8 w-full">
       <div className="flex flex-col items-start gap-4">
         <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
-          Tìm kiếm công việc Part-time tốt nhất
+          Nền tảng tìm kiếm công việc Part-time tốt nhất
         </h1>
         <p className="text-gray-500 w-1/2">
           Chúng tôi giúp bạn tìm kiếm các công việc part-time linh hoạt nhất,
@@ -176,13 +184,7 @@ const HeroSection = () => {
           ))}
         </div>
       </div>
-      <Image
-        src={"https://www.glassdoor.com/job-search-next/assets/birdwatcher.png"}
-        alt="Hero"
-        width={250}
-        height={250}
-        className="bg-white rounded-full shadow-md"
-      />
+      <Banner />
     </section>
   );
 };
