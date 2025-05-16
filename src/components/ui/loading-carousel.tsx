@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // npm i embla-carousel-autoplay framer-motion lucide-react
 // npx shadcn@latest add carousel
 "use client"
