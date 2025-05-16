@@ -134,7 +134,6 @@ export default function Header() {
     "/verify-email",
     "/verify-email/success",
     "/verify-email/verify",
-    "/chat",
   ];
   const isDashboard = nonDashboardPaths.some((path) =>
     pathname.startsWith(path)
@@ -273,11 +272,6 @@ export default function Header() {
               </Button>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" className="hidden md:flex">
-            <Link href="/chat" prefetch={false}>
-              <MessageCircle size={20} />
-            </Link>
-          </Button>
           <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
