@@ -60,7 +60,15 @@ const services = [
   },
 ];
 
-const ServiceCard = ({ service }) => {
+type Service = {
+  label: string;
+  value: string;
+  color: string;
+  price: string;
+  descriptions: string[];
+};
+
+const ServiceCard = ({ service }: { service: Service }) => {
   return (
     <Card className="w-1/4 h-[400px] flex flex-col gap-2 p-4 border border-gray-300 shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out">
       <CardHeader className="flex flex-col gap-2">
