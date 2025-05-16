@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { TypographyH2 } from "@/components/ui/typography";
 import { History, MapPin, MessageCircleMore } from "lucide-react";
@@ -241,21 +240,18 @@ const CommentSection = () => {
   );
 };
 
-type Props = {
-  params: {
-    slug: string;
-  };
-};
-
-export default function JobDetailPage({ params }: Props) {
+export default function JobDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
 
-  // You can fetch job data using the slug here
+  // You can use `slug` to fetch data here or in generateStaticParams
   return (
     <>
       <FirstSection />
       <SecondSection />
-      {/* Add other sections as needed */}
     </>
   );
 }
