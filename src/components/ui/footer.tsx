@@ -45,13 +45,12 @@ const Footer2 = ({
         { text: "Marketplace", url: "#" },
         { text: "Features", url: "#" },
         { text: "Integrations", url: "#" },
-        { text: "Pricing", url: "#" },
       ],
     },
     {
-      title: "Company",
+      title: "Công ty",
       links: [
-        { text: "About", url: "#" },
+        { text: "Về chúng tôi", url: "/about-us" },
         { text: "Team", url: "#" },
         { text: "Blog", url: "#" },
         { text: "Careers", url: "#" },

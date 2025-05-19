@@ -158,7 +158,7 @@ const ServiceCard = ({ service }: { service: Service }) => {
   );
 };
 
-export default function AddNewPostPage() {
+export default function AddNewJobPage() {
   return (
     <div className="bg-gray-50 dark:bg-[#0A0F1C] text-gray-900 dark:text-white py-16 px-4 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">

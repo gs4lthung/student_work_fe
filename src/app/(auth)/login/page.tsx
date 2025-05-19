@@ -32,14 +32,14 @@ export default function LoginPage() {
         </Link>
       </div>
       <Button
-        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+        className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white"
         variant="secondary"
         type="submit"
       >
         <Facebook /> <p>Đăng nhập với Facebook</p>
       </Button>
       <Button
-        className="w-full bg-red-400 hover:bg-red-500 text-white"
+        className="w-full bg-red-400 hover:bg-red-500 dark:bg-red-400 dark:hover:bg-red-500 text-white"
         variant="secondary"
         type="submit"
       >

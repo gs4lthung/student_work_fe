@@ -44,15 +44,15 @@ const items = [
   },
   {
     title: "Tin tuyển dụng",
-    url: "/post",
+    url: "/job",
     subMenu: [
       {
         title: "Tìm kiếm việc làm",
-        url: "/post",
+        url: "/job",
       },
       {
         title: "Đăng tin tuyển dụng",
-        url: "/post/add",
+        url: "/job/add",
       },
     ],
   },
@@ -74,7 +74,7 @@ const profileItems = [
   },
   {
     title: "CV của tôi",
-    url: "/dashboard/cv",
+    url: "/dashboard/my-cv",
     icon: <FileUser />,
   },
   {
@@ -150,13 +150,12 @@ export default function Header() {
 
   return (
     <>
-      <div className="h-10 w-full bg-gradient-to-r from-white to-green-200 dark:bg-gradient-to-r dark:from-green-900 dark:to-black">
+      <div className="h-10 w-full bg-gradient-to-r from-yellow-100 to-yellow-300 dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-600">
         <div className="flex h-full items-center justify-center gap-4">
-          <p className="text-sm text-green-800 dark:text-green-500 font-semibold">
-            Nền tảng tuyển dụng thông minh - Hỗ trợ tìm kiếm việc làm
-            <strong> Part-time</strong> một cách dễ dàng
+          <p className="text-sm font-extrabold">
+            Nền tảng tuyển dụng thông minh ❤️ Hỗ trợ tìm kiếm việc làm một cách
+            dễ dàng
           </p>
-          <Button className="h-5 text-xs">Tìm việc ngay</Button>
         </div>
       </div>
       <header className="z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
