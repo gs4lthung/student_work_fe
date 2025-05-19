@@ -27,6 +27,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const specialJob = {
   title: "Senior Software Engineer",
@@ -107,11 +108,7 @@ const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
           </CardContent>
 
           <CardFooter className="flex justify-between items-center px-4 pb-4">
-            <Button
-              variant={"default"}
-            >
-              Ứng tuyển ngay
-            </Button>
+            <Button variant={"default"}>Ứng tuyển ngay</Button>
             <Button variant="ghost" className=" hover:underline">
               Xem chi tiết
             </Button>
@@ -175,9 +172,11 @@ const HeroSection = () => {
             className="w-[300px]"
             placeholder="Nhập từ khóa tìm kiếm"
           />
-          <Button variant="default">
-            <Search />
-          </Button>
+          <Link href={"/job"}>
+            <Button variant="default">
+              <Search />
+            </Button>
+          </Link>
         </div>
         <div className="flex gap-4">
           <p className="text-gray-500 dark:text-gray-400">Phổ biến: </p>
