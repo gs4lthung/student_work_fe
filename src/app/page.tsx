@@ -109,7 +109,6 @@ const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
           <CardFooter className="flex justify-between items-center px-4 pb-4">
             <Button
               variant={"default"}
-              className="bg-green-500 dark:bg-green-300"
             >
               Ứng tuyển ngay
             </Button>
@@ -267,7 +266,7 @@ const HowItWorkSection = () => {
 
 const RegisterSection = () => {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-green-500 dark:bg-green-800 text-white">
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-green-500 dark:bg-green-800 text-gray-900 dark:text-white">
       <div className="container px-4 md:px-6">
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
           <div className="flex flex-col justify-center space-y-4">
@@ -282,20 +281,20 @@ const RegisterSection = () => {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-              <Button variant={"secondary"}>Đăng ký tài khoản miễn phí</Button>
+              <Button variant={"default"}>Đăng ký tài khoản miễn phí</Button>
             </div>
           </div>
           <div className="space-y-4 bg-white/10 dark:bg-green-700/50 rounded-lg p-6">
             <h3 className="text-xl font-bold">
               Tham gia bản tin của chúng tôi
             </h3>
-            <p className="text-green-100 dark:text-green-100">
+            <p>
               Nhận thông tin mới nhất về việc làm, mẹo phỏng vấn và nhiều hơn
               nữa!
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
               <Input type="email" placeholder="Nhập email của bạn" />
-              <Button variant={"secondary"}>Đăng ký</Button>
+              <Button variant={"default"}>Đăng ký</Button>
             </div>
             <p className="text-xs dark:text-green-200">
               Bằng cách nhấp vào nút Đăng ký, bạn đồng ý với các điều khoản dịch
@@ -313,7 +312,7 @@ const CompanySection = () => {
     <section className="flex flex-col items-center justify-center">
       <TypographyH2>Đối tác hàng đầu của chúng tôi</TypographyH2>
       <div className="-z-1 relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">
-        <OrbitingCircles iconSize={50}>
+        <OrbitingCircles iconSize={50} radius={100}>
           <Image
             src={
               "https://yte.viettel.vn/upload/1000337/20210118/Viettel-without_slogan-01_34bf1bf614.png"
@@ -347,7 +346,7 @@ const CompanySection = () => {
             height={100}
           />
         </OrbitingCircles>
-        <OrbitingCircles iconSize={50} radius={100} reverse>
+        <OrbitingCircles iconSize={50} radius={200} reverse>
           <Image
             src={
               "https://cdn.nhanlucnganhluat.vn/uploads/images/6AF28656/logo/2019-02/logo.png"
@@ -375,6 +374,22 @@ const CompanySection = () => {
           <Image
             src={
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7xt3CY3aHe7rUImjMZMOR7iYCir2HRBA_qu9OeYRMSfqfu0h1IU6MrDESoG9LzxzNcBs&usqp=CAU"
+            }
+            alt="Hero"
+            width={100}
+            height={100}
+          />
+          <Image
+            src={
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTGu5ZKgiCLFkKadPTR6K_s4EtES8anmJPMQ&s"
+            }
+            alt="Hero"
+            width={100}
+            height={100}
+          />
+          <Image
+            src={
+              "https://cdn.tgdd.vn/GameApp/3/224114/Screentshots/bkav-mobile-security-diet-virus-phan-mem-bao-ve-smartphone-224114-logo-07-06-2020.png"
             }
             alt="Hero"
             width={100}

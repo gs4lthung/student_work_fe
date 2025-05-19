@@ -1,5 +1,6 @@
 import {
   Box,
+  FileUser,
   Home,
   LayoutDashboard,
   Newspaper,
@@ -29,6 +30,11 @@ const items = [
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "CV của tôi",
+    url: "/dashboard/my-cv",
+    icon: FileUser,
   },
   {
     title: "Tin đăng",

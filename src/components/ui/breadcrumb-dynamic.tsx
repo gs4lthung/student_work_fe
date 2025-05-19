@@ -11,11 +11,12 @@ import {
 
 const breadcrumbLabelMap: Record<string, string> = {
   dashboard: "Dashboard",
-  profile: "Profile",
-  settings: "Settings",
-  users: "Users",
+  profile: "Hồ sơ",
+  settings: "Cài đặt",
+  users: "Người dùng",
   post: "Tin đăng",
   service: "Dịch vụ",
+  "my-cv": "CV của tôi",
   // Add more mappings here
 };
 

@@ -75,17 +75,17 @@ export default function DashboardPost() {
               <TableCell>{post.title}</TableCell>
               <TableCell>
                 {post.service === "Standard" ? (
-                  <Badge className="bg-blue-400 dark:bg-blue-300">Cơ bản</Badge>
+                  <Badge className="bg-blue-500 dark:bg-blue-400">Cơ bản</Badge>
                 ) : post.service === "Premium" ? (
-                  <Badge className="bg-yellow-400 dark:bg-yellow-300">
+                  <Badge className="bg-green-500 dark:bg-green-400">
                     Nâng cao
                   </Badge>
                 ) : post.service === "Featured" ? (
-                  <Badge className="bg-green-400 dark:bg-green-300">
+                  <Badge className="bg-purple-500 dark:bg-purple-500">
                     Nổi bật
                   </Badge>
                 ) : (
-                  <Badge className="bg-red-400 dark:bg-red-300">
+                  <Badge className="bg-cyan-500 dark:bg-cyan-400">
                     Doanh nghiệp
                   </Badge>
                 )}

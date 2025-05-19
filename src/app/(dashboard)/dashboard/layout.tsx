@@ -9,7 +9,7 @@ export default function DashBoardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full bg-background p-5">
+      <main className="w-full p-5 bg-white dark:bg-zinc-950">
         <SidebarTrigger />
         <DynamicBreadcrumb />
         {children}

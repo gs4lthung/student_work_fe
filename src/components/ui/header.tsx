@@ -17,6 +17,7 @@ import {
   LogOut,
   MessageCircle,
   Settings,
+  Wallet,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -50,7 +51,7 @@ const items = [
         url: "/post",
       },
       {
-        title: "Tạo tin tuyển dụng",
+        title: "Đăng tin tuyển dụng",
         url: "/post/add",
       },
     ],
@@ -75,6 +76,11 @@ const profileItems = [
     title: "CV của tôi",
     url: "/dashboard/cv",
     icon: <FileUser />,
+  },
+  {
+    title: "Nạp SPoint",
+    url: "/payment",
+    icon: <Wallet />,
   },
   {
     title: "Việc làm đã lưu",
@@ -293,6 +299,12 @@ export default function Header() {
                     <p>lamtienhung93@gmail.com</p>
                     <Badge variant="default" className="mt-2">
                       Tài khoản đã xác thực
+                    </Badge>
+                    <Badge
+                      variant={"outline"}
+                      className="mt-2 bg-yellow-300 dark:bg-yellow-500"
+                    >
+                      100 SPoint
                     </Badge>
                   </div>
                 </div>
