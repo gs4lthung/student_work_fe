@@ -30,7 +30,7 @@ interface Footer2Props {
 
 const Footer2 = ({
   logo = {
-    src: "https://greenempowerment.org/wp-content/uploads/2022/01/GE__Sun-Mark-GE-Green.png",
+    src: "/images/logo.png",
     alt: "logo",
     title: "SWork",
     url: "#",
@@ -93,11 +93,10 @@ const Footer2 = ({
                     src={logo.src}
                     alt={logo.alt}
                     title={logo.title}
-                    width={100}
+                    width={300}
                     height={100}
                   />
                 </Link>
-                <p className="text-xl font-semibold">{logo.title}</p>
               </div>
               <p className="mt-4 font-bold">{tagline}</p>
             </div>

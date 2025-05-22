@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/ui/header";
 import ScrollToTopButton from "@/components/ui/button-scroll-to-top";
@@ -12,14 +12,11 @@ const TopProgressBar = dynamic(
   () => import("@/components/ui/top-progress-bar")
 );
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const beVietNam = Be_Vietnam_Pro({
+  variable: "--font-be-vietnam-pro",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -35,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans bg-white dark:bg-gray-950 text-gray-950 dark:text-zinc-50`}
+        className={`${beVietNam.className} antialiased font-sans bg-white dark:bg-gray-950 text-gray-950 dark:text-zinc-50`}
       >
         <ThemeProvider
           attribute="class"

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { TypographyH2 } from "./typography";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
@@ -164,14 +163,7 @@ export default function Header() {
           className="mr-6 hidden lg:flex items-center gap-2"
           prefetch={false}
         >
-          <Image
-            src="https://greenempowerment.org/wp-content/uploads/2022/01/GE__Sun-Mark-GE-Green.png"
-            alt="Logo"
-            width={60}
-            height={60}
-          />
-
-          <TypographyH2 className="text-green-800">Student Work</TypographyH2>
+          <Image src="/images/logo.png" alt="Logo" width={150} height={60} />
         </Link>
         <div className="ml-auto flex gap-2">
           {items.map((item) =>
@@ -179,7 +171,7 @@ export default function Header() {
               <Link
                 key={item.title}
                 href={item.url}
-                className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-green-500"
+                className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-green-100 dark:hover:bg-green-800 transition-colors"
                 prefetch={false}
               >
                 {item.title}
@@ -189,7 +181,7 @@ export default function Header() {
                 <DropdownMenuTrigger>
                   <Link
                     href={item.url}
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-green-500"
+                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-green-100 dark:hover:bg-green-800 transition-colors"
                     prefetch={false}
                   >
                     {item.title}
@@ -225,7 +217,7 @@ export default function Header() {
             Đăng nhập
           </Button>
           <Button
-            className="bg-green-600 hover:bg-green-700 justify-self-end"
+            className="justify-self-end"
             onClick={() => {
               router.push("/register");
             }}

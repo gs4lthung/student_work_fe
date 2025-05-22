@@ -6,6 +6,7 @@ import {
   Newspaper,
   Settings,
   User,
+  Users,
 } from "lucide-react";
 
 import {
@@ -32,6 +33,11 @@ const items = [
     icon: LayoutDashboard,
   },
   {
+    title: "Hồ sơ",
+    url: "/dashboard/profile",
+    icon: User,
+  },
+  {
     title: "CV của tôi",
     url: "/dashboard/my-cv",
     icon: FileUser,
@@ -44,7 +50,7 @@ const items = [
   {
     title: "Ứng viên",
     url: "#",
-    icon: User,
+    icon: Users,
   },
   {
     title: "Dịch vụ",

@@ -54,7 +54,7 @@ type SpecialJob = {
 
 const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
   return (
-    <div className="fixed bottom-4 right-4">
+    <div className="fixed bottom-4 right-4 z-100">
       <BackgroundGradient className="rounded-[22px] w-[400px] max-w-sm bg-white dark:bg-zinc-900">
         <Card
           className="bg-transparent border-none"
@@ -141,7 +141,7 @@ const feedbacks = [
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-24 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-24 sm:p-20">
       <SpecialJobCard specialJob={specialJob} />
       <HeroSection />
       <HowItWorkSection />
@@ -159,7 +159,7 @@ const HeroSection = () => {
     <section className="flex flerx-row justify-between items-center gap-8 w-full">
       <div className="flex flex-col items-start gap-4">
         <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
-          Nền tảng tìm kiếm công việc Part-time tốt nhất
+          Nền tảng tìm kiếm công việc hàng đầu
         </h1>
         <p className="text-gray-500 w-1/2">
           Chúng tôi giúp bạn tìm kiếm các công việc part-time linh hoạt nhất,

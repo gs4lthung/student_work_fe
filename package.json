@@ -35,6 +35,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
+    "recharts": "^2.15.3",
     "sonner": "^2.0.3",
     "student_work_fe": "file:",
     "tailwind-merge": "^3.0.2",

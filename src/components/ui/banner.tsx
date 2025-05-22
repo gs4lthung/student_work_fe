@@ -38,6 +38,16 @@ const bannerData = [
     image:
       "https://inan2h.vn/wp-content/uploads/2022/11/banner-tuyen-dung-6.jpg",
   },
+  {
+    id: 6,
+    image:
+      "https://treobangrongiare.vn/wp-content/uploads/2021/04/banner-tuyen-dung.jpg",
+  },
+  {
+    id: 7,
+    image:
+      "https://arena.fpt.edu.vn/wp-content/uploads/2022/10/banner-tuyen-dung-2.jpg",
+  },
 ];
 
 export function Banner({

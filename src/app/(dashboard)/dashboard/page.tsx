@@ -1,212 +1,83 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/ui/file-upload";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { ApplicationsChart } from "@/components/page/dashboard/applications-chart";
+import { ApplicationStatus } from "@/components/page/dashboard/applications-status";
+import { RecentActivity } from "@/components/page/dashboard/recent-activity";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TypographyH2 } from "@/components/ui/typography";
-import Image from "next/image";
+  BriefcaseIcon,
+  CalendarIcon,
+  CheckCircleIcon,
+  ClockIcon,
+} from "lucide-react";
 import React from "react";
 
-const AccountTab = () => {
-  return (
-    <div className="grid grid-cols-8 gap-8">
-      <div className="col-span-5">
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Thông tin đăng nhập
-        </h2>
-        <div className="flex flex-col gap-4">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="Email"
-            value={"swork@gmail.com"}
-            readOnly
-          />
-          <Label htmlFor="password">Mật khẩu</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Mật khẩu"
-            value={"password"}
-            disabled
-          />
-          <Button variant={"outline"} className="w-1/3">
-            Thay đổi mật khẩu
-          </Button>
-        </div>
-        <Separator className="my-4" />
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Thông tin liên hệ
-        </h2>
-        <div className="flex flex-col gap-4">
-          <Label htmlFor="name">Họ và tên</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Họ và tên"
-            value={"Lam Tien Hung"}
-            readOnly
-          />
-          <Label htmlFor="phone">Số điện thoại</Label>
-          <Input
-            id="phone"
-            type="text"
-            placeholder="Số điện thoại"
-            value={"0987654321"}
-            readOnly
-          />
-          <Label htmlFor="address">Địa chỉ</Label>
-          <Input
-            id="address"
-            type="text"
-            placeholder="Địa chỉ"
-            value={"TP. Hồ Chí Minh"}
-            readOnly
-          />
-          <Button className="w-1/3">Chỉnh sửa thông tin</Button>
-        </div>
-      </div>
-      <div className="col-span-3 flex flex-col gap-2 items-center">
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Ảnh đại diện
-        </h2>
-        <Avatar className="w-40 h-40">
-          <AvatarFallback>👤</AvatarFallback>
-        </Avatar>
-        <FileUpload />
-      </div>
-    </div>
-  );
-};
-
-const CompanyTab = () => {
-  return (
-    <div className="grid grid-cols-8 gap-8">
-      <div className="col-span-5">
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Thông tin công ty
-        </h2>
-        <div className="flex flex-col gap-4">
-          <Label htmlFor="name">Tên công ty</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Tên công ty"
-            value={"Student Work"}
-            readOnly
-          />
-          <Label htmlFor="taxId">Mã số thuế</Label>
-          <Input
-            id="taxId"
-            type="text"
-            placeholder="Mã số thuế"
-            value={"123456789"}
-            readOnly
-          />
-          <Label htmlFor="size">Quy mô</Label>
-          <Select value="medium" disabled>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Quy mô" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="small">Nhỏ</SelectItem>
-              <SelectItem value="medium">Trung bình</SelectItem>
-              <SelectItem value="large">Lớn</SelectItem>
-            </SelectContent>
-          </Select>
-          <Label htmlFor="address">Địa chỉ</Label>
-          <Input
-            id="address"
-            type="text"
-            placeholder="Địa chỉ"
-            value={"TP. Hồ Chí Minh"}
-            readOnly
-          />
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="Email"
-            value={"swork@gmail.com"}
-            readOnly
-          />
-          <Label htmlFor="phone">Số điện thoại</Label>
-          <Input
-            id="phone"
-            type="text"
-            placeholder="Số điện thoại"
-            value={"0987654321"}
-            readOnly
-          />
-        </div>
-      </div>
-      <div className="col-span-3 flex flex-col gap-2 items-center">
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">Trạng thái</h2>
-        <Image 
-          src="https://career.fpt-software.com/wp-content/themes/jobcareer/fpt_landing_page/taste-vietnam/images/user/11125/Logo_fpt_software.png"
-          alt="verified"
-          width={100}
-          height={100}
-          className="w-30 h-30 mb-2"
-        />
-        <Badge className="bg-green-500 dark:bg-green-300 text-white">
-          Đã xác thực
-        </Badge>
-      </div>
-    </div>
-  );
-};
-
-const tabItems = [
-  {
-    title: "Thông tin tài khoản",
-    value: "account",
-    render: <AccountTab />,
-  },
-  {
-    title: "Thông tin công ty",
-    value: "company",
-    render: <CompanyTab />,
-  },
-];
-
-export default async function DashBoard() {
+const EmployeeDashboard = () => {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-2">
-        <TypographyH2 className="">Lam Tien Hung</TypographyH2>
-        <Badge className="bg-green-500 dark:bg-green-300 text-white">HR</Badge>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Công việc ứng tuyển
+            </CardTitle>
+            <BriefcaseIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">42</div>
+            <p className="text-xs text-muted-foreground">
+              +12% so với tháng trước
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Phỏng vấn</CardTitle>
+            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">8</div>
+            <p className="text-xs text-muted-foreground">
+              +2 so với tuần trước
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Tỷ lệ phản hồi
+            </CardTitle>
+            <CheckCircleIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">24%</div>
+            <p className="text-xs text-muted-foreground">
+              +4% so với tháng trước
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Trung bình thời gian phản hồi
+            </CardTitle>
+            <ClockIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">5.2 ngày</div>
+            <p className="text-xs text-muted-foreground">
+              -1.5 ngày so với tháng trước
+            </p>
+          </CardContent>
+        </Card>
       </div>
-
-      <Tabs defaultValue="account">
-        <TabsList className="w-full p-0 bg-background justify-start border-b rounded-none">
-          {tabItems.map((tab) => (
-            <TabsTrigger
-              key={tab.value}
-              className="data-[state=active]:bg-green-300 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-green-500 dark:data-[state=active]:border-green-300"
-              value={tab.value}
-            >
-              {tab.title}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {tabItems.map((tab) => (
-          <TabsContent key={tab.value} value={tab.value}>
-            {tab.render}
-          </TabsContent>
-        ))}
-      </Tabs>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+        <ApplicationsChart className="md:col-span-2 lg:col-span-4" />
+        <RecentActivity className="md:col-span-2 lg:col-span-3" />
+      </div>
+      <ApplicationStatus />
     </div>
   );
+};
+
+export default async function DashBoard() {
+  return <EmployeeDashboard />;
 }
