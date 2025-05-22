@@ -1,166 +1,218 @@
-"use client";
-
-import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
-interface MenuItem {
-  title: string;
-  links: {
-    text: string;
-    url: string;
-  }[];
-}
+import {
+  Briefcase,
+  FileText,
+  Users,
+  BookOpen,
+  MessageSquare,
+  Linkedin,
+  Github,
+  Mail,
+  Facebook,
+} from "lucide-react";
+import { Input } from "./input";
+import { Button } from "./button";
 
-interface Footer2Props {
-  logo?: {
-    url: string;
-    src: string;
-    alt: string;
-    title: string;
-  };
-  tagline?: string;
-  menuItems?: MenuItem[];
-  copyright?: string;
-  bottomLinks?: {
-    text: string;
-    url: string;
-  }[];
-}
-
-const Footer2 = ({
-  logo = {
-    src: "/images/logo.png",
-    alt: "logo",
-    title: "SWork",
-    url: "#",
-  },
-  tagline = "Help you to find best part-time job.",
-  menuItems = [
-    {
-      title: "Product",
-      links: [
-        { text: "Overview", url: "#" },
-        { text: "Pricing", url: "#" },
-        { text: "Marketplace", url: "#" },
-        { text: "Features", url: "#" },
-        { text: "Integrations", url: "#" },
-      ],
-    },
-    {
-      title: "Công ty",
-      links: [
-        { text: "Về chúng tôi", url: "/about-us" },
-        { text: "Team", url: "#" },
-        { text: "Blog", url: "#" },
-        { text: "Careers", url: "#" },
-        { text: "Contact", url: "#" },
-        { text: "Privacy", url: "#" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        { text: "Help", url: "#" },
-        { text: "Sales", url: "#" },
-        { text: "Advertise", url: "#" },
-      ],
-    },
-    {
-      title: "Social",
-      links: [
-        { text: "Twitter", url: "#" },
-        { text: "Instagram", url: "#" },
-        { text: "LinkedIn", url: "#" },
-      ],
-    },
-  ],
-  copyright = "© 2025 Swork.com. All rights reserved.",
-  bottomLinks = [
-    { text: "Terms and Conditions", url: "#" },
-    { text: "Privacy Policy", url: "#" },
-  ],
-}: Footer2Props) => {
+export default function Footer() {
   return (
-    <section className="py-32 px-4 text-black dark:text-white bg-gray-50 dark:bg-gray-900">
-      <div className="container">
-        <footer>
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
-            <div className="col-span-2 mb-8 lg:mb-0">
-              <div className="flex items-center gap-2 lg:justify-start">
-                <Link href={"#"} className="hidden lg:flex">
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    title={logo.title}
-                    width={300}
-                    height={100}
-                  />
+    <footer className="bg-slate-50 border-t w-full py-8 mt-auto">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Job Resources */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Job Resources</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="/resume-tips"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>Resume Tips</span>
                 </Link>
-              </div>
-              <p className="mt-4 font-bold">{tagline}</p>
-            </div>
-            {menuItems.map((section, sectionIdx) => (
-              <div key={sectionIdx}>
-                <h3 className="mb-4 font-bold">{section.title}</h3>
-                <ul className="space-y-4 text-muted-foreground">
-                  {section.links.map((link, linkIdx) => (
-                    <li
-                      key={linkIdx}
-                      className="font-medium hover:text-primary"
-                    >
-                      <Link
-                        href={link.url}
-                        className="hover:text-primary"
-                        prefetch={false}
-                      >
-                        {link.text}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium text-muted-foreground md:flex-row md:items-center">
-            <p>{copyright}</p>
-            <ul className="flex gap-4">
-              {bottomLinks.map((link, linkIdx) => (
-                <li key={linkIdx} className="underline hover:text-primary">
-                  <Link
-                    href={link.url}
-                    className="hover:text-primary"
-                    prefetch={false}
-                  >
-                    {link.text}
-                  </Link>
-                </li>
-              ))}
+              </li>
+              <li>
+                <Link
+                  href="/interview-prep"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Interview Preparation</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/career-advice"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  <span>Career Advice</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/salary-guide"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                >
+                  <Briefcase className="h-4 w-4" />
+                  <span>Salary Guide</span>
+                </Link>
+              </li>
             </ul>
           </div>
-        </footer>
+
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Nổi bật</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="/jobs"
+                  className="text-slate-600 hover:text-slate-900"
+                >
+                  Tìm việc
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/profile"
+                  className="text-slate-600 hover:text-slate-900"
+                >
+                  Hồ sơ của tôi
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/saved-jobs"
+                  className="text-slate-600 hover:text-slate-900"
+                >
+                  Công việc đã lưu
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/job-alerts"
+                  className="text-slate-600 hover:text-slate-900"
+                >
+                  Thông báo việc làm
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/applications"
+                  className="text-slate-600 hover:text-slate-900"
+                >
+                  Đơn ứng tuyển
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Liên hệ</h3>
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2 text-slate-600">
+                <Mail className="h-4 w-4" />
+                <a
+                  href="mailto:contact@jobseeker.com"
+                  className="hover:text-slate-900"
+                >
+                  contact@swork.com
+                </a>
+              </li>
+              <li className="text-slate-600">
+                <Link
+                  href="/help"
+                  className="flex items-center gap-2 hover:text-slate-900"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>Trung tâm hỗ trợ</span>
+                </Link>
+              </li>
+              <li className="text-slate-600">
+                <Link href="/feedback" className="hover:text-slate-900">
+                  <span>Gửi phản hồi</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Social & Newsletter */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Kết nối với chúng tôi</h3>
+            <div className="flex space-x-4">
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-slate-200 p-2 rounded-full hover:bg-slate-300 transition-colors"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5 text-slate-700" />
+              </a>
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-slate-200 p-2 rounded-full hover:bg-slate-300 transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-5 w-5 text-slate-700" />
+              </a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-slate-200 p-2 rounded-full hover:bg-slate-300 transition-colors"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5 text-slate-700" />
+              </a>
+            </div>
+            <p className="text-sm text-slate-600">
+              Đăng ký nhận bản tin của chúng tôi để nhận thông tin mới nhất về
+              việc làm và mẹo nghề nghiệp.
+            </p>
+            <form className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="Nhập email của bạn"
+                aria-label="Email"
+              />
+              <Button type="submit">
+                Đăng ký
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        <div className="border-t border-slate-200 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-slate-500">
+            © {new Date().getFullYear()} SWork. All rights reserved.
+          </p>
+          <div className="flex gap-6 mt-4 md:mt-0">
+            <Link
+              href="/privacy"
+              className="text-sm text-slate-500 hover:text-slate-700"
+            >
+              Chính sách bảo mật
+            </Link>
+            <Link
+              href="/terms"
+              className="text-sm text-slate-500 hover:text-slate-700"
+            >
+              Điều khoản sử dụng
+            </Link>
+            <Link
+              href="/accessibility"
+              className="text-sm text-slate-500 hover:text-slate-700"
+            >
+              Trợ năng
+            </Link>
+          </div>
+        </div>
       </div>
-    </section>
+    </footer>
   );
-};
-export default function Footer() {
-  const pathname = usePathname();
-  const nonDashboardPaths = [
-    "/dashboard",
-    "/login",
-    "/register",
-    "/forgot-password",
-    "/reset-password",
-    "/verify-email",
-    "/verify-email/success",
-    "/verify-email/verify",
-    "/chat"
-  ];
-  const isDashboard = nonDashboardPaths.some((path) =>
-    pathname.startsWith(path)
-  );
-  if (isDashboard) {
-    return null;
-  }
-  return <Footer2 />;
 }

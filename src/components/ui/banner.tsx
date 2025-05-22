@@ -16,7 +16,7 @@ const bannerData = [
   {
     id: 1,
     image:
-      "https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/banners/B9hOWcyndUb0uJna7kcb.jpg",
+      "https://invietnhat.vn/wp-content/uploads/2023/08/mau-banner-tuyen-dung.jpg",
   },
   {
     id: 2,
@@ -47,6 +47,11 @@ const bannerData = [
     id: 7,
     image:
       "https://arena.fpt.edu.vn/wp-content/uploads/2022/10/banner-tuyen-dung-2.jpg",
+  },
+  {
+    id: 8,
+    image:
+      "https://inan2h.vn/wp-content/uploads/2022/11/banner-tuyen-dung-14.jpg",
   },
 ];
 
