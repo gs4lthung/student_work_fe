@@ -47,6 +47,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ColourfulText } from "@/components/ui/text-colorful";
 
 // Sample student job data
 const jobsData = [
@@ -845,9 +846,13 @@ export default function JobPage() {
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className="text-xl text-green-800 dark:text-green-300 group-hover:text-green-600 transition-colors">
-                              {job.title}
-                            </CardTitle>
+                            {job.featured ? (
+                              <ColourfulText text={job.title} size="24px"/>
+                            ) : (
+                              <CardTitle className="text-xl text-green-800 dark:text-green-300 group-hover:text-green-600 transition-colors">
+                                {job.title}
+                              </CardTitle>
+                            )}
                             <p className="text-gray-600 dark:text-gray-400 font-medium">
                               {job.company}
                             </p>

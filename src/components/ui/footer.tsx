@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Briefcase,
@@ -12,10 +14,29 @@ import {
 } from "lucide-react";
 import { Input } from "./input";
 import { Button } from "./button";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  const nonDashboardPaths = [
+    "/dashboard",
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+    "/verify-email",
+    "/verify-email/success",
+    "/verify-email/verify",
+  ];
+  const isDashboard = nonDashboardPaths.some((path) =>
+    pathname.startsWith(path)
+  );
+  if (isDashboard) {
+    return null;
+  }
   return (
-    <footer className="bg-slate-50 border-t w-full py-8 mt-auto">
+    <footer className="bg-slate-50 dark:bg-slate-900 border-t w-full py-8 mt-auto">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Job Resources */}
@@ -25,7 +46,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/resume-tips"
-                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <FileText className="h-4 w-4" />
                   <span>Resume Tips</span>
@@ -34,7 +55,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/interview-prep"
-                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <Users className="h-4 w-4" />
                   <span>Interview Preparation</span>
@@ -43,7 +64,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/career-advice"
-                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <BookOpen className="h-4 w-4" />
                   <span>Career Advice</span>
@@ -52,7 +73,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/salary-guide"
-                  className="text-slate-600 hover:text-slate-900 flex items-center gap-2"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <Briefcase className="h-4 w-4" />
                   <span>Salary Guide</span>
@@ -68,7 +89,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/jobs"
-                  className="text-slate-600 hover:text-slate-900"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400"
                 >
                   Tìm việc
                 </Link>
@@ -76,7 +97,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/dashboard/profile"
-                  className="text-slate-600 hover:text-slate-900"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400"
                 >
                   Hồ sơ của tôi
                 </Link>
@@ -84,7 +105,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/saved-jobs"
-                  className="text-slate-600 hover:text-slate-900"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400"
                 >
                   Công việc đã lưu
                 </Link>
@@ -92,7 +113,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/job-alerts"
-                  className="text-slate-600 hover:text-slate-900"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400"
                 >
                   Thông báo việc làm
                 </Link>
@@ -100,7 +121,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/applications"
-                  className="text-slate-600 hover:text-slate-900"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400"
                 >
                   Đơn ứng tuyển
                 </Link>
@@ -112,26 +133,29 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Liên hệ</h3>
             <ul className="space-y-2">
-              <li className="flex items-center gap-2 text-slate-600">
+              <li className="flex items-center gap-2 text-slate-600 dark:text-slate-50">
                 <Mail className="h-4 w-4" />
                 <a
                   href="mailto:contact@jobseeker.com"
-                  className="hover:text-slate-900"
+                  className="hover:text-slate-900 dark:hover:text-slate-400"
                 >
                   contact@swork.com
                 </a>
               </li>
-              <li className="text-slate-600">
+              <li className="text-slate-600 dark:text-slate-50">
                 <Link
                   href="/help"
-                  className="flex items-center gap-2 hover:text-slate-900"
+                  className="flex items-center gap-2 hover:text-slate-900 dark:hover:text-slate-400"
                 >
                   <MessageSquare className="h-4 w-4" />
                   <span>Trung tâm hỗ trợ</span>
                 </Link>
               </li>
-              <li className="text-slate-600">
-                <Link href="/feedback" className="hover:text-slate-900">
+              <li className="text-slate-600 dark:text-slate-50">
+                <Link
+                  href="/feedback"
+                  className="hover:text-slate-900 dark:hover:text-slate-400"
+                >
                   <span>Gửi phản hồi</span>
                 </Link>
               </li>
@@ -170,7 +194,7 @@ export default function Footer() {
                 <Github className="h-5 w-5 text-slate-700" />
               </a>
             </div>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Đăng ký nhận bản tin của chúng tôi để nhận thông tin mới nhất về
               việc làm và mẹo nghề nghiệp.
             </p>
@@ -180,9 +204,7 @@ export default function Footer() {
                 placeholder="Nhập email của bạn"
                 aria-label="Email"
               />
-              <Button type="submit">
-                Đăng ký
-              </Button>
+              <Button type="submit">Đăng ký</Button>
             </form>
           </div>
         </div>
@@ -194,19 +216,19 @@ export default function Footer() {
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link
               href="/privacy"
-              className="text-sm text-slate-500 hover:text-slate-700"
+              className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
             >
               Chính sách bảo mật
             </Link>
             <Link
               href="/terms"
-              className="text-sm text-slate-500 hover:text-slate-700"
+              className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
             >
               Điều khoản sử dụng
             </Link>
             <Link
               href="/accessibility"
-              className="text-sm text-slate-500 hover:text-slate-700"
+              className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
             >
               Trợ năng
             </Link>

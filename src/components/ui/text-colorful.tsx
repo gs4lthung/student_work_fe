@@ -3,12 +3,9 @@
 import React from "react";
 import { motion } from "motion/react";
 
-export function ColourfulText({ text }: { text: string }) {
-  const colors = [
-    "#fde047",
-    "#facc15",
-    "#eab308",
-  ];
+export function ColourfulText({ text, size }: { text: string; size?: string }) {
+  const textSize = size ? size : "16px";
+  const colors = ["#fde047", "#facc15", "#eab308"];
 
   const [currentColors, setCurrentColors] = React.useState(colors);
   const [count, setCount] = React.useState(0);
@@ -41,6 +38,7 @@ export function ColourfulText({ text }: { text: string }) {
         delay: index * 0.05,
       }}
       className="inline-block whitespace-pre font-sans tracking-tight"
+      style={{ fontSize: textSize }}
     >
       {char}
     </motion.span>

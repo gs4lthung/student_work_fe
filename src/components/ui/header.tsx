@@ -29,8 +29,6 @@ import {
 } from "./dropdown-menu";
 import { Badge } from "./badge";
 import { ModeToggle } from "./mode-toggle";
-import { useEffect } from "react";
-import { useTheme } from "next-themes";
 
 const items = [
   {
@@ -126,10 +124,7 @@ const notificationItems = [
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const { theme } = useTheme();
-  useEffect(() => {
-    console.log("Current theme:", theme);
-  }, [theme]);
+
   const nonDashboardPaths = [
     "/dashboard",
     "/login",
@@ -171,7 +166,7 @@ export default function Header() {
               <Link
                 key={item.title}
                 href={item.url}
-                className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-green-100 dark:hover:bg-green-800 transition-colors"
+                className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 prefetch={false}
               >
                 {item.title}
@@ -181,7 +176,7 @@ export default function Header() {
                 <DropdownMenuTrigger>
                   <Link
                     href={item.url}
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-green-100 dark:hover:bg-green-800 transition-colors"
+                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     prefetch={false}
                   >
                     {item.title}

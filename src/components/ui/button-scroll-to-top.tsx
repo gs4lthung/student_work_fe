@@ -19,7 +19,7 @@ export default function ScrollToTopButton() {
   };
   return (
     <Button
-      className={`bg-green-400 hover:bg-green-500 fixed bottom-4 right-4 transition-opacity duration-300 ease-in-out ${
+      className={`z-999 fixed bottom-4 right-1 transition-opacity duration-300 ease-in-out ${
         showScroll ? "opacity-100" : "opacity-0"
       }`}
       onClick={() => {
