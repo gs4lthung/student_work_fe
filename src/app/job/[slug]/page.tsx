@@ -428,6 +428,7 @@ export default async function JobDetailPage(props: PageProps) {
   return (
     <main className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-green-50 dark:from-gray-900 dark:via-blue-950 dark:to-green-950 text-gray-900 dark:text-white">
       <JobHeader />
+      {slug}
       <JobContent />
       <CommentSection />
     </main>
