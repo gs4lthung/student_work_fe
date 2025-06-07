@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TypographyH2 } from "@/components/ui/typography";
+import { colorConst } from "@/const/color-const";
 import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import React from "react";
 
@@ -63,7 +64,7 @@ export default function DashboardService() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <TypographyH2 className="">Danh sách</TypographyH2>
-        <Button variant={"outline"} className="hover:bg-green-300 hover:dark:bg-green-400">
+        <Button variant={"outline"} className={colorConst.createBtnHoverColor}>
           <Plus />
         </Button>
       </div>
@@ -97,13 +98,13 @@ export default function DashboardService() {
                 </Button>
                 <Button
                   variant={"outline"}
-                  className="hover:bg-blue-500 hover:dark:bg-blue-300"
+                  className={colorConst.updateBtnHoverColor}
                 >
                   <Pencil />
                 </Button>
                 <Button
                   variant={"outline"}
-                  className="hover:bg-red-500 hover:dark:bg-red-300"
+                  className={colorConst.deleteBtnHoverColor}
                 >
                   <Trash2 />
                 </Button>

@@ -1,6 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableBody,
   TableCaption,
@@ -10,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TypographyH2 } from "@/components/ui/typography";
+import { colorConst } from "@/const/color-const";
 import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import React from "react";
 
@@ -49,10 +58,7 @@ export default function DashboardPost() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <TypographyH2 className="">Danh sách</TypographyH2>
-        <Button
-          variant={"outline"}
-          className="hover:bg-green-300 hover:dark:bg-green-400"
-        >
+        <Button variant={"outline"} className={colorConst.createBtnHoverColor}>
           <Plus />
         </Button>
       </div>
@@ -101,12 +107,26 @@ export default function DashboardPost() {
                 )}
               </TableCell>
               <TableCell className="flex gap-2">
-                <Button variant={"outline"}>
-                  <Eye />
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant={"outline"}>
+                      <Eye />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="min-w-[80%] min-h-[80%]">
+                    <DialogHeader>
+                      <DialogTitle>Những ứng viên tiềm năng</DialogTitle>
+                      <DialogDescription>
+                        Đây là danh sách những ứng viên đã ứng tuyển vào tin
+                        đăng của bạn. Bạn có thể xem chi tiết hồ sơ của họ và
+                        quyết định có nên liên hệ hay không.
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
                 <Button
                   variant={"outline"}
-                  className="hover:bg-blue-500 hover:dark:bg-blue-300"
+                  className={colorConst.updateBtnHoverColor}
                 >
                   <Pencil />
                 </Button>

@@ -134,6 +134,7 @@ export default function Header() {
     "/verify-email",
     "/verify-email/success",
     "/verify-email/verify",
+    "/cv/download",
   ];
   const isDashboard = nonDashboardPaths.some((path) =>
     pathname.startsWith(path)

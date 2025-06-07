@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import {
   Search,
   Briefcase,
@@ -9,404 +9,207 @@ import {
   BookOpen,
   Filter,
   ArrowUpDown,
-  GraduationCap,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Sparkles,
   Users,
   Award,
   Leaf,
   Book,
   Soup,
-} from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ColourfulText } from "@/components/ui/text-colorful";
+  ChevronsLeft,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+} from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Slider } from "@/components/ui/slider"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { JobInterface } from "@/interfaces/job-interface"
 
 // Sample student job data
-const jobsData = [
+const jobsData: JobInterface[] = [
   {
-    id: 1,
-    title: "Trợ giảng Tiếng Anh",
-    company: "Trung tâm Anh ngữ Bright Stars",
+    id: "1",
+    title: "Thực tập Marketing Online",
+    type: "Thực tập",
+    description:
+      "Cần tuyển thực tập sinh Marketing Online làm việc tại văn phòng, hỗ trợ các chiến dịch quảng cáo trên mạng xã hội và tối ưu hóa nội dung.",
+    requirements: ["Sinh viên năm 3 trở lên", "Kỹ năng viết tốt", "Hiểu biết về SEO và quảng cáo trực tuyến"],
     location: "Quận 1, TP.HCM",
-    campus: "Gần ĐH Khoa học Xã hội & Nhân văn",
-    type: "Bán thời gian",
-    schedule: "Tối 2-4-6",
-    hourlyRate: 80000,
-    skillLevel: "Trung cấp",
-    posted: "2 ngày trước",
-    description:
-      "Hỗ trợ giảng dạy tiếng Anh cho học sinh tiểu học, chuẩn bị tài liệu và hoạt động lớp học.",
-    tags: ["Giáo dục", "Tiếng Anh", "Trẻ em"],
-    featured: true,
-    applicationCount: 12,
+    salary: 3000000, // Example salary
+    workingHours: "Thứ 2 - Thứ 6, 8h - 17h",
+    startDate: new Date("2024-05-15"),
+    endDate: new Date("2024-11-15"),
+    status: "Đang tuyển",
+    imageUrl: "/placeholder.svg",
   },
   {
-    id: 2,
-    title: "Nhân viên phục vụ quán cà phê",
-    company: "The Coffee House",
+    id: "2",
+    title: "Nhân viên phục vụ nhà hàng",
+    type: "Bán thời gian",
+    description:
+      "Nhà hàng cần tuyển nhân viên phục vụ bán thời gian, ưu tiên sinh viên năng động, nhiệt tình, có khả năng giao tiếp tốt.",
+    requirements: ["Nhanh nhẹn", "Giao tiếp tốt", "Có trách nhiệm"],
     location: "Quận 3, TP.HCM",
-    campus: "Gần ĐH Kinh tế",
-    type: "Bán thời gian",
-    schedule: "Linh hoạt",
-    hourlyRate: 25000,
-    skillLevel: "Sơ cấp",
-    posted: "1 ngày trước",
-    description:
-      "Phục vụ khách hàng, pha chế đồ uống cơ bản, duy trì vệ sinh quán.",
-    tags: ["F&B", "Dịch vụ", "Cà phê"],
-    featured: false,
-    applicationCount: 24,
+    salary: 2500000,
+    workingHours: "Linh hoạt, ca tối",
+    startDate: new Date("2024-06-01"),
+    endDate: new Date("2024-12-31"),
+    status: "Đang tuyển",
+    imageUrl: "/placeholder.svg",
   },
   {
-    id: 3,
-    title: "Content Creator",
-    company: "Digital Media Agency",
-    location: "Làm từ xa",
-    campus: "Online",
+    id: "3",
+    title: "Gia sư Tiếng Anh",
     type: "Dự án",
-    schedule: "Tự do",
-    hourlyRate: 100000,
-    skillLevel: "Trung cấp",
-    posted: "3 ngày trước",
     description:
-      "Sáng tạo nội dung cho các nền tảng mạng xã hội, viết bài, chụp ảnh sản phẩm.",
-    tags: ["Marketing", "Sáng tạo", "Social Media"],
-    featured: true,
-    applicationCount: 18,
+      "Tuyển gia sư Tiếng Anh cho học sinh cấp 2, yêu cầu phát âm chuẩn, ngữ pháp vững và có kinh nghiệm giảng dạy.",
+    requirements: ["IELTS 7.0+", "Kinh nghiệm gia sư", "Kiên nhẫn", "Yêu trẻ"],
+    location: "Làm từ xa",
+    salary: 4000000,
+    workingHours: "Theo lịch học sinh",
+    startDate: new Date("2024-04-20"),
+    endDate: new Date("2025-04-20"),
+    status: "Đang tuyển",
+    imageUrl: "/placeholder.svg",
   },
   {
-    id: 4,
-    title: "Gia sư Toán cấp 3",
-    company: "Trung tâm gia sư Tài Năng Trẻ",
-    location: "Quận 7, TP.HCM",
-    campus: "Gần ĐH Tôn Đức Thắng",
-    type: "Bán thời gian",
-    schedule: "Tối 3-5-7",
-    hourlyRate: 120000,
-    skillLevel: "Cao cấp",
-    posted: "5 ngày trước",
-    description:
-      "Dạy kèm Toán cho học sinh lớp 11, chuẩn bị cho kỳ thi đại học.",
-    tags: ["Giáo dục", "Toán học", "Gia sư"],
-    featured: false,
-    applicationCount: 7,
-  },
-  {
-    id: 5,
-    title: "Trợ lý nghiên cứu",
-    company: "Viện Nghiên cứu Khoa học Ứng dụng",
-    location: "Thủ Đức, TP.HCM",
-    campus: "Trong khuôn viên ĐH Bách Khoa",
-    type: "Bán thời gian",
-    schedule: "Sáng T2-T6",
-    hourlyRate: 75000,
-    skillLevel: "Cao cấp",
-    posted: "1 tuần trước",
-    description:
-      "Hỗ trợ các dự án nghiên cứu, thu thập và phân tích dữ liệu, viết báo cáo.",
-    tags: ["Nghiên cứu", "Khoa học", "Học thuật"],
-    featured: false,
-    applicationCount: 5,
-  },
-  {
-    id: 6,
-    title: "Nhân viên bán hàng thời vụ",
-    company: "Uniqlo",
-    location: "Quận 1, TP.HCM",
-    campus: "Gần ĐH Kinh tế",
+    id: "4",
+    title: "Cộng tác viên viết bài",
     type: "Thời vụ",
-    schedule: "Cuối tuần",
-    hourlyRate: 30000,
-    skillLevel: "Sơ cấp",
-    posted: "2 ngày trước",
     description:
-      "Tư vấn khách hàng, sắp xếp hàng hóa, hỗ trợ thanh toán trong dịp lễ hội.",
-    tags: ["Bán lẻ", "Thời trang", "Bán hàng"],
-    featured: false,
-    applicationCount: 30,
+      "Tuyển cộng tác viên viết bài cho website tin tức, ưu tiên sinh viên báo chí, truyền thông, có khả năng viết lách sáng tạo.",
+    requirements: ["Kỹ năng viết tốt", "Nghiên cứu thông tin", "Đúng deadline"],
+    location: "Bình Thạnh, TP.HCM",
+    salary: 2000000,
+    workingHours: "Linh hoạt",
+    startDate: new Date("2024-05-01"),
+    endDate: new Date("2024-08-31"),
+    status: "Đang tuyển",
+    imageUrl: "/placeholder.svg",
   },
   {
-    id: 7,
-    title: "Thiết kế đồ họa",
-    company: "Creative Studio",
-    location: "Quận Bình Thạnh, TP.HCM",
-    campus: "Gần ĐH Văn Lang",
-    type: "Bán thời gian",
-    schedule: "Linh hoạt",
-    hourlyRate: 90000,
-    skillLevel: "Trung cấp",
-    posted: "4 ngày trước",
+    id: "5",
+    title: "Thực tập sinh IT Helpdesk",
+    type: "Thực tập",
     description:
-      "Thiết kế banner, poster, và các ấn phẩm quảng cáo cho các sự kiện và chiến dịch marketing.",
-    tags: ["Thiết kế", "Đồ họa", "Sáng tạo"],
-    featured: true,
-    applicationCount: 15,
+      "Công ty công nghệ cần tuyển thực tập sinh IT Helpdesk, hỗ trợ kỹ thuật cho người dùng nội bộ, cài đặt phần mềm.",
+    requirements: ["Kiến thức IT cơ bản", "Giải quyết vấn đề", "Giao tiếp tốt"],
+    location: "Quận 7, TP.HCM",
+    salary: 2800000,
+    workingHours: "Thứ 2 - Thứ 6, 9h - 18h",
+    startDate: new Date("2024-06-10"),
+    endDate: new Date("2024-12-10"),
+    status: "Đang tuyển",
+    imageUrl: "/placeholder.svg",
   },
   {
-    id: 8,
-    title: "Trợ lý hành chính",
-    company: "Văn phòng Luật sư Công Minh",
-    location: "Quận 3, TP.HCM",
-    campus: "Gần ĐH Luật",
+    id: "6",
+    title: "Nhân viên bán hàng thời trang",
     type: "Bán thời gian",
-    schedule: "Chiều T2-T6",
-    hourlyRate: 45000,
-    skillLevel: "Trung cấp",
-    posted: "1 tuần trước",
     description:
-      "Hỗ trợ công việc văn phòng, sắp xếp lịch hẹn, soạn thảo văn bản, tiếp đón khách hàng.",
-    tags: ["Hành chính", "Văn phòng", "Luật"],
-    featured: false,
-    applicationCount: 9,
+      "Cửa hàng thời trang tuyển nhân viên bán hàng, yêu cầu ngoại hình ưa nhìn, nhiệt tình, có kinh nghiệm bán hàng là một lợi thế.",
+    requirements: ["Yêu thích thời trang", "Giao tiếp tốt", "Nhiệt tình"],
+    location: "Quận 1, TP.HCM",
+    salary: 2200000,
+    workingHours: "Ca xoay",
+    startDate: new Date("2024-05-25"),
+    endDate: new Date("2024-11-25"),
+    status: "Đang tuyển",
+    imageUrl: "/placeholder.svg",
   },
-  {
-    id: 9,
-    title: "Nhân viên chăm sóc cây xanh",
-    company: "Green Garden",
-    location: "Quận 9, TP.HCM",
-    campus: "Gần ĐH Nông Lâm",
-    type: "Bán thời gian",
-    schedule: "Sáng T2-T7",
-    hourlyRate: 35000,
-    skillLevel: "Sơ cấp",
-    posted: "3 ngày trước",
-    description:
-      "Chăm sóc cây cảnh, tưới nước, bón phân và tư vấn khách hàng về cách chăm sóc cây.",
-    tags: ["Môi trường", "Làm vườn", "Tự nhiên"],
-    featured: false,
-    applicationCount: 8,
-  },
-  {
-    id: 10,
-    title: "Trợ lý Marketing",
-    company: "EcoGreen Solutions",
-    location: "Quận 2, TP.HCM",
-    campus: "Gần ĐH Quốc tế",
-    type: "Bán thời gian",
-    schedule: "Chiều T3-T5-T7",
-    hourlyRate: 60000,
-    skillLevel: "Trung cấp",
-    posted: "6 ngày trước",
-    description:
-      "Hỗ trợ chiến dịch marketing cho các sản phẩm thân thiện với môi trường, quản lý mạng xã hội.",
-    tags: ["Marketing", "Môi trường", "Bền vững"],
-    featured: true,
-    applicationCount: 14,
-  },
-  {
-    id: 11,
-    title: "Nhân viên trồng rau hữu cơ",
-    company: "Organic Farm",
-    location: "Hóc Môn, TP.HCM",
-    campus: "Xa trung tâm",
-    type: "Bán thời gian",
-    schedule: "Sáng T2-T4-T6",
-    hourlyRate: 40000,
-    skillLevel: "Sơ cấp",
-    posted: "1 tuần trước",
-    description:
-      "Tham gia vào quá trình trồng và chăm sóc rau hữu cơ, thu hoạch và đóng gói sản phẩm.",
-    tags: ["Nông nghiệp", "Hữu cơ", "Môi trường"],
-    featured: false,
-    applicationCount: 6,
-  },
-  {
-    id: 12,
-    title: "Nhân viên tái chế",
-    company: "RecycleHub",
-    location: "Quận Tân Bình, TP.HCM",
-    campus: "Gần ĐH Công nghiệp",
-    type: "Bán thời gian",
-    schedule: "Linh hoạt",
-    hourlyRate: 30000,
-    skillLevel: "Sơ cấp",
-    posted: "4 ngày trước",
-    description:
-      "Phân loại rác tái chế, hướng dẫn khách hàng về cách phân loại rác, tham gia các chiến dịch nâng cao nhận thức về môi trường.",
-    tags: ["Môi trường", "Tái chế", "Bền vững"],
-    featured: false,
-    applicationCount: 11,
-  },
-];
-
-type Job = {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  campus: string;
-  type: string;
-  schedule: string;
-  hourlyRate: number;
-  skillLevel: string;
-  posted: string;
-  description: string;
-  tags: string[];
-  featured: boolean;
-  applicationCount: number;
-};
+]
 
 export default function JobPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [hourlyRateRange, setHourlyRateRange] = useState<[number, number]>([
-    20000, 150000,
-  ]);
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [selectedCampus, setSelectedCampus] = useState("");
-  const [selectedJobType, setSelectedJobType] = useState("");
-  const [selectedSchedule, setSelectedSchedule] = useState("");
-  const [selectedSkillLevel, setSelectedSkillLevel] = useState("");
-  const [sortOption, setSortOption] = useState("newest");
-  const [activeTab, setActiveTab] = useState("all");
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobsData);
+  const [searchTerm, setSearchTerm] = useState("")
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([1000000, 5000000]) // Adjusted default range for total salary
+  const [selectedLocation, setSelectedLocation] = useState("")
+  const [selectedJobType, setSelectedJobType] = useState("")
+  const [sortOption, setSortOption] = useState("newest")
+  const [activeTab, setActiveTab] = useState("all") // 'all' is the only tab now
+  const [filteredJobs, setFilteredJobs] = useState<JobInterface[]>(jobsData)
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 4;
-  const [paginatedJobs, setPaginatedJobs] = useState<Job[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1)
+  const jobsPerPage = 4
+  const [paginatedJobs, setPaginatedJobs] = useState<JobInterface[]>([])
+  const [totalPages, setTotalPages] = useState(1)
 
   // Apply filters and sorting
   useEffect(() => {
-    let result = jobsData;
-
-    // Filter by tab
-    if (activeTab === "featured") {
-      result = result.filter((job) => job.featured);
-    }
+    let result = jobsData
 
     // Apply search filter
     if (searchTerm) {
       result = result.filter(
         (job) =>
           job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          job.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
           job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job.tags.some((tag) =>
-            tag.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-      );
+          job.requirements.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())),
+      )
     }
 
-    // Apply hourly rate filter
-    result = result.filter(
-      (job) =>
-        job.hourlyRate >= hourlyRateRange[0] &&
-        job.hourlyRate <= hourlyRateRange[1]
-    );
+    // Apply salary filter
+    result = result.filter((job) => job.salary >= salaryRange[0] && job.salary <= salaryRange[1])
 
     // Apply location filter
-    if (selectedLocation) {
-      result = result.filter((job) => job.location.includes(selectedLocation));
-    }
-
-    // Apply campus filter
-    if (selectedCampus) {
-      result = result.filter((job) => job.campus.includes(selectedCampus));
+    if (selectedLocation && selectedLocation !== "all") {
+      result = result.filter((job) => job.location.includes(selectedLocation))
     }
 
     // Apply job type filter
-    if (selectedJobType) {
-      result = result.filter((job) => job.type === selectedJobType);
-    }
-
-    // Apply schedule filter
-    if (selectedSchedule) {
-      result = result.filter((job) => job.schedule.includes(selectedSchedule));
-    }
-
-    // Apply skill level filter
-    if (selectedSkillLevel) {
-      result = result.filter((job) => job.skillLevel === selectedSkillLevel);
+    if (selectedJobType && selectedJobType !== "all") {
+      result = result.filter((job) => job.type === selectedJobType)
     }
 
     // Apply sorting
-    switch (sortOption) {
-      case "newest":
-        // For demo purposes, we'll just use the original order
-        break;
-      case "oldest":
-        result = [...result].reverse();
-        break;
-      case "highestPay":
-        result = [...result].sort((a, b) => b.hourlyRate - a.hourlyRate);
-        break;
-      case "lowestPay":
-        result = [...result].sort((a, b) => a.hourlyRate - b.hourlyRate);
-        break;
-      case "mostPopular":
-        result = [...result].sort(
-          (a, b) => b.applicationCount - a.applicationCount
-        );
-        break;
-    }
+    result.sort((a, b) => {
+      switch (sortOption) {
+        case "newest":
+          return b.startDate.getTime() - a.startDate.getTime()
+        case "oldest":
+          return a.startDate.getTime() - b.startDate.getTime()
+        case "highestPay":
+          return b.salary - a.salary
+        case "lowestPay":
+          return a.salary - b.salary
+        default:
+          return 0
+      }
+    })
 
-    setFilteredJobs(result);
-    setTotalPages(Math.ceil(result.length / jobsPerPage));
-    setCurrentPage(1); // Reset to first page when filters change
-  }, [
-    searchTerm,
-    hourlyRateRange,
-    selectedLocation,
-    selectedCampus,
-    selectedJobType,
-    selectedSchedule,
-    selectedSkillLevel,
-    sortOption,
-    activeTab,
-  ]);
+    setFilteredJobs(result)
+    setTotalPages(Math.ceil(result.length / jobsPerPage))
+    setCurrentPage(1) // Reset to first page when filters change
+  }, [searchTerm, salaryRange, selectedLocation, selectedJobType, sortOption, activeTab])
 
   // Handle pagination
   useEffect(() => {
-    const indexOfLastJob = currentPage * jobsPerPage;
-    const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-    setPaginatedJobs(filteredJobs.slice(indexOfFirstJob, indexOfLastJob));
-  }, [filteredJobs, currentPage]);
+    const indexOfLastJob = currentPage * jobsPerPage
+    const indexOfFirstJob = indexOfLastJob - jobsPerPage
+    setPaginatedJobs(filteredJobs.slice(indexOfFirstJob, indexOfLastJob))
+  }, [filteredJobs, currentPage])
 
-  // Format hourly rate to VND
-  const formatHourlyRate = (rate: string | number | bigint) => {
-    const numericRate = typeof rate === "string" ? Number(rate) : rate;
+  // Format salary to VND
+  const formatSalary = (salary: string | number | bigint) => {
+    const numericSalary = typeof salary === "string" ? Number(salary) : salary
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
       maximumFractionDigits: 0,
-    }).format(numericRate);
-  };
+    }).format(numericSalary)
+  }
 
   // Pagination controls
   const goToPage = (page: number) => {
-    if (page < 1) page = 1;
-    if (page > totalPages) page = totalPages;
-    setCurrentPage(page);
-  };
+    if (page < 1) page = 1
+    if (page > totalPages) page = totalPages
+    setCurrentPage(page)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-800">
@@ -427,24 +230,19 @@ export default function JobPage() {
                 Việc làm cho sinh viên
               </h1>
               <p className="text-green-100 text-lg max-w-xl leading-relaxed">
-                Tìm kiếm công việc bán thời gian phù hợp với lịch học và phát
-                triển kỹ năng của bạn
+                Tìm kiếm công việc bán thời gian phù hợp với lịch học và phát triển kỹ năng của bạn
               </p>
               <div className="mt-4 flex items-center space-x-3">
                 <Badge variant={"secondary"} className="px-3 py-1.5 text-sm">
-                  <Users className="h-3.5 w-3.5 mr-1" /> {jobsData.length} việc
-                  làm
+                  <Users className="h-3.5 w-3.5 mr-1" /> {jobsData.length} việc làm
                 </Badge>
-                <Badge variant={"secondary"} className="px-3 py-1.5 text-sm">
-                  <Sparkles className="h-3.5 w-3.5 mr-1" />{" "}
-                  {jobsData.filter((job) => job.featured).length} việc hot
-                </Badge>
+                {/* Removed "Việc hot" badge as isFeatured is no longer in interface */}
               </div>
             </div>
             <div className="hidden md:block relative z-10">
               <div className="w-64 h-64 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center p-2">
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-green-400 to-emerald-300 dark:from-green-600 dark:to-emerald-500 flex items-center justify-center">
-                  <GraduationCap className="h-24 w-24 text-white" />
+                  {/* Removed GraduationCap icon as it's not directly related to job data */}
                 </div>
               </div>
             </div>
@@ -481,11 +279,7 @@ export default function JobPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button
-            variant={"outline"}
-            className="absolute right-2 top-2 rounded-lg"
-            onClick={() => setSearchTerm("")}
-          >
+          <Button variant={"outline"} className="absolute right-2 top-2 rounded-lg" onClick={() => setSearchTerm("")}>
             Tìm kiếm
           </Button>
         </div>
@@ -501,17 +295,9 @@ export default function JobPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4">
-                <Accordion
-                  type="single"
-                  collapsible
-                  className="w-full"
-                  defaultValue="jobType"
-                >
+                <Accordion type="single" collapsible className="w-full" defaultValue="jobType">
                   {/* Job type filter */}
-                  <AccordionItem
-                    value="jobType"
-                    className="border-b border-green-100 dark:border-gray-700"
-                  >
+                  <AccordionItem value="jobType" className="border-b border-green-100 dark:border-gray-700">
                     <AccordionTrigger className="text-base hover:text-green-600 dark:hover:text-green-400">
                       <div className="flex items-center gap-2">
                         <Briefcase className="h-4 w-4" />
@@ -519,18 +305,13 @@ export default function JobPage() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <Select
-                        value={selectedJobType}
-                        onValueChange={setSelectedJobType}
-                      >
+                      <Select value={selectedJobType} onValueChange={setSelectedJobType}>
                         <SelectTrigger className="border-green-200 focus:ring-green-500">
                           <SelectValue placeholder="Chọn loại công việc" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">Tất cả</SelectItem>
-                          <SelectItem value="Bán thời gian">
-                            Bán thời gian
-                          </SelectItem>
+                          <SelectItem value="Bán thời gian">Bán thời gian</SelectItem>
                           <SelectItem value="Thời vụ">Thời vụ</SelectItem>
                           <SelectItem value="Dự án">Dự án</SelectItem>
                           <SelectItem value="Thực tập">Thực tập</SelectItem>
@@ -540,10 +321,7 @@ export default function JobPage() {
                   </AccordionItem>
 
                   {/* Location filter */}
-                  <AccordionItem
-                    value="location"
-                    className="border-b border-green-100 dark:border-gray-700"
-                  >
+                  <AccordionItem value="location" className="border-b border-green-100 dark:border-gray-700">
                     <AccordionTrigger className="text-base hover:text-green-600 dark:hover:text-green-400">
                       <div className="flex items-center gap-2">
                         <MapPin className="h-4 w-4" />
@@ -551,10 +329,7 @@ export default function JobPage() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <Select
-                        value={selectedLocation}
-                        onValueChange={setSelectedLocation}
-                      >
+                      <Select value={selectedLocation} onValueChange={setSelectedLocation}>
                         <SelectTrigger className="border-green-200 focus:ring-green-500">
                           <SelectValue placeholder="Chọn khu vực" />
                         </SelectTrigger>
@@ -573,147 +348,28 @@ export default function JobPage() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Campus proximity filter */}
-                  <AccordionItem
-                    value="campus"
-                    className="border-b border-green-100 dark:border-gray-700"
-                  >
-                    <AccordionTrigger className="text-base hover:text-green-600 dark:hover:text-green-400">
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="h-4 w-4" />
-                        Gần trường
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <Select
-                        value={selectedCampus}
-                        onValueChange={setSelectedCampus}
-                      >
-                        <SelectTrigger className="border-green-200 focus:ring-green-500">
-                          <SelectValue placeholder="Chọn trường" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Tất cả</SelectItem>
-                          <SelectItem value="ĐH Bách Khoa">
-                            ĐH Bách Khoa
-                          </SelectItem>
-                          <SelectItem value="ĐH Kinh tế">ĐH Kinh tế</SelectItem>
-                          <SelectItem value="ĐH Khoa học Xã hội">
-                            ĐH Khoa học Xã hội
-                          </SelectItem>
-                          <SelectItem value="ĐH Luật">ĐH Luật</SelectItem>
-                          <SelectItem value="ĐH Tôn Đức Thắng">
-                            ĐH Tôn Đức Thắng
-                          </SelectItem>
-                          <SelectItem value="ĐH Văn Lang">
-                            ĐH Văn Lang
-                          </SelectItem>
-                          <SelectItem value="ĐH Nông Lâm">
-                            ĐH Nông Lâm
-                          </SelectItem>
-                          <SelectItem value="ĐH Quốc tế">ĐH Quốc tế</SelectItem>
-                          <SelectItem value="ĐH Công nghiệp">
-                            ĐH Công nghiệp
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  {/* Schedule filter */}
-                  <AccordionItem
-                    value="schedule"
-                    className="border-b border-green-100 dark:border-gray-700"
-                  >
-                    <AccordionTrigger className="text-base hover:text-green-600 dark:hover:text-green-400">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        Lịch làm việc
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <Select
-                        value={selectedSchedule}
-                        onValueChange={setSelectedSchedule}
-                      >
-                        <SelectTrigger className="border-green-200 focus:ring-green-500">
-                          <SelectValue placeholder="Chọn lịch làm việc" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Tất cả</SelectItem>
-                          <SelectItem value="Linh hoạt">Linh hoạt</SelectItem>
-                          <SelectItem value="Cuối tuần">Cuối tuần</SelectItem>
-                          <SelectItem value="Buổi tối">Buổi tối</SelectItem>
-                          <SelectItem value="Buổi sáng">Buổi sáng</SelectItem>
-                          <SelectItem value="Buổi chiều">Buổi chiều</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  {/* Skill level filter */}
-                  <AccordionItem
-                    value="skillLevel"
-                    className="border-b border-green-100 dark:border-gray-700"
-                  >
-                    <AccordionTrigger className="text-base hover:text-green-600 dark:hover:text-green-400">
-                      <div className="flex items-center gap-2">
-                        <BookOpen className="h-4 w-4" />
-                        Trình độ yêu cầu
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <Select
-                        value={selectedSkillLevel}
-                        onValueChange={setSelectedSkillLevel}
-                      >
-                        <SelectTrigger className="border-green-200 focus:ring-green-500">
-                          <SelectValue placeholder="Chọn trình độ" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Tất cả</SelectItem>
-                          <SelectItem value="Sơ cấp">
-                            Sơ cấp (Không cần kinh nghiệm)
-                          </SelectItem>
-                          <SelectItem value="Trung cấp">
-                            Trung cấp (Có kiến thức cơ bản)
-                          </SelectItem>
-                          <SelectItem value="Cao cấp">
-                            Cao cấp (Có kinh nghiệm)
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  {/* Hourly rate filter */}
-                  <AccordionItem value="hourlyRate" className="border-b-0">
+                  {/* Salary range filter */}
+                  <AccordionItem value="salaryRange" className="border-b-0">
                     <AccordionTrigger className="text-base hover:text-green-600 dark:hover:text-green-400">
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4" />
-                        Mức lương theo giờ
+                        Mức lương
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-4">
                         <Slider
-                          defaultValue={[20000, 150000]}
-                          max={200000}
-                          min={20000}
-                          step={5000}
-                          value={hourlyRateRange}
-                          onValueChange={(value) =>
-                            setHourlyRateRange(value as [number, number])
-                          }
+                          defaultValue={[1000000, 5000000]}
+                          max={10000000} // Increased max for total salary
+                          min={500000} // Decreased min for total salary
+                          step={100000}
+                          value={salaryRange}
+                          onValueChange={(value) => setSalaryRange(value as [number, number])}
                           className="py-4"
                         />
                         <div className="flex justify-between text-sm">
-                          <span>
-                            {formatHourlyRate(hourlyRateRange[0])}/giờ
-                          </span>
-                          <span>
-                            {formatHourlyRate(hourlyRateRange[1])}/giờ
-                          </span>
+                          <span>{formatSalary(salaryRange[0])}</span>
+                          <span>{formatSalary(salaryRange[1])}</span>
                         </div>
                       </div>
                     </AccordionContent>
@@ -724,13 +380,11 @@ export default function JobPage() {
                   variant={"outline"}
                   className="w-full mt-4"
                   onClick={() => {
-                    setSearchTerm("");
-                    setHourlyRateRange([20000, 150000]);
-                    setSelectedLocation("");
-                    setSelectedCampus("");
-                    setSelectedJobType("");
-                    setSelectedSchedule("");
-                    setSelectedSkillLevel("");
+                    setSearchTerm("")
+                    setSalaryRange([1000000, 5000000]) // Reset to default range
+                    setSelectedLocation("")
+                    setSelectedJobType("")
+                    setActiveTab("all")
                   }}
                 >
                   Xóa bộ lọc
@@ -750,23 +404,15 @@ export default function JobPage() {
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-start gap-2 bg-white/50 dark:bg-gray-800/50 p-2 rounded-lg shadow-sm">
                     <Award className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>
-                      Tìm kiếm công việc theo từ khóa, kỹ năng hoặc công ty yêu
-                      thích
-                    </span>
+                    <span>Tìm kiếm công việc theo từ khóa, kỹ năng hoặc công ty yêu thích</span>
                   </li>
                   <li className="flex items-start gap-2 bg-white/50 dark:bg-gray-800/50 p-2 rounded-lg shadow-sm">
                     <Award className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>
-                      Sử dụng bộ lọc để thu hẹp kết quả tìm kiếm theo nhu cầu
-                      của bạn
-                    </span>
+                    <span>Sử dụng bộ lọc để thu hẹp kết quả tìm kiếm theo nhu cầu của bạn</span>
                   </li>
                   <li className="flex items-start gap-2 bg-white/50 dark:bg-gray-800/50 p-2 rounded-lg shadow-sm">
                     <Award className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>
-                      Đọc kỹ mô tả công việc và yêu cầu trước khi nộp đơn
-                    </span>
+                    <span>Đọc kỹ mô tả công việc và yêu cầu trước khi nộp đơn</span>
                   </li>
                 </ul>
               </CardContent>
@@ -777,11 +423,7 @@ export default function JobPage() {
           <div className="lg:col-span-3 space-y-6">
             {/* Tabs and sort options */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg border-0 backdrop-blur-sm">
-              <Tabs
-                defaultValue="all"
-                className="w-full sm:w-auto"
-                onValueChange={setActiveTab}
-              >
+              <Tabs defaultValue="all" className="w-full sm:w-auto" onValueChange={setActiveTab}>
                 <TabsList className="bg-green-100 dark:bg-gray-700 shadow-sm">
                   <TabsTrigger
                     value="all"
@@ -789,12 +431,7 @@ export default function JobPage() {
                   >
                     Tất cả
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="featured"
-                    className="border-0 data-[state=active]:bg-green-600 data-[state=active]:text-white dark:data-[state=active]:bg-green-900 dark:data-[state=active]:text-white"
-                  >
-                    Việc hot
-                  </TabsTrigger>
+                  {/* Removed "Việc hot" tab trigger */}
                 </TabsList>
               </Tabs>
 
@@ -809,7 +446,7 @@ export default function JobPage() {
                     <SelectItem value="oldest">Cũ nhất</SelectItem>
                     <SelectItem value="highestPay">Lương cao nhất</SelectItem>
                     <SelectItem value="lowestPay">Lương thấp nhất</SelectItem>
-                    <SelectItem value="mostPopular">Phổ biến nhất</SelectItem>
+                    {/* Removed "Phổ biến nhất" sort option */}
                   </SelectContent>
                 </Select>
               </div>
@@ -831,44 +468,36 @@ export default function JobPage() {
                     <Card
                       key={job.id}
                       className={`hover:shadow-xl transition-all duration-300 border-0 group ${
-                        job.featured
+                        job.status === "Đang tuyển" // Using status as a simple indicator for styling
                           ? "bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/40 dark:to-emerald-900/40 shadow-lg"
                           : "bg-white dark:bg-gray-800 shadow-md"
                       }`}
                     >
-                      {job.featured && (
+                      {job.status === "Đang tuyển" && ( // Using status as a simple indicator for badge
                         <div className="relative top-0 right-0 p-2">
                           <Badge className="bg-gradient-to-r from-amber-500 to-green-500 text-white border-0 rounded-tl-none rounded-br-none">
-                            <Sparkles className="h-3 w-3 mr-1" /> Hot
+                            Hot
                           </Badge>
                         </div>
                       )}
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-start">
                           <div>
-                            {job.featured ? (
-                              <ColourfulText text={job.title} size="24px"/>
-                            ) : (
-                              <CardTitle className="text-xl text-green-800 dark:text-green-300 group-hover:text-green-600 transition-colors">
-                                {job.title}
-                              </CardTitle>
-                            )}
-                            <p className="text-gray-600 dark:text-gray-400 font-medium">
-                              {job.company}
-                            </p>
+                            <CardTitle className="text-xl text-green-800 dark:text-green-300 group-hover:text-green-600 transition-colors">
+                              {job.title}
+                            </CardTitle>
+                            <p className="text-gray-600 dark:text-gray-400 font-medium">{job.status}</p>
                           </div>
                           <Badge
                             variant="outline"
                             className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 border-0"
                           >
-                            {job.posted}
+                            {job.startDate.toLocaleDateString()} - {job.endDate.toLocaleDateString()}
                           </Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="pb-2">
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                          {job.description}
-                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{job.description}</p>
 
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-y-2 mb-4">
                           <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
@@ -876,37 +505,27 @@ export default function JobPage() {
                             <span>{job.location}</span>
                           </div>
                           <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                            <GraduationCap className="h-3.5 w-3.5 text-green-500" />
-                            <span>{job.campus}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
                             <Briefcase className="h-3.5 w-3.5 text-green-500" />
                             <span>{job.type}</span>
                           </div>
                           <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                            <Calendar className="h-3.5 w-3.5 text-green-500" />
-                            <span>{job.schedule}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
                             <Clock className="h-3.5 w-3.5 text-green-500" />
-                            <span className="font-medium text-green-600 dark:text-green-400">
-                              {formatHourlyRate(job.hourlyRate)}/giờ
-                            </span>
+                            <span className="font-medium text-green-600 dark:text-green-400">{job.workingHours}</span>
                           </div>
                           <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
                             <BookOpen className="h-3.5 w-3.5 text-green-500" />
-                            <span>{job.skillLevel}</span>
+                            <span>{formatSalary(job.salary)}</span>
                           </div>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                          {job.tags.map((tag, index) => (
+                          {job.requirements.map((requirement, index) => (
                             <Badge
                               key={index}
                               variant="secondary"
                               className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 hover:bg-green-200"
                             >
-                              {tag}
+                              {requirement}
                             </Badge>
                           ))}
                         </div>
@@ -914,14 +533,11 @@ export default function JobPage() {
                       <CardFooter className="flex justify-between items-center">
                         <div className="text-sm text-gray-500 dark:text-gray-400">
                           <span className="font-medium text-green-600 dark:text-green-400">
-                            {job.applicationCount}
+                            {/* Removed applicantsCount */}
                           </span>{" "}
-                          sinh viên đã ứng tuyển
+                          {/* Removed "sinh viên đã ứng tuyển" text */}
                         </div>
-                        <Button
-                          variant={"default"}
-                          className=" group-hover:scale-105 transition-transform"
-                        >
+                        <Button variant={"default"} className=" group-hover:scale-105 transition-transform">
                           Ứng tuyển ngay
                         </Button>
                       </CardFooter>
@@ -954,15 +570,10 @@ export default function JobPage() {
 
                       {/* Page numbers */}
                       <div className="flex items-center space-x-1">
-                        {Array.from(
-                          { length: totalPages },
-                          (_, i) => i + 1
-                        ).map((page) => (
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                           <Button
                             key={page}
-                            variant={
-                              currentPage === page ? "default" : "outline"
-                            }
+                            variant={currentPage === page ? "default" : "outline"}
                             size="icon"
                             onClick={() => goToPage(page)}
                             className={`h-8 w-8 ${
@@ -1007,21 +618,17 @@ export default function JobPage() {
                   Không tìm thấy công việc phù hợp
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-4">
-                  Vui lòng thử lại với các bộ lọc khác hoặc mở rộng tiêu chí tìm
-                  kiếm
+                  Vui lòng thử lại với các bộ lọc khác hoặc mở rộng tiêu chí tìm kiếm
                 </p>
                 <Button
                   variant="outline"
                   className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/30"
                   onClick={() => {
-                    setSearchTerm("");
-                    setHourlyRateRange([20000, 150000]);
-                    setSelectedLocation("");
-                    setSelectedCampus("");
-                    setSelectedJobType("");
-                    setSelectedSchedule("");
-                    setSelectedSkillLevel("");
-                    setActiveTab("all");
+                    setSearchTerm("")
+                    setSalaryRange([1000000, 5000000])
+                    setSelectedLocation("")
+                    setSelectedJobType("")
+                    setActiveTab("all")
                   }}
                 >
                   Xóa tất cả bộ lọc
@@ -1042,8 +649,7 @@ export default function JobPage() {
                 Việc làm cho sinh viên
               </h2>
               <p className="text-green-200 mt-2">
-                Kết nối sinh viên với công việc bán thời gian thân thiện với môi
-                trường
+                Kết nối sinh viên với công việc bán thời gian thân thiện với môi trường
               </p>
             </div>
             <div className="flex space-x-4">
@@ -1080,5 +686,5 @@ export default function JobPage() {
         }
       `}</style>
     </div>
-  );
+  )
 }

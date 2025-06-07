@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  env: {
+    API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:7042",
+  },
 };
 
 export default nextConfig;
