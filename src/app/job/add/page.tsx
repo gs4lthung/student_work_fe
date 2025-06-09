@@ -1,173 +1,405 @@
-import type React from "react";
-import { Check, Circle, Hexagon, Square, Triangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+"use client";
+
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { JobValidationSchema } from "@/const/validation/job-validation";
+import {
+  JobInterface,
+  JobSubcriptionInterface,
+} from "@/interfaces/job-interface";
+import { Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { useBeforeUnload } from "@/hooks/use-before-unload";
+import { useDraftJobPostStore } from "@/stores/job-store";
+import { PersistStoreBridge } from "@/bridges/bridge-persist-store";
 
-const services = [
-  {
-    label: "Cơ bản",
-    value: "standard",
-    icon: <Circle className="h-8 w-8 text-blue-500 dark:text-blue-400" />,
-    iconBg: "bg-blue-100 dark:bg-blue-950",
-    accentColor: "text-blue-600 dark:text-blue-400",
-    price: "600.000đ",
-    tagline: "Dành cho nhà tuyển dụng cá nhân",
-    descriptions: [
-      "Hiển thị tin tuyển dụng 14 ngày.",
-      "Tiếp cận tối đa 100 hồ sơ ứng viên.",
-      "Được làm mới 3 lần/tuần.",
-    ],
-    buttonClass:
-      "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-500",
-  },
-  {
-    label: "Nâng cao",
-    value: "premium",
-    icon: <Triangle className="h-8 w-8 text-green-500 dark:text-green-400" />,
-    iconBg: "bg-green-100 dark:bg-green-950",
-    accentColor: "text-green-600 dark:text-green-400",
-    price: "1.000.000đ",
-    popular: true,
-    tagline: "Lựa chọn phổ biến nhất",
-    descriptions: [
-      "Hiển thị 30 ngày, tin được ưu tiên trên danh sách.",
-      "Tiếp cận không giới hạn hồ sơ. ",
-      "Được làm mới mỗi ngày.",
-      "Nhận báo cáo hiệu suất tin tuyển dụng.",
-    ],
-    buttonClass:
-      "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-600 dark:to-green-500",
-    ribbonClass: "bg-green-600 dark:bg-green-500",
-  },
-  {
-    label: "Nổi bật",
-    value: "featured",
-    icon: <Square className="h-8 w-8 text-purple-500 dark:text-purple-400" />,
-    iconBg: "bg-purple-100 dark:bg-purple-950",
-    accentColor: "text-purple-600 dark:text-purple-400",
-    price: "2.000.000đ",
-    tagline: "Dành cho doanh nghiệp vừa",
-    descriptions: [
-      'Hiển thị trên mục "Việc làm nổi bật".',
-      "Làm mới mỗi giờ.",
-      "Được làm mới mỗi ngày.",
-      "Nhận hỗ trợ cá nhân từ đội ngũ tuyển dụng.",
-    ],
-    buttonClass:
-      "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 dark:from-purple-600 dark:to-purple-500",
-  },
-  {
-    label: "Doanh nghiệp",
-    value: "kimcuong",
-    icon: <Hexagon className="h-8 w-8 text-cyan-500 dark:text-cyan-400" />,
-    iconBg: "bg-cyan-100 dark:bg-cyan-950",
-    accentColor: "text-cyan-600 dark:text-cyan-400",
-    price: "3.500.000đ",
-    tagline: "Giải pháp toàn diện",
-    descriptions: [
-      "Quản lý tuyển dụng toàn diện.",
-      "Đăng không giới hạn số lượng tin tuyển dụng.",
-      "Hỗ trợ phân tích dữ liệu tuyển dụng.",
-      "Dịch vụ tìm kiếm ứng viên cao cấp (headhunting).",
-    ],
-    buttonClass:
-      "bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 dark:from-cyan-600 dark:to-cyan-500",
-  },
-];
+export default function JobAddPage() {
+  const { data, setData } = useDraftJobPostStore();
 
-type Service = {
-  label: string;
-  value: string;
-  icon: React.ReactNode;
-  iconBg: string;
-  accentColor: string;
-  price: string;
-  popular?: boolean;
-  tagline: string;
-  descriptions: string[];
-  buttonClass: string;
-  ribbonClass?: string;
-};
+  const jobSubscriptions: JobSubcriptionInterface[] = [
+    {
+      id: "1",
+      name: "Basic",
+      price: 1000000,
+      duration: 30,
+      descriptions: "HHHa.wwfs.sdsdj",
+    },
+    {
+      id: "2",
+      name: "Standard",
+      price: 2000000,
+      duration: 60,
+      descriptions: "adsd.sdsdsd.sdsdsd",
+    },
+    {
+      id: "3",
+      name: "Premium",
+      price: 3000000,
+      duration: 90,
+      descriptions: "asdnadn.asdsad.asdasd",
+    },
+  ];
+  const [initialValues, setInitialValues] = useState<JobInterface>({
+    employerId: "",
+    subscriptionId: "",
+    title: "",
+    category: "",
+    description: "",
+    requirements: [],
+    location: "",
+    salary: 0,
+    workingHours: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    status: "Active",
+    imageUrl: "",
+  });
 
-const ServiceCard = ({ service }: { service: Service }) => {
+  useEffect(() => {
+    setInitialValues({
+      employerId: "",
+      subscriptionId: data?.subscriptionId || "",
+      title: data?.title || "",
+      category: data?.category || "",
+      description: data?.description || "",
+      requirements: data?.requirements || [],
+      location: data?.location || "",
+      salary: data?.salary || 0,
+      workingHours: data?.workingHours || "",
+      startDate: data?.startDate ? new Date(data.startDate) : new Date(),
+      endDate: data?.endDate ? new Date(data.endDate) : new Date(),
+      status: "Active",
+      imageUrl: data?.imageUrl || "",
+    });
+  }, [data]);
+
+  useBeforeUnload((event) => {
+    if (
+      Object.values(initialValues).some(
+        (value) => value !== "" && value !== 0 && value !== new Date()
+      )
+    ) {
+      event.preventDefault();
+      return "Bạn có chắc chắn muốn rời khỏi trang này? Thông tin sẽ không được lưu.";
+    }
+  }, true);
+
   return (
-    <Card
-      className={cn(
-        "relative h-full flex flex-col overflow-hidden transition-all duration-300",
-        service.popular
-          ? "shadow-lg dark:shadow-[0_0_20px_rgba(16,185,129,0.2)] border-green-500 dark:border-green-500"
-          : "hover:shadow-md border-gray-200 dark:border-gray-800"
-      )}
+    <Formik
+      initialValues={initialValues}
+      enableReinitialize={true}
+      validationSchema={JobValidationSchema}
+      onSubmit={() => {}}
     >
-         {service.popular && (
-        <div className="absolute -right-12 top-6 rotate-45 bg-green-500 text-white py-1 w-40 text-center text-sm font-semibold shadow-md z-10">
-          Phổ biến
-        </div>
-      )}
-      <CardHeader className="pt-2 text-center">
-        <div className="flex justify-center mb-4">
-          <div
-            className={cn(
-              "rounded-full p-3 flex items-center justify-center",
-              service.iconBg
-            )}
-          >
-            {service.icon}
-          </div>
-        </div>
-        <h3 className={cn("text-lg font-bold mb-1", service.accentColor)}>
-          {service.label}
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          {service.tagline}
-        </p>
-        <div className="text-3xl font-bold">{service.price}</div>
-      </CardHeader>
-      <CardContent className="flex-1 pt-6">
-        <ul className="space-y-4">
-          {service.descriptions.map((desc: string, index: number) => (
-            <li key={index} className="flex items-start gap-3">
-              <Check
-                className={cn(
-                  "h-5 w-5 mt-0.5 flex-shrink-0",
-                  service.accentColor
-                )}
-              />
-              <span>{desc}</span>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-      <CardFooter className="pt-2 pb-2">
-        <Button
-          className={cn(
-            "w-full py-6 font-medium text-white transition-all duration-300 hover:shadow-lg hover:opacity-90",
-            service.buttonClass
-          )}
-        >
-          Chọn dịch vụ
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-};
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        handleReset,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+      }) => {
+        return (
+          <>
+            <PersistStoreBridge values={values} saveDraft={setData} />
+            <div className="flex justify-center  min-h-screen bg-gray-100 dark:bg-gray-950 p-4">
+              <Card className="w-full max-w-2xl">
+                <CardHeader>
+                  <CardTitle className="text-3xl">
+                    Đăng bài tuyển dụng
+                  </CardTitle>
+                  <CardDescription>
+                    Hãy điền đầy đủ thông tin để đăng bài tuyển dụng của bạn.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Form onSubmit={handleSubmit} className="grid gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="title">Tiêu đề</Label>
+                        <Input
+                          id="title"
+                          name="title"
+                          type="text"
+                          placeholder="Nhập tiêu đề công việc"
+                          value={values.title}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`${
+                            errors.title && touched.title
+                              ? "border-red-500"
+                              : ""
+                          }`}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="category">Loại công việc</Label>
+                        <Input
+                          id="category"
+                          name="category"
+                          type="text"
+                          placeholder="Nhập loại công việc"
+                          value={values.category}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`${
+                            errors.category && touched.category
+                              ? "border-red-500"
+                              : ""
+                          }`}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="subscriptionId">Gói đăng ký</Label>
+                      <select
+                        id="subscriptionId"
+                        name="subscriptionId"
+                        value={values.subscriptionId}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`${
+                          errors.subscriptionId && touched.subscriptionId
+                            ? "border-red-500"
+                            : ""
+                        } block w-full p-2 border rounded-md`}
+                      >
+                        <option value="">Chọn gói đăng ký</option>
+                        {jobSubscriptions.map((sub) => (
+                          <option key={sub.id} value={sub.id}>
+                            {sub.name} -{" "}
+                            {sub.price.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
+                          </option>
+                        ))}
+                      </select>
+                      {values.subscriptionId && (
+                        <ul className="mt-2 text-sm text-gray-600">
+                          {jobSubscriptions
+                            .find((sub) => sub.id === values.subscriptionId)
+                            ?.descriptions.split(".")
+                            .map((desc, index) => (
+                              <li key={index}>{desc.trim()}</li>
+                            ))}
+                        </ul>
+                      )}
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="description">Mô tả công việc</Label>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        placeholder="Nhập mô tả công việc"
+                        value={values.description}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`${
+                          errors.description && touched.description
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="requirements">Yêu cầu công việc</Label>
+                      <Textarea
+                        id="requirements"
+                        name="requirements"
+                        placeholder="Nhập yêu cầu công việc (nhập từng yêu cầu cách nhau bằng dấu phẩy)"
+                        value={values.requirements.join(", ")}
+                        onChange={(e) => {
+                          const requirements = e.target.value.split(", ");
+                          handleChange({
+                            target: {
+                              name: "requirements",
+                              value: requirements,
+                            },
+                          });
+                        }}
+                        onBlur={handleBlur}
+                        className={`${
+                          errors.requirements && touched.requirements
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="location">Địa điểm</Label>
+                        <Input
+                          id="location"
+                          name="location"
+                          type="text"
+                          placeholder="Nhập địa điểm làm việc"
+                          value={values.location}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`${
+                            errors.location && touched.location
+                              ? "border-red-500"
+                              : ""
+                          }`}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="workingHours">Giờ làm việc</Label>
+                        <Input
+                          id="workingHours"
+                          name="workingHours"
+                          type="text"
+                          placeholder="Nhập giờ làm việc (ví dụ: 9:00 - 17:00)"
+                          value={values.workingHours}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`${
+                            errors.workingHours && touched.workingHours
+                              ? "border-red-500"
+                              : ""
+                          }`}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid gap-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="salary">Mức lương</Label>
+                        <span className="text-sm text-gray-500">
+                          {values.salary.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </span>
+                      </div>
+                      <Slider
+                        id="salary"
+                        name="salary"
+                        min={0}
+                        max={100000000}
+                        step={100000}
+                        value={[values.salary]}
+                        onValueChange={(value) => {
+                          handleChange({
+                            target: { name: "salary", value: value[0] },
+                          });
+                        }}
+                        className={`${
+                          errors.salary && touched.salary
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="startDate">Ngày bắt đầu</Label>
+                        <Input
+                          id="startDate"
+                          name="startDate"
+                          type="date"
+                          value={
+                            values.startDate instanceof Date
+                              ? values.startDate.toISOString().split("T")[0]
+                              : new Date(values.startDate)
+                                  .toISOString()
+                                  .split("T")[0]
+                          }
+                          onChange={(e) => {
+                            const date = new Date(e.target.value);
+                            handleChange({
+                              target: { name: "startDate", value: date },
+                            });
+                          }}
+                          onBlur={handleBlur}
+                          className={`${
+                            errors.startDate && touched.startDate
+                              ? "border-red-500"
+                              : ""
+                          }`}
+                        />
+                      </div>
 
-export default function AddNewJobPage() {
-  return (
-    <div className="bg-gray-50 dark:bg-[#0A0F1C] text-gray-900 dark:text-white py-16 px-4 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => (
-            <ServiceCard key={index} service={service} />
-          ))}
-        </div>
-      </div>
-    </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="endDate">Ngày kết thúc</Label>
+                        <Input
+                          id="endDate"
+                          name="endDate"
+                          type="date"
+                          value={
+                            values.endDate instanceof Date
+                              ? values.endDate.toISOString().split("T")[0]
+                              : new Date(values.endDate)
+                                  .toISOString()
+                                  .split("T")[0]
+                          }
+                          onChange={(e) => {
+                            const date = new Date(e.target.value);
+                            handleChange({
+                              target: { name: "endDate", value: date },
+                            });
+                          }}
+                          onBlur={handleBlur}
+                          className={`${
+                            errors.endDate && touched.endDate
+                              ? "border-red-500"
+                              : ""
+                          }`}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="imageUrl">Ảnh</Label>
+                      <Input
+                        id="imageUrl"
+                        name="imageUrl"
+                        type="text"
+                        placeholder="Nhập URL ảnh của công việc"
+                        value={values.imageUrl}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`${
+                          errors.imageUrl && touched.imageUrl
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                  </Form>
+                </CardContent>
+                <CardFooter className="flex justify-end gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      handleReset();
+                    }}
+                    disabled={isSubmitting}
+                  >
+                    Làm mới
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    Đăng bài tuyển dụng
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          </>
+        );
+      }}
+    </Formik>
   );
 }

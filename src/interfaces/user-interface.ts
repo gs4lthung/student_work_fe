@@ -1,5 +1,5 @@
 export interface UserInterface {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   userName: string;
@@ -8,11 +8,9 @@ export interface UserInterface {
   phoneNumber: string;
   password: string;
   role: "Student" | "Employer";
-  rating: number;
+  rating?: number;
   avatarUrl?: string;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  isActive?: boolean;
 }
 
 export interface StudentInterface extends Omit<UserInterface, "role"> {

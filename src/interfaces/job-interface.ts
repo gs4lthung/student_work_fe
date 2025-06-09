@@ -1,11 +1,9 @@
-import { EmployerInterface } from "./user-interface";
-
 export interface JobInterface {
-  id: string;
-  employer?: EmployerInterface;
-  subscription?: JobSubcriptionInterface;
+  id?: string;
+  employerId?: string;
+  subscriptionId?: string;
   title: string;
-  type: string;
+  category: string;
   description: string;
   requirements: string[];
   location: string;
@@ -13,7 +11,7 @@ export interface JobInterface {
   workingHours: string;
   startDate: Date;
   endDate: Date;
-  status: string;
+  status: "Active" | "Inactive";
   imageUrl?: string;
 }
 
@@ -23,7 +21,5 @@ export interface JobSubcriptionInterface {
   descriptions: string;
   price: number;
   duration: number;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  isActive?: boolean;
 }
