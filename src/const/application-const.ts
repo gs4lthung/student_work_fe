@@ -1,0 +1,56 @@
+import { ApplicationInterface } from "@/interfaces/application-interface";
+
+export const applicationConst = {
+  data: [
+    {
+      id: "1",
+      studentId: "student-123",
+      jobId: "1",
+      resumeId: "1",
+      coverLetter: "I am very interested in this position. I have the skills and experience required. Here is my resume.",
+      status: "Pending",
+      appliedAt: new Date("2023-10-01T10:00:00Z"),
+      updatedAt: new Date("2023-10-02T12:00:00Z"),
+    },
+    {
+      id: "2",
+      studentId: "student-456",
+      jobId: "1",
+      resumeId: "2",
+      coverLetter: "I believe I am a great fit for this role.",
+      status: "Pending",
+      appliedAt: new Date("2023-10-03T11:00:00Z"),
+      updatedAt: new Date("2023-10-04T13:00:00Z"),
+    },
+    {
+      id: "3",
+      studentId: "student-789",
+      jobId: "2",
+      resumeId: "3",
+      coverLetter: "I am excited to apply for this position.",
+      status: "Accepted",
+      appliedAt: new Date("2023-10-05T14:00:00Z"),
+      updatedAt: new Date("2023-10-06T15:00:00Z"),
+    },
+    {
+      id: "4",
+      studentId: "student-101",
+      jobId: "2",
+      resumeId: "4",
+      coverLetter: "I am eager to contribute to your team.",
+      status: "Rejected",
+      appliedAt: new Date("2023-10-07T16:00:00Z"),
+      updatedAt: new Date("2023-10-08T17:00:00Z"),
+    },
+    {
+      id: "5",
+      studentId: "student-102",
+      jobId: "3",
+      resumeId: "5",
+      coverLetter: "I am passionate about this field.",
+      status: "Pending",
+      appliedAt: new Date("2023-10-09T18:00:00Z"),
+      updatedAt: new Date("2023-10-10T19:00:00Z"),
+    },
+  ] as ApplicationInterface[],
+};

@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -34,16 +35,19 @@ import {
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
+import { ChevronDown, ChevronRight, Eye } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import ApplicationTable from "./application-table";
 
 export default function JobTable({
   jobs,
@@ -61,287 +65,323 @@ export default function JobTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [expanded, setExpanded] = useState({});
 
-  const columns: ColumnDef<JobInterface>[] = [
-    {
-      accessorKey: "title",
+  const columns: ColumnDef<JobInterface>[] = useMemo(
+    () => [
+      {
+        id: "expander",
+        header: () => null,
+        cell: ({ row }) => (
+          <Button
+            variant="ghost"
+            onClick={() => row.toggleExpanded()}
+            disabled={!row.getCanExpand()}
+          >
+            {row.getIsExpanded() ? <ChevronDown /> : <ChevronRight />}
+          </Button>
+        ),
+        enableSorting: false,
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "title",
 
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Tiêu đề
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="font-semibold">{row.getValue("title")}</div>
-      ),
-    },
-    {
-      accessorKey: "category",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Danh mục
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue("category")}</div>,
-    },
-    {
-      accessorKey: "description",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Mô tả
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <Tooltip>
-          <TooltipTrigger>
-            {(row.getValue("description") as string).length > 30
-              ? (row.getValue("description") as string).slice(0, 30) + "..."
-              : (row.getValue("description") as string)}
-          </TooltipTrigger>
-          <TooltipContent>{row.getValue("description")}</TooltipContent>
-        </Tooltip>
-      ),
-    },
-    {
-      accessorKey: "salary",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Mức lương
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div>
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(row.getValue("salary"))}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "workingHours",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Giờ làm việc
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue("workingHours")}</div>,
-    },
-    {
-      accessorKey: "startDate",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Ngày bắt đầu
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div>
-          {new Intl.DateTimeFormat("vi-VN", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          }).format(new Date(row.getValue("startDate")))}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Trạng thái
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <Badge
-          className={cn(
-            row.getValue("status") === "Active"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800",
-            "text-center",
-            "w-fit",
-            "px-2",
-            "py-1",
-            "rounded-full"
-          )}
-        >
-          {row.getValue("status") === "Active" ? (
-            <span className="text-green-600">Hoạt động</span>
-          ) : (
-            <span className="text-red-600">Đã dừng</span>
-          )}
-        </Badge>
-      ),
-    },
-    {
-      accessorKey: "view",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant={"ghost"}
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Xem
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant={"ghost"}>
-              <Eye />
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Tiêu đề
             </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Chi tiết công việc</DialogTitle>
-              <DialogDescription>
-                Xem chi tiết công việc {row.getValue("title")}.
-              </DialogDescription>
-            </DialogHeader>
-            <Tabs defaultValue="description">
-              <TabsList>
-                <TabsTrigger value="description">Mô tả chi tiết</TabsTrigger>
-                <TabsTrigger value="applications">
-                  Danh sách ứng viên
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="description">
-                <div className="mt-4">
-                  <div className="flex items-center gap-4 mb-4">
-                    <p className="mb-2t text-3xl">{row.getValue("title")}</p>
-                    <Badge
-                      className={cn(
-                        row.getValue("status") === "Active"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800",
-                        "text-center",
-                        "w-fit",
-                        "px-2",
-                        "py-1",
-                        "rounded-full"
-                      )}
-                    >
-                      {row.getValue("status") === "Active" ? (
-                        <span className="text-green-600">Hoạt động</span>
-                      ) : (
-                        <span className="text-red-600">Đã dừng</span>
-                      )}
-                    </Badge>
-                  </div>
-                  <p className="text-gray-600 mb-4">
-                    {row.getValue("description")}
-                  </p>
-                  <div className="flex flex-col gap-2">
-                    <span>
-                      <strong>Gói dịch vụ: </strong>
-                      {jobSubscriptions.find(
-                        (sub) => sub.id === row.original.subscriptionId
-                      )?.name || "Không có gói dịch vụ"}
-                    </span>
-                    <span>
-                      <strong>Danh mục:</strong> {row.getValue("category")}
-                    </span>
-                    <span>
-                      <strong>Mức lương:</strong>{" "}
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(row.getValue("salary"))}
-                    </span>
-                    <span>
-                      <strong>Giờ làm việc:</strong>{" "}
-                      {row.getValue("workingHours")}
-                    </span>
-                    <span>
-                      <strong>Địa điểm:</strong> {row.original.location}
-                    </span>
-                    <span>
-                      <strong>Ngày bắt đầu:</strong>{" "}
-                      {new Intl.DateTimeFormat("vi-VN", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      }).format(new Date(row.getValue("startDate")))}
-                    </span>
-                    <span>
-                      <strong>Yêu cầu:</strong>{" "}
-                      {row.original.requirements.join(", ")}
-                    </span>
-                    <span>
-                      <strong>Ngày tạo: </strong>
-                      {row.original.createdAt?.toLocaleDateString("vi-VN", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })}{" "}
-                    </span>
-                    <span>
-                      <strong>Cập nhật lần cuối: </strong>
-                      {row.original.updatedAt?.toLocaleDateString("vi-VN", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })}{" "}
-                    </span>
-                    {row.original.imageUrl && (
-                      <Image
-                        src={row.original.imageUrl}
-                        alt={row.getValue("title")}
-                        width={200}
-                        height={200}
-                        className="rounded-lg mt-4"
-                      />
+          );
+        },
+        cell: ({ row }) => (
+          <div className="font-semibold">{row.getValue("title")}</div>
+        ),
+      },
+      {
+        accessorKey: "category",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Danh mục
+            </Button>
+          );
+        },
+        cell: ({ row }) => <div>{row.getValue("category")}</div>,
+      },
+      {
+        accessorKey: "description",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Mô tả
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <Tooltip>
+            <TooltipTrigger>
+              {(row.getValue("description") as string).length > 30
+                ? (row.getValue("description") as string).slice(0, 30) + "..."
+                : (row.getValue("description") as string)}
+            </TooltipTrigger>
+            <TooltipContent>{row.getValue("description")}</TooltipContent>
+          </Tooltip>
+        ),
+      },
+      {
+        accessorKey: "salary",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Mức lương
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <div>
+            {new Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }).format(row.getValue("salary"))}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "workingHours",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Giờ làm việc
+            </Button>
+          );
+        },
+        cell: ({ row }) => <div>{row.getValue("workingHours")}</div>,
+      },
+      {
+        accessorKey: "startDate",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Ngày bắt đầu
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <div>
+            {new Intl.DateTimeFormat("vi-VN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }).format(new Date(row.getValue("startDate")))}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Trạng thái
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <Badge
+            className={cn(
+              row.getValue("status") === "Active"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800",
+              "text-center",
+              "w-fit",
+              "px-2",
+              "py-1",
+              "rounded-full"
+            )}
+          >
+            {row.getValue("status") === "Active" ? (
+              <span className="text-green-600">Hoạt động</span>
+            ) : (
+              <span className="text-red-600">Đã dừng</span>
+            )}
+          </Badge>
+        ),
+      },
+      {
+        accessorKey: "view",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant={"ghost"}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Xem
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant={"ghost"}>
+                <Eye />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-4xl">
+              <DialogHeader>
+                <DialogTitle>Chi tiết công việc</DialogTitle>
+                <DialogDescription>
+                  Xem chi tiết công việc {row.getValue("title")}.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="mt-4">
+                <div className="flex items-center gap-4 mb-4">
+                  <p className="mb-2t text-3xl">{row.getValue("title")}</p>
+                  <Badge
+                    className={cn(
+                      row.getValue("status") === "Active"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800",
+                      "text-center",
+                      "w-fit",
+                      "px-2",
+                      "py-1",
+                      "rounded-full"
                     )}
-                  </div>
+                  >
+                    {row.getValue("status") === "Active" ? (
+                      <span className="text-green-600">Hoạt động</span>
+                    ) : (
+                      <span className="text-red-600">Đã dừng</span>
+                    )}
+                  </Badge>
                 </div>
-              </TabsContent>
-            </Tabs>
-          </DialogContent>
-        </Dialog>
-      ),
-    },
-  ];
+                <p className="text-gray-600 mb-4">
+                  {row.getValue("description")}
+                </p>
+                <div className="flex flex-col gap-2">
+                  <span>
+                    <strong>Gói dịch vụ: </strong>
+                    {jobSubscriptions.find(
+                      (sub) => sub.id === row.original.subscriptionId
+                    )?.name || "Không có gói dịch vụ"}
+                  </span>
+                  <span>
+                    <strong>Danh mục:</strong> {row.getValue("category")}
+                  </span>
+                  <span>
+                    <strong>Mức lương:</strong>{" "}
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(row.getValue("salary"))}
+                  </span>
+                  <span>
+                    <strong>Giờ làm việc:</strong>{" "}
+                    {row.getValue("workingHours")}
+                  </span>
+                  <span>
+                    <strong>Địa điểm:</strong> {row.original.location}
+                  </span>
+                  <span>
+                    <strong>Ngày bắt đầu:</strong>{" "}
+                    {new Intl.DateTimeFormat("vi-VN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    }).format(new Date(row.getValue("startDate")))}
+                  </span>
+                  <span>
+                    <strong>Yêu cầu:</strong>{" "}
+                    {row.original.requirements.join(", ")}
+                  </span>
+                  <span>
+                    <strong>Ngày tạo: </strong>
+                    {row.original.createdAt?.toLocaleDateString("vi-VN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}{" "}
+                  </span>
+                  <span>
+                    <strong>Cập nhật lần cuối: </strong>
+                    {row.original.updatedAt?.toLocaleDateString("vi-VN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}{" "}
+                  </span>
+                  {row.original.imageUrl && (
+                    <Image
+                      src={row.original.imageUrl}
+                      alt={row.getValue("title")}
+                      width={200}
+                      height={200}
+                      className="rounded-lg mt-4"
+                    />
+                  )}
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        ),
+      },
+    ],
+    []
+  );
+
+  const renderSubRow = ({ row }: { row: Row<JobInterface> }) => {
+    return (
+      <tr>
+        <td colSpan={columns.length} className="p-4 bg-gray-50">
+          <ApplicationTable jobId={row.original.id ?? ""} />
+        </td>
+      </tr>
+    );
+  };
 
   const table = useReactTable({
     data: jobs,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -349,13 +389,16 @@ export default function JobTable({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
+    getExpandedRowModel: getExpandedRowModel(),
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
       pagination,
+      expanded,
     },
+    getRowCanExpand: (row) => row.original.status === "Active",
   });
   return (
     <div className="flex flex-col gap-4">
@@ -388,7 +431,7 @@ export default function JobTable({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead
-                    key={header.id}
+                    key={`job-${header.id}`}
                     className="font-semibold text-center align-middle"
                   >
                     {header.isPlaceholder
@@ -405,19 +448,22 @@ export default function JobTable({
           <TableBody>
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() ? "selected" : ""}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <React.Fragment key={row.id}>
+                  <TableRow
+                    key={`job-${row.id}`}
+                    data-state={row.getIsSelected() ? "selected" : ""}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="text-center">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {row.getIsExpanded() && renderSubRow({ row })}
+                </React.Fragment>
               ))
             ) : (
               <TableRow>
