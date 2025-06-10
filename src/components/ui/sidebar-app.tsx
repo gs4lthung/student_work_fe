@@ -1,12 +1,10 @@
 import {
-  Box,
   FileUser,
   Home,
   LayoutDashboard,
   Newspaper,
   Settings,
   User,
-  Users,
 } from "lucide-react";
 
 import {
@@ -19,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { UserInterface } from "@/interfaces/user-interface";
 
 // Menu items.
 const items = [
@@ -31,40 +30,35 @@ const items = [
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
+    roles: ["Student", "Employer"] as UserInterface["role"][],
   },
   {
     title: "Hồ sơ",
     url: "/dashboard/profile",
     icon: User,
+    roles: ["Student", "Employer"] as UserInterface["role"][],
   },
   {
     title: "CV của tôi",
     url: "/dashboard/my-cv",
     icon: FileUser,
+    roles: ["Student"] as UserInterface["role"][],
   },
   {
     title: "Tin đăng",
     url: "/dashboard/post",
     icon: Newspaper,
-  },
-  {
-    title: "Ứng viên",
-    url: "#",
-    icon: Users,
-  },
-  {
-    title: "Dịch vụ",
-    url: "/dashboard/service",
-    icon: Box,
+    roles: ["Employer"] as UserInterface["role"][],
   },
   {
     title: "Setting",
     url: "#",
     icon: Settings,
+    roles: ["Student", "Employer"] as UserInterface["role"][],
   },
 ];
 
-export async function AppSidebar() {
+export async function AppSidebar({ role }: { role: UserInterface["role"] }) {
   return (
     <Sidebar>
       <SidebarContent>
@@ -72,16 +66,19 @@ export async function AppSidebar() {
           <SidebarGroupLabel>SWork</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map(
+                (item) =>
+                  (!item.roles || item.roles.includes(role)) && (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton>
+                        <a href={item.url} className="flex items-center gap-2">
+                          {item.icon && <item.icon className="h-4 w-4" />}
+                          {item.title}
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -13,7 +13,7 @@ import React from "react";
 
 export default function LoginPage() {
   const initialValues: LoginUser = {
-    email: "",
+    usernameOrEmail: "",
     password: "",
   };
   return (
@@ -23,13 +23,7 @@ export default function LoginPage() {
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
         alert(JSON.stringify(values, null, 2));
-        await login(values).then((response) => {
-          if (response.status === 200) {
-            setTimeout(() => {
-              window.location.href = "/";
-            }, 2000);
-          }
-        });
+        await login(values);
       }}
     >
       {({
@@ -47,15 +41,15 @@ export default function LoginPage() {
               Đăng nhập để tiếp tục sử dụng ứng dụng của chúng tôi
             </p>
             <Input
-              name="email"
-              placeholder="Email"
+              name="usernameOrEmail"
+              placeholder="Username hoặc Email"
               type="text"
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.email}
+              value={values.usernameOrEmail}
             />
-            {errors.email && touched.email && (
-              <p className="text-red-500 text-sm">{errors.email}</p>
+            {errors.usernameOrEmail && touched.usernameOrEmail && (
+              <p className="text-red-500 text-sm">{errors.usernameOrEmail}</p>
             )}
             <PasswordInput
               name="password"

@@ -1,5 +1,5 @@
 export interface UserInterface {
-  id?: string;
+  userId?: string;
   firstName: string;
   lastName: string;
   userName: string;
@@ -41,4 +41,6 @@ export type RegisterUser = Pick<
   confirmPassword?: string;
 };
 
-export type LoginUser = Pick<UserInterface, "email" | "password">;
+export type LoginUser = Pick<UserInterface, "password"> & {
+  usernameOrEmail: string;
+};

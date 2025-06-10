@@ -19,20 +19,30 @@ const api = axios.create({
   withCredentials: true, // if using refresh token from HttpOnly cookie
 });
 
-function getAuthToken() {
+export async function getAuthToken() {
   return {
-    accessToken: localStorage.getItem("accessToken"),
-    refreshToken: localStorage.getItem("refreshToken"),
+    accessToken: document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("accessToken=")),
+    refreshToken: document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("refreshToken=")),
   };
+}
+
+export function logout() {
+
 }
 
 api.interceptors.request.use(
   (config) => {
     if (config.requiresAuth) {
-      const { accessToken } = getAuthToken();
-      if (accessToken) {
-        config.headers["Authorization"] = `Bearer ${accessToken}`;
-      }
+      return getAuthToken().then(({ accessToken }) => {
+        if (accessToken) {
+          config.headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        return config;
+      });
     }
     return config;
   },

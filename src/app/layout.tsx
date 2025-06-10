@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import Footer from "@/components/ui/footer";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryClientWrapper } from "@/components/provider/query-client-provider";
 
 const TopProgressBar = dynamic(
   () => import("@/components/ui/top-progress-bar")
@@ -40,12 +41,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <TopProgressBar />
-          {children}
-          <Toaster />
-          <ScrollToTopButton />
-          <Footer />
+          <QueryClientWrapper>
+            <Header />
+            <TopProgressBar />
+            {children}
+            <Toaster />
+            <ScrollToTopButton />
+            <Footer />
+          </QueryClientWrapper>
         </ThemeProvider>
       </body>
     </html>

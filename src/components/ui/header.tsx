@@ -29,6 +29,10 @@ import {
 } from "./dropdown-menu";
 import { Badge } from "./badge";
 import { ModeToggle } from "./mode-toggle";
+import { useUserStore } from "@/stores/user-store";
+import { useEffect, useState } from "react";
+import { Skeleton } from "./skeleton";
+import { toast } from "sonner";
 
 const items = [
   {
@@ -124,6 +128,8 @@ const notificationItems = [
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useUserStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   const nonDashboardPaths = [
     "/dashboard",
@@ -139,6 +145,14 @@ export default function Header() {
   const isDashboard = nonDashboardPaths.some((path) =>
     pathname.startsWith(path)
   );
+
+  useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
+  }, [user]);
+
   if (isDashboard) {
     return null;
   }
@@ -161,153 +175,183 @@ export default function Header() {
         >
           <Image src="/images/logo.png" alt="Logo" width={150} height={60} />
         </Link>
-        <div className="ml-auto flex gap-2">
-          {items.map((item) =>
-            !item.subMenu ? (
-              <Link
-                key={item.title}
-                href={item.url}
-                className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                prefetch={false}
-              >
-                {item.title}
-              </Link>
-            ) : (
-              <DropdownMenu key={item.title}>
-                <DropdownMenuTrigger>
-                  <Link
-                    href={item.url}
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    prefetch={false}
-                  >
-                    {item.title}
-                  </Link>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {item.subMenu.map((subItem, index) => (
-                    <div key={index} className="font-bold">
-                      <Link
-                        href={subItem.url}
-                        className="inline-flex h-9 w-full items-center justify-start rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-                        prefetch={false}
-                      >
-                        {subItem.title}
-                      </Link>
-                      {index !== item.subMenu.length - 1 && (
-                        <DropdownMenuSeparator className="my-1" />
-                      )}
-                    </div>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )
-          )}
-
-          <Button
-            variant="outline"
-            className="justify-self-end"
-            onClick={() => {
-              router.push("/login");
-            }}
-          >
-            Đăng nhập
-          </Button>
-          <Button
-            className="justify-self-end"
-            onClick={() => {
-              router.push("/register");
-            }}
-          >
-            Đăng ký
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="hidden md:flex">
-                <Bell size={20} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="p-4 w-[500px] max-w-[300px]">
-              <DropdownMenuLabel>
-                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  Thông báo
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Bạn có {notificationItems.length} thông báo mới
-                </p>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {notificationItems.map((item) => (
-                <DropdownMenuItem
+        {isLoading ? (
+          <Skeleton className="h-10 w-[70%] rounded-md" />
+        ) : (
+          <div className="ml-auto flex gap-2">
+            {items.map((item) =>
+              !item.subMenu ? (
+                <Link
                   key={item.title}
-                  className="flex items-center gap-2"
+                  href={item.url}
+                  className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  prefetch={false}
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400">
-                      {item.icon}
-                    </div>
-                    <div className="flex flex-col">
-                      <Link href={item.url} className="text-sm font-medium">
-                        {item.title}
-                      </Link>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator className="my-1" />
-              <Button variant="outline" className="w-full text-left mb-1">
-                Xem tất cả thông báo
-              </Button>
-              <Button className="w-full text-left">
-                Đánh dấu tất cả đã đọc
-              </Button>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <ModeToggle />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Link href={"/dashboard"}>
-                <Button variant={"outline"} className="justify-self-end">
-                  <CircleUserRound />
-                </Button>
-              </Link>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-150 max-w-[300px]">
-              <DropdownMenuItem>
-                <div className="flex flex-row items-center gap-2">
-                  <CircleUserRound size={20} />
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium text-green-500">
-                      Lâm Tiên Hưng
-                    </p>
-                    <p>Mã ứng viên: 123456</p>
-                    <p>lamtienhung93@gmail.com</p>
-                    <Badge variant="default" className="mt-2">
-                      Tài khoản đã xác thực
-                    </Badge>
-                    <Badge
-                      variant={"outline"}
-                      className="mt-2 bg-yellow-300 dark:bg-yellow-500"
-                    >
-                      100 SPoint
-                    </Badge>
-                  </div>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {profileItems.map((item) => (
-                <Link key={item.title} href={item.url}>
-                  <DropdownMenuItem>
-                    {item.title}
-                    <DropdownMenuShortcut>{item.icon}</DropdownMenuShortcut>
-                  </DropdownMenuItem>
+                  {item.title}
                 </Link>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+              ) : (
+                <DropdownMenu key={item.title}>
+                  <DropdownMenuTrigger>
+                    <Link
+                      href={item.url}
+                      className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      prefetch={false}
+                    >
+                      {item.title}
+                    </Link>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {item.subMenu.map((subItem, index) => (
+                      <div key={index} className="font-bold">
+                        <Link
+                          href={subItem.url}
+                          className="inline-flex h-9 w-full items-center justify-start rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                          prefetch={false}
+                        >
+                          {subItem.title}
+                        </Link>
+                        {index !== item.subMenu.length - 1 && (
+                          <DropdownMenuSeparator className="my-1" />
+                        )}
+                      </div>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )
+            )}
+
+            {!user && (
+              <>
+                <Button
+                  variant="outline"
+                  className="justify-self-end"
+                  onClick={() => {
+                    router.push("/login");
+                  }}
+                >
+                  Đăng nhập
+                </Button>
+                <Button
+                  className="justify-self-end"
+                  onClick={() => {
+                    router.push("/register");
+                  }}
+                >
+                  Đăng ký
+                </Button>
+              </>
+            )}
+
+            <ModeToggle />
+            {user && (
+              <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="hidden md:flex">
+                      <Bell size={20} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="p-4 w-[500px] max-w-[300px]">
+                    <DropdownMenuLabel>
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                        Thông báo
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Bạn có {notificationItems.length} thông báo mới
+                      </p>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {notificationItems.map((item) => (
+                      <DropdownMenuItem
+                        key={item.title}
+                        className="flex items-center gap-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400">
+                            {item.icon}
+                          </div>
+                          <div className="flex flex-col">
+                            <Link
+                              href={item.url}
+                              className="text-sm font-medium"
+                            >
+                              {item.title}
+                            </Link>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {item.description}
+                            </p>
+                          </div>
+                        </div>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator className="my-1" />
+                    <Button variant="outline" className="w-full text-left mb-1">
+                      Xem tất cả thông báo
+                    </Button>
+                    <Button className="w-full text-left">
+                      Đánh dấu tất cả đã đọc
+                    </Button>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Link href={"/dashboard"}>
+                      <Button variant={"outline"} className="justify-self-end">
+                        <CircleUserRound />
+                      </Button>
+                    </Link>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-150 max-w-[300px]">
+                    <DropdownMenuItem>
+                      <div className="flex flex-row items-center gap-2">
+                        <CircleUserRound size={20} />
+                        <div className="flex flex-col">
+                          <p className="text-sm font-medium text-green-500">
+                            Lâm Tiên Hưng
+                          </p>
+                          <p>Mã ứng viên: 123456</p>
+                          <p>lamtienhung93@gmail.com</p>
+                          <Badge variant="default" className="mt-2">
+                            Tài khoản đã xác thực
+                          </Badge>
+                          <Badge
+                            variant={"outline"}
+                            className="mt-2 bg-yellow-300 dark:bg-yellow-500"
+                          >
+                            100 SPoint
+                          </Badge>
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    {profileItems.map((item) => (
+                      <Link
+                        key={item.title}
+                        href={item.url}
+                        onClick={() => {
+                          if (item.url === "/logout") {
+                            useUserStore.getState().clearUser();
+                            toast.success("Đăng xuất thành công!");
+                            setTimeout(() => {
+                              window.location.href = "/";
+                            }, 1000);
+                          }
+                        }}
+                      >
+                        <DropdownMenuItem>
+                          {item.title}
+                          <DropdownMenuShortcut>
+                            {item.icon}
+                          </DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                      </Link>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
+          </div>
+        )}
       </header>
     </>
   );

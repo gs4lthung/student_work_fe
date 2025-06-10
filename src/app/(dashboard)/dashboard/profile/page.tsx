@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,10 +16,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyH2 } from "@/components/ui/typography";
+import { useUserStore } from "@/stores/user-store";
 import Image from "next/image";
 import React from "react";
 
 const AccountTab = () => {
+  const { user } = useUserStore();
   return (
     <div className="grid grid-cols-8 gap-8">
       <div className="col-span-5">
@@ -30,7 +34,7 @@ const AccountTab = () => {
             id="email"
             type="email"
             placeholder="Email"
-            value={"swork@gmail.com"}
+            value={user?.email || "user@gmail.com"}
             readOnly
           />
           <Label htmlFor="password">Mật khẩu</Label>
@@ -63,7 +67,7 @@ const AccountTab = () => {
             id="phone"
             type="text"
             placeholder="Số điện thoại"
-            value={"0987654321"}
+            value={user?.phoneNumber || "0123456789"}
             readOnly
           />
           <Label htmlFor="address">Địa chỉ</Label>
@@ -153,7 +157,7 @@ const CompanyTab = () => {
       </div>
       <div className="col-span-3 flex flex-col gap-2 items-center">
         <h2 className="text-lg font-semibold mb-4 text-gray-600">Trạng thái</h2>
-        <Image 
+        <Image
           src="https://career.fpt-software.com/wp-content/themes/jobcareer/fpt_landing_page/taste-vietnam/images/user/11125/Logo_fpt_software.png"
           alt="verified"
           width={100}
@@ -181,7 +185,7 @@ const tabItems = [
   },
 ];
 
-export default async function DashBoardProfilePage() {
+export default function DashBoardProfilePage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
@@ -194,7 +198,6 @@ export default async function DashBoardProfilePage() {
           {tabItems.map((tab) => (
             <TabsTrigger
               key={tab.value}
-              className="data-[state=active]:bg-green-300 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-green-500 dark:data-[state=active]:border-green-300"
               value={tab.value}
             >
               {tab.title}

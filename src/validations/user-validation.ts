@@ -1,8 +1,8 @@
-import { UserInterface } from "@/interfaces/user-interface";
+import { LoginUser, UserInterface } from "@/interfaces/user-interface";
 import * as Yup from "yup";
 export const RegisterValidationSchema: Yup.ObjectSchema<UserInterface> =
   Yup.object({
-    id: Yup.string().optional(),
+    userId: Yup.string().optional(),
     avatarUrl: Yup.string().optional(),
     emailConfirmed: Yup.boolean().optional(),
     rating: Yup.number().optional(),
@@ -50,9 +50,9 @@ export const getPasswordRules = (password: string) => ({
   hasSpecialChar: /[^A-Za-z0-9]/.test(password),
 });
 
-export const LoginValidationSchema = Yup.object({
-  email: Yup.string()
-    .required("Email không được để trống")
-    .email("Email không hợp lệ"),
+export const LoginValidationSchema: Yup.ObjectSchema<LoginUser> = Yup.object({
+  usernameOrEmail: Yup.string().required(
+    "Tên đăng nhập hoặc email là bắt buộc"
+  ),
   password: Yup.string().required("Mật khẩu là bắt buộc"),
 });

@@ -243,7 +243,7 @@ export default function ApplicationTable({ jobId }: { jobId: string }) {
     },
   });
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-md">
       <Table>
         <TableCaption>Danh sách ứng viên</TableCaption>
         <TableHeader>

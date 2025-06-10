@@ -369,7 +369,7 @@ export default function JobTable({
   const renderSubRow = ({ row }: { row: Row<JobInterface> }) => {
     return (
       <tr>
-        <td colSpan={columns.length} className="p-4 bg-gray-50">
+        <td colSpan={columns.length} className="p-4">
           <ApplicationTable jobId={row.original.id ?? ""} />
         </td>
       </tr>
@@ -424,7 +424,7 @@ export default function JobTable({
         </div>
       </div>
       <div className="overflow-x-auto w-full">
-        <Table className="min-w-[900px]">
+        <Table className="min-w-[900px] ">
           <TableCaption>Danh sách tin đăng</TableCaption>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
