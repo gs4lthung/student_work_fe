@@ -11,7 +11,7 @@ import { RegisterUser } from "@/interfaces/user-interface";
 import {
   getPasswordRules,
   RegisterValidationSchema,
-} from "@/const/validation/user-validation";
+} from "@/validations/user-validation";
 import { TypographyH2 } from "@/components/ui/typography";
 import { PasswordInput } from "@/components/ui/input-password";
 import { register } from "@/api/user-api";

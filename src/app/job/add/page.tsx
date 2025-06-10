@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { JobValidationSchema } from "@/const/validation/job-validation";
+import { JobValidationSchema } from "@/validations/job-validation";
 import {
   JobInterface,
   JobSubcriptionInterface,
@@ -23,6 +23,10 @@ import { Button } from "@/components/ui/button";
 import { useBeforeUnload } from "@/hooks/use-before-unload";
 import { useDraftJobPostStore } from "@/stores/job-store";
 import { PersistStoreBridge } from "@/bridges/bridge-persist-store";
+import Link from "next/link";
+import { VietnameseNumberReader } from "@/utils/n2vi";
+import { jobConst } from "@/const/job-const";
+import Image from "next/image";
 
 export default function JobAddPage() {
   const { data, setData } = useDraftJobPostStore();
@@ -61,7 +65,6 @@ export default function JobAddPage() {
     salary: 0,
     workingHours: "",
     startDate: new Date(),
-    endDate: new Date(),
     status: "Active",
     imageUrl: "",
   });
@@ -78,7 +81,6 @@ export default function JobAddPage() {
       salary: data?.salary || 0,
       workingHours: data?.workingHours || "",
       startDate: data?.startDate ? new Date(data.startDate) : new Date(),
-      endDate: data?.endDate ? new Date(data.endDate) : new Date(),
       status: "Active",
       imageUrl: data?.imageUrl || "",
     });
@@ -147,11 +149,9 @@ export default function JobAddPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="category">Loại công việc</Label>
-                        <Input
+                        <select
                           id="category"
                           name="category"
-                          type="text"
-                          placeholder="Nhập loại công việc"
                           value={values.category}
                           onChange={handleChange}
                           onBlur={handleBlur}
@@ -159,12 +159,26 @@ export default function JobAddPage() {
                             errors.category && touched.category
                               ? "border-red-500"
                               : ""
-                          }`}
-                        />
+                          } block w-full p-2 border rounded-md`}
+                        >
+                          {jobConst.category.map((cate) => (
+                            <option key={cate.id} value={cate.name}>
+                              {cate.name}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="subscriptionId">Gói đăng ký</Label>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="subscriptionId">Gói đăng ký</Label>
+                        <Link
+                          href={"/service"}
+                          className="text-sm text-green-700 hover:underline"
+                        >
+                          Xem các gói đăng ký
+                        </Link>
+                      </div>
                       <select
                         id="subscriptionId"
                         name="subscriptionId"
@@ -278,12 +292,31 @@ export default function JobAddPage() {
                     <div className="grid gap-2">
                       <div className="flex items-center justify-between">
                         <Label htmlFor="salary">Mức lương</Label>
-                        <span className="text-sm text-gray-500">
-                          {values.salary.toLocaleString("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <p className="text-gray-600">
+                            {VietnameseNumberReader.toVietnamese(
+                              values.salary || 0
+                            )}{" "}
+                            đồng
+                          </p>
+                          <Input
+                            id="salary"
+                            name="salary"
+                            type="number"
+                            step={100000}
+                            min={0}
+                            max={100000000}
+                            placeholder="Nhập mức lương (VND)"
+                            value={values.salary}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={`${
+                              errors.salary && touched.salary
+                                ? "border-red-500"
+                                : ""
+                            } w-32`}
+                          />
+                        </div>
                       </div>
                       <Slider
                         id="salary"
@@ -304,62 +337,32 @@ export default function JobAddPage() {
                         }`}
                       />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="startDate">Ngày bắt đầu</Label>
-                        <Input
-                          id="startDate"
-                          name="startDate"
-                          type="date"
-                          value={
-                            values.startDate instanceof Date
-                              ? values.startDate.toISOString().split("T")[0]
-                              : new Date(values.startDate)
-                                  .toISOString()
-                                  .split("T")[0]
-                          }
-                          onChange={(e) => {
-                            const date = new Date(e.target.value);
-                            handleChange({
-                              target: { name: "startDate", value: date },
-                            });
-                          }}
-                          onBlur={handleBlur}
-                          className={`${
-                            errors.startDate && touched.startDate
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
-                      </div>
-
-                      <div className="grid gap-2">
-                        <Label htmlFor="endDate">Ngày kết thúc</Label>
-                        <Input
-                          id="endDate"
-                          name="endDate"
-                          type="date"
-                          value={
-                            values.endDate instanceof Date
-                              ? values.endDate.toISOString().split("T")[0]
-                              : new Date(values.endDate)
-                                  .toISOString()
-                                  .split("T")[0]
-                          }
-                          onChange={(e) => {
-                            const date = new Date(e.target.value);
-                            handleChange({
-                              target: { name: "endDate", value: date },
-                            });
-                          }}
-                          onBlur={handleBlur}
-                          className={`${
-                            errors.endDate && touched.endDate
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
-                      </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="startDate">Ngày bắt đầu</Label>
+                      <Input
+                        id="startDate"
+                        name="startDate"
+                        type="date"
+                        value={
+                          values.startDate instanceof Date
+                            ? values.startDate.toISOString().split("T")[0]
+                            : new Date(values.startDate)
+                                .toISOString()
+                                .split("T")[0]
+                        }
+                        onChange={(e) => {
+                          const date = new Date(e.target.value);
+                          handleChange({
+                            target: { name: "startDate", value: date },
+                          });
+                        }}
+                        onBlur={handleBlur}
+                        className={`${
+                          errors.startDate && touched.startDate
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="imageUrl">Ảnh</Label>
@@ -378,6 +381,17 @@ export default function JobAddPage() {
                         }`}
                       />
                     </div>
+                    {values.imageUrl&&!errors.imageUrl&&touched.imageUrl && (
+                      <div className="mt-4">
+                        <Image
+                          src={values.imageUrl}
+                          alt="Ảnh công việc"
+                          width={300}
+                          height={100}
+                          className="w-full h-auto rounded-md"
+                        />
+                      </div>
+                    )}
                   </Form>
                 </CardContent>
                 <CardFooter className="flex justify-end gap-4">

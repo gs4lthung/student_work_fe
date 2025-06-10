@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/input-password";
 import { TypographyH2 } from "@/components/ui/typography";
-import { LoginValidationSchema } from "@/const/validation/user-validation";
+import { LoginValidationSchema } from "@/validations/user-validation";
 import { LoginUser } from "@/interfaces/user-interface";
 import { Form, Formik } from "formik";
 import Link from "next/link";

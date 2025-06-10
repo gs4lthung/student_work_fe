@@ -10,9 +10,10 @@ export interface JobInterface {
   salary: number;
   workingHours: string;
   startDate: Date;
-  endDate: Date;
   status: "Active" | "Inactive";
   imageUrl?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface JobSubcriptionInterface {

@@ -12,7 +12,6 @@ type DraftJobPostStore = Pick<
   | "salary"
   | "workingHours"
   | "startDate"
-  | "endDate"
   | "imageUrl"
 >;
 
