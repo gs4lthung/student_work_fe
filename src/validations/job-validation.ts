@@ -43,4 +43,6 @@ export const JobValidationSchema: Yup.ObjectSchema<JobInterface> = Yup.object({
   employerId: Yup.string().optional(),
   subscriptionId: Yup.string().optional(),
   id: Yup.string().optional(),
+  createdAt: Yup.date().optional(),
+  updatedAt: Yup.date().optional(),
 });
