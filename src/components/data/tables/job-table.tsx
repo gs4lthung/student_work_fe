@@ -363,7 +363,7 @@ export default function JobTable({
         ),
       },
     ],
-    []
+    [jobSubscriptions]
   );
 
   const renderSubRow = ({ row }: { row: Row<JobInterface> }) => {
