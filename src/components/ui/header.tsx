@@ -332,9 +332,6 @@ export default function Header() {
                           if (item.url === "/logout") {
                             useUserStore.getState().clearUser();
                             toast.success("Đăng xuất thành công!");
-                            setTimeout(() => {
-                              window.location.href = "/";
-                            }, 1000);
                           }
                         }}
                       >

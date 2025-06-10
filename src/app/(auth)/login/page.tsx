@@ -22,7 +22,6 @@ export default function LoginPage() {
       validationSchema={LoginValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
-        alert(JSON.stringify(values, null, 2));
         await login(values);
       }}
     >
