@@ -7,7 +7,7 @@ export const register = async (data: RegisterUser) => {
   delete data.confirmPassword;
   const url = "/api/Auth/register";
   const response = await api.post(url, data);
-  if (response.status === 200) {
+  if (response?.status === 200) {
     toast.success(
       "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản."
     );
@@ -17,7 +17,7 @@ export const register = async (data: RegisterUser) => {
 export const login = async (data: LoginUser) => {
   const url = "/api/Auth/login";
   const response = await api.post(url, data);
-  if (response.status === 200) {
+  if (response?.status === 200) {
     const user = response.data.result.user;
     console.log("User data:", user);
     if (user.emailConfirmed=== false) {
