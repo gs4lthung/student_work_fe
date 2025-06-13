@@ -11,6 +11,9 @@ export const register = async (data: RegisterUser) => {
     toast.success(
       "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản."
     );
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 1000);
   }
 };
 
@@ -20,7 +23,7 @@ export const login = async (data: LoginUser) => {
   if (response?.status === 200) {
     const user = response.data.result.user;
     console.log("User data:", user);
-    if (user.emailConfirmed=== false) {
+    if (user.emailConfirmed === false) {
       toast.error("Vui lòng xác thực email trước khi đăng nhập.");
       throw new Error("Email not confirmed");
     }

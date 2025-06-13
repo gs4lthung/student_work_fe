@@ -15,9 +15,7 @@ import {
 import { TypographyH2 } from "@/components/ui/typography";
 import { PasswordInput } from "@/components/ui/input-password";
 import { register } from "@/api/user-api";
-import { useRouter } from "next/navigation";
 export default function RegisterPage() {
-  const router = useRouter();
   const initialValues: RegisterUser = {
     firstName: "",
     lastName: "",
@@ -36,13 +34,7 @@ export default function RegisterPage() {
         setSubmitting(true);
         alert(JSON.stringify(values, null, 2));
         console.log("Submitting registration form with values:", values);
-        await register(values).then((response) => {
-          if (response.status === 200) {
-            setTimeout(() => {
-              router.push("/login");
-            }, 2000);
-          }
-        });
+        await register(values);
         setSubmitting(false);
       }}
     >
