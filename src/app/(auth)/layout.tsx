@@ -1,11 +1,16 @@
-import ReturnHomeButton from "@/components/ui/button-return-home"
-import Image from "next/image"
-import type React from "react"
+import ReturnHomeButton from "@/components/ui/button-return-home";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Image from "next/image";
+import type React from "react";
 
 export default function AuthLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <main className="h-screen bg-background relative overflow-hidden">
@@ -22,7 +27,14 @@ export default function AuthLayout({
       </div>
 
       <div className="relative z-10 top-4 left-4">
-        <ReturnHomeButton />
+        <Tooltip>
+          <TooltipTrigger className="cursor-pointer">
+            <ReturnHomeButton />
+            <TooltipContent>
+              Trở về trang chủ
+            </TooltipContent>
+          </TooltipTrigger>
+        </Tooltip>
       </div>
 
       <div className="relative z-10 h-screen flex items-center justify-center">
@@ -31,5 +43,5 @@ export default function AuthLayout({
         </div>
       </div>
     </main>
-  )
+  );
 }

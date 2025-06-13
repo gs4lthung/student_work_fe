@@ -264,7 +264,75 @@ export const jobConst = {
       status: "Active",
       createdAt: new Date("2023-10-10"),
       updatedAt: new Date("2023-10-15"),
+    },{
+      id: "12",
+      title: "Nhân viên bảo trì",
+      category: "Part-time",
+      subscriptionId: "3",
+      description:
+        "Tìm kiếm nhân viên bảo trì có kinh nghiệm trong việc bảo trì và sửa chữa thiết bị.",
+      location: "Đà Nẵng",
+      salary: 700000,
+      requirements: [
+        "Kinh nghiệm ít nhất 1 năm trong lĩnh vực bảo trì",
+        "Có kiến thức về các thiết bị cơ khí và điện tử",
+        "Kỹ năng giải quyết vấn đề tốt",
+      ],
+      startDate: new Date("2023-11-20"),
+      workingHours: "Bán thời gian",
+      employerId: "12",
+      imageUrl:
+        "https://images.ctfassets.net/7qqwgjna58ct/3WEd2JUHd2kdYfY34FanGj/ec7084674c3fd7420911240de5a9c5d7/get-a-job-with-no-experience.png",
+      status: "Active",
+      createdAt: new Date("2023-10-12"),
+      updatedAt: new Date("2023-10-17"),
     },
+    {
+      id: "13",
+      title: "Nhân viên giao hàng",
+      category: "Freelance",
+      subscriptionId: "1",
+      description:
+        "Cần tìm nhân viên giao hàng có kinh nghiệm trong việc giao hàng và quản lý đơn hàng.",
+      location: "Hà Nội",
+      salary: 600000,
+      requirements: [
+        "Kinh nghiệm ít nhất 1 năm trong lĩnh vực giao hàng",
+        "Có phương tiện di chuyển (xe máy, xe đạp, v.v.)",
+        "Kỹ năng giao tiếp và quản lý thời gian tốt",
+      ],
+      startDate: new Date("2023-11-25"),
+      workingHours: "Freelance",
+      employerId: "13",
+      imageUrl:
+        "https://images.ctfassets.net/7qqwgjna58ct/3WEd2JUHd2kdYfY34FanGj/ec7084674c3fd7420911240de5a9c5d7/get-a-job-with-no-experience.png",
+      status: "Active",
+      createdAt: new Date("2023-10-15"),
+      updatedAt: new Date("2023-10-20"),
+      
+    },{
+      id: "14",
+      title: "Nhân viên bảo vệ",
+      category: "Part-time",
+      subscriptionId: "2",
+      description:
+        "Tìm kiếm nhân viên bảo vệ có kinh nghiệm trong việc bảo vệ an ninh và trật tự.",
+      location: "Hồ Chí Minh",
+      salary: 500000,
+      requirements: [
+        "Kinh nghiệm ít nhất 1 năm trong lĩnh vực bảo vệ",
+        "Có khả năng làm việc theo ca",
+        "Kỹ năng giao tiếp và quan sát tốt",
+      ],
+      startDate: new Date("2023-12-01"),
+      workingHours: "Bán thời gian",
+      employerId: "14",
+      imageUrl:
+        "https://images.ctfassets.net/7qqwgjna58ct/3WEd2JUHd2kdYfY34FanGj/ec7084674c3fd7420911240de5a9c5d7/get-a-job-with-no-experience.png",
+      status: "Active",
+      createdAt: new Date("2023-10-20"),
+      updatedAt: new Date("2023-10-25"),
+    }
   ] as JobInterface[],
   subscriptions: [
     {

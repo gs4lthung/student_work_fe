@@ -24,3 +24,14 @@ export interface JobSubcriptionInterface {
   duration: number;
   isActive?: boolean;
 }
+
+export interface JobComment {
+  id: string
+  userId: string
+  userName: string
+  userAvatar: string
+  jobId: string
+  text: string
+  rating: number
+  createdAt: Date
+}

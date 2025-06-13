@@ -42,20 +42,18 @@ const items = [
   {
     title: "Hồ sơ & CV",
     url: "/cv/add",
+    role: ["Student"],
+  },
+
+  {
+    title: "Tìm kiếm việc làm",
+    url: "/job",
+    role: ["Student", "Employer"],
   },
   {
-    title: "Tin tuyển dụng",
-    url: "/job",
-    subMenu: [
-      {
-        title: "Tìm kiếm việc làm",
-        url: "/job",
-      },
-      {
-        title: "Đăng tin tuyển dụng",
-        url: "/job/add",
-      },
-    ],
+    title: "Đăng tin tuyển dụng",
+    url: "/job/add",
+    role: ["Employer"],
   },
   {
     title: "Nhà tuyển dụng",
@@ -179,45 +177,20 @@ export default function Header() {
           <Skeleton className="h-10 w-[70%] rounded-md" />
         ) : (
           <div className="ml-auto flex gap-2">
-            {items.map((item) =>
-              !item.subMenu ? (
-                <Link
-                  key={item.title}
-                  href={item.url}
-                  className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  prefetch={false}
-                >
-                  {item.title}
-                </Link>
-              ) : (
-                <DropdownMenu key={item.title}>
-                  <DropdownMenuTrigger>
-                    <Link
-                      href={item.url}
-                      className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      prefetch={false}
-                    >
-                      {item.title}
-                    </Link>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    {item.subMenu.map((subItem, index) => (
-                      <div key={index} className="font-bold">
-                        <Link
-                          href={subItem.url}
-                          className="inline-flex h-9 w-full items-center justify-start rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-                          prefetch={false}
-                        >
-                          {subItem.title}
-                        </Link>
-                        {index !== item.subMenu.length - 1 && (
-                          <DropdownMenuSeparator className="my-1" />
-                        )}
-                      </div>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )
+            {items.map(
+              (item) =>
+                (!item.role ||
+                  item.role.includes(user?.role || "") ||
+                  !user) && (
+                  <Link
+                    key={item.title}
+                    href={item.url}
+                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    prefetch={false}
+                  >
+                    {item.title}
+                  </Link>
+                )
             )}
 
             {!user && (
@@ -304,16 +277,12 @@ export default function Header() {
                   <DropdownMenuContent className="w-150 max-w-[300px]">
                     <DropdownMenuItem>
                       <div className="flex flex-row items-center gap-2">
-                        <CircleUserRound size={20} />
+                        <CircleUserRound width={20} height={20} />
                         <div className="flex flex-col">
                           <p className="text-sm font-medium text-green-500">
-                            Lâm Tiên Hưng
+                            {user?.firstName} {user?.lastName}
                           </p>
-                          <p>Mã ứng viên: 123456</p>
-                          <p>lamtienhung93@gmail.com</p>
-                          <Badge variant="default" className="mt-2">
-                            Tài khoản đã xác thực
-                          </Badge>
+                          <p>{user.email}</p>
                           <Badge
                             variant={"outline"}
                             className="mt-2 bg-yellow-300 dark:bg-yellow-500"

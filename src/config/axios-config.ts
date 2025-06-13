@@ -66,9 +66,6 @@ const processQueue = (error: unknown, token: string | null = null) => {
 
 api.interceptors.response.use(
   (response) => {
-    if (response.status === 200 || response.status === 201) {
-      toast.success(response.statusText);
-    }
     return response;
   },
   async (error) => {

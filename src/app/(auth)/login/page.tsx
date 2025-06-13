@@ -9,13 +9,39 @@ import { LoginValidationSchema } from "@/validations/user-validation";
 import { LoginUser } from "@/interfaces/user-interface";
 import { Form, Formik } from "formik";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const [redirect, setRedirect] = useState("/"); // Default redirect
+  const router = useRouter();
   const initialValues: LoginUser = {
     usernameOrEmail: "",
     password: "",
   };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const redirectParam = params.get("redirect") || "/";
+      console.log("Redirect param:", redirectParam);
+      setRedirect(redirectParam);
+
+      // Show toasts based on redirect
+      if (redirectParam.includes("cv")) {
+        toast.error("Bạn cần đăng nhập để xem CV");
+      } else if (redirectParam.includes("job")) {
+        toast.error("Bạn cần đăng nhập để xem công việc");
+      } else if (redirectParam.includes("company")) {
+        toast.error("Bạn cần đăng nhập để xem công ty");
+      } else if (redirectParam.includes("profile")) {
+        toast.error("Bạn cần đăng nhập để xem hồ sơ cá nhân");
+      } else if (redirectParam !== "/") {
+        toast.error("Bạn cần đăng nhập để truy cập trang này");
+      }
+    }
+  }, []);
+
   return (
     <Formik
       initialValues={initialValues}
@@ -23,6 +49,7 @@ export default function LoginPage() {
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
         await login(values);
+        router.push(redirect);
       }}
     >
       {({

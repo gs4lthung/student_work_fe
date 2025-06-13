@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 type UserStore = Pick<
   UserInterface,
+  | "userId"
   | "firstName"
   | "lastName"
   | "userName"

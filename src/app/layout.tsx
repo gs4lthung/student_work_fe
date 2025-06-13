@@ -45,7 +45,18 @@ export default function RootLayout({
             <Header />
             <TopProgressBar />
             {children}
-            <Toaster />
+            <Toaster
+              toastOptions={{
+                unstyled: true,
+                duration: 1000,
+                classNames: {
+                  success: "flex items-center gap-2 px-4 py-2 bg-green-500 text-white",
+                  info: "flex items-center gap-2 px-4 py-2 bg-blue-500 text-white",
+                  warning: "flex items-center gap-2 px-4 py-2 bg-yellow-500 text-gray-950",
+                  error: "flex items-center gap-2 px-4 py-2 bg-red-500 text-white",
+                },
+              }}
+            />
             <ScrollToTopButton />
             <Footer />
           </QueryClientWrapper>
