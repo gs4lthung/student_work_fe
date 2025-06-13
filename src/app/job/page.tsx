@@ -28,7 +28,7 @@ import {
 } from "@tanstack/react-table";
 import { Banknote, Clock, MapPin, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function JobPage() {
   const initialLimit = 5;
@@ -178,11 +178,7 @@ export default function JobPage() {
   }, [limit, isLoading, filteredData]);
 
   // Apply manual filters whenever filter states change
-  useEffect(() => {
-    applyManualFilters();
-  }, [searchValue, salaryFilter, selectedCategories, selectedLocations]);
-
-  function applyManualFilters() {
+  const applyManualFilters = useCallback(() => {
     // Start with all data
     let filtered = [...jobConst.data];
 
@@ -240,7 +236,11 @@ export default function JobPage() {
     }
 
     setColumnFilters(newColumnFilters);
-  }
+  }, [searchValue, salaryFilter, selectedCategories, selectedLocations, initialLimit]);
+
+  useEffect(() => {
+    applyManualFilters();
+  }, [searchValue, salaryFilter, selectedCategories, selectedLocations, applyManualFilters]);
 
   function clearFilters() {
     setSearchValue("");
