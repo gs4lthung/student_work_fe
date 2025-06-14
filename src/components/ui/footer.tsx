@@ -40,7 +40,7 @@ export default function Footer() {
     <footer className="bg-slate-50 dark:bg-slate-900 border-t w-full py-8 mt-auto">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Job Resources */}
+         
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Job Resources</h3>
             <ul className="space-y-2">
@@ -83,7 +83,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Nổi bật</h3>
             <ul className="space-y-2">
@@ -130,7 +129,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+      
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Liên hệ</h3>
             <ul className="space-y-2">
@@ -163,7 +162,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Social & Newsletter */}
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Kết nối với chúng tôi</h3>
             <div className="flex space-x-4">
