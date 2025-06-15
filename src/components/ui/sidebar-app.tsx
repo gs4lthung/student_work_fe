@@ -3,6 +3,7 @@ import {
   Home,
   LayoutDashboard,
   Newspaper,
+  Save,
   Settings,
   User,
 } from "lucide-react";
@@ -45,9 +46,27 @@ const items = [
     roles: ["Student"] as UserInterface["role"][],
   },
   {
+    title: "Việc làm đã lưu",
+    url: "/dashboard/saved-jobs",
+    icon: Save,
+    roles: ["Student"] as UserInterface["role"][],
+  },
+  {
+    title: "Việc làm đã ứng tuyển",
+    url: "/dashboard/applied-jobs",
+    icon: Save,
+    roles: ["Student"] as UserInterface["role"][],
+  },
+  {
     title: "Tin đăng",
     url: "/dashboard/post",
     icon: Newspaper,
+    roles: ["Employer"] as UserInterface["role"][],
+  },
+  {
+    title: "Dịch vụ",
+    url: "/dashboard/service",
+    icon: Save,
     roles: ["Employer"] as UserInterface["role"][],
   },
   {

@@ -12,11 +12,14 @@ export async function middleware(request: NextRequest) {
     "/dashboard",
     "/dashboard/post",
     "/dashboard/profile",
+    "/dashboard/service",
     "/job/add",
   ];
   const studentRoutes = [
     "/dashboard",
     "/dashboard/my-cv",
+    "/dashboard/saved-jobs",
+    "/dashboard/applied-jobs",
     "/dashboard/profile",
     "/cv/add",
   ];

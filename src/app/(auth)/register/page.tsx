@@ -32,8 +32,6 @@ export default function RegisterPage() {
       validationSchema={RegisterValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        alert(JSON.stringify(values, null, 2));
-        console.log("Submitting registration form with values:", values);
         await register(values);
         setSubmitting(false);
       }}

@@ -4,17 +4,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { JobValidationSchema } from "@/validations/job-validation";
-import {
-  JobInterface,
-  JobSubcriptionInterface,
-} from "@/interfaces/job-interface";
+import { JobInterface } from "@/interfaces/job-interface";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,41 +22,22 @@ import { PersistStoreBridge } from "@/bridges/bridge-persist-store";
 import Link from "next/link";
 import { VietnameseNumberReader } from "@/utils/n2vi";
 import { jobConst } from "@/const/job-const";
-import Image from "next/image";
+import { useSubscriptionStore } from "@/stores/subscription-store";
+import { createJob } from "@/api/job-api";
 
 export default function JobAddPage() {
+  const { subscriptions, clearSubscriptions } = useSubscriptionStore();
+
   const { data, setData } = useDraftJobPostStore();
 
-  const jobSubscriptions: JobSubcriptionInterface[] = [
-    {
-      id: "1",
-      name: "Basic",
-      price: 1000000,
-      duration: 30,
-      descriptions: "HHHa.wwfs.sdsdj",
-    },
-    {
-      id: "2",
-      name: "Standard",
-      price: 2000000,
-      duration: 60,
-      descriptions: "adsd.sdsdsd.sdsdsd",
-    },
-    {
-      id: "3",
-      name: "Premium",
-      price: 3000000,
-      duration: 90,
-      descriptions: "asdnadn.asdsad.asdasd",
-    },
-  ];
+  const submitBtnRef = useRef<HTMLButtonElement>(null);
+
   const [initialValues, setInitialValues] = useState<JobInterface>({
-    employerId: "",
-    subscriptionId: "",
+    subscriptionID: 0,
     title: "",
     category: "",
     description: "",
-    requirements: [],
+    requirements: "",
     location: "",
     salary: 0,
     workingHours: "",
@@ -69,14 +46,28 @@ export default function JobAddPage() {
     imageUrl: "",
   });
 
+  const clearForm = () => {
+    setData({
+      subscriptionID: 0,
+      title: "",
+      category: "",
+      description: "",
+      requirements: "",
+      location: "",
+      salary: 0,
+      workingHours: "",
+      startDate: new Date(),
+      imageUrl: "",
+    });
+  };
+
   useEffect(() => {
     setInitialValues({
-      employerId: "",
-      subscriptionId: data?.subscriptionId || "",
+      subscriptionID: data?.subscriptionID ? Number(data.subscriptionID) : 0,
       title: data?.title || "",
       category: data?.category || "",
       description: data?.description || "",
-      requirements: data?.requirements || [],
+      requirements: data?.requirements || "",
       location: data?.location || "",
       salary: data?.salary || 0,
       workingHours: data?.workingHours || "",
@@ -102,13 +93,21 @@ export default function JobAddPage() {
       initialValues={initialValues}
       enableReinitialize={true}
       validationSchema={JobValidationSchema}
-      onSubmit={() => {}}
+      onSubmit={async (values, { setSubmitting }) => {
+        console.log("Submitting job post:", values);
+        setSubmitting(true);
+        const res = await createJob(values);
+        if (res) {
+          clearSubscriptions();
+          clearForm();
+        }
+        setSubmitting(false);
+      }}
     >
       {({
         errors,
         touched,
         isSubmitting,
-        handleReset,
         handleChange,
         handleBlur,
         handleSubmit,
@@ -116,7 +115,11 @@ export default function JobAddPage() {
       }) => {
         return (
           <>
-            <PersistStoreBridge values={values} saveDraft={setData} />
+            <PersistStoreBridge
+              values={values}
+              saveDraft={setData}
+              avoidRefs={[submitBtnRef as React.RefObject<HTMLButtonElement>]}
+            />
             <div className="flex justify-center  min-h-screen bg-gray-100 dark:bg-gray-950 p-4">
               <Card className="w-full max-w-2xl">
                 <CardHeader>
@@ -146,6 +149,11 @@ export default function JobAddPage() {
                               : ""
                           }`}
                         />
+                        {errors.title && touched.title && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.title}
+                          </p>
+                        )}
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="category">Loại công việc</Label>
@@ -167,11 +175,16 @@ export default function JobAddPage() {
                             </option>
                           ))}
                         </select>
+                        {errors.category && touched.category && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.category}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="grid gap-2">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="subscriptionId">Gói đăng ký</Label>
+                        <Label htmlFor="subscriptionID">Gói đăng ký</Label>
                         <Link
                           href={"/service"}
                           className="text-sm text-green-700 hover:underline"
@@ -180,21 +193,24 @@ export default function JobAddPage() {
                         </Link>
                       </div>
                       <select
-                        id="subscriptionId"
-                        name="subscriptionId"
-                        value={values.subscriptionId}
+                        id="subscriptionID"
+                        name="subscriptionID"
+                        value={values.subscriptionID}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         className={`${
-                          errors.subscriptionId && touched.subscriptionId
+                          errors.subscriptionID && touched.subscriptionID
                             ? "border-red-500"
                             : ""
                         } block w-full p-2 border rounded-md`}
                       >
-                        <option value="">Chọn gói đăng ký</option>
-                        {jobSubscriptions.map((sub) => (
-                          <option key={sub.id} value={sub.id}>
-                            {sub.name} -{" "}
+                        <option value={0}>Chọn gói đăng ký</option>
+                        {subscriptions?.map((sub) => (
+                          <option
+                            key={sub.subscriptionID}
+                            value={Number(sub.subscriptionID)}
+                          >
+                            {sub.subscriptionName} -{" "}
                             {sub.price.toLocaleString("vi-VN", {
                               style: "currency",
                               currency: "VND",
@@ -202,15 +218,24 @@ export default function JobAddPage() {
                           </option>
                         ))}
                       </select>
-                      {values.subscriptionId && (
+                      {values?.subscriptionID && values.subscriptionID > 0 && (
                         <ul className="mt-2 text-sm text-gray-600">
-                          {jobSubscriptions
-                            .find((sub) => sub.id === values.subscriptionId)
-                            ?.descriptions.split(".")
+                          {subscriptions
+                            ?.find(
+                              (sub) =>
+                                String(sub.subscriptionID) ===
+                                String(values.subscriptionID)
+                            )
+                            ?.description.split(".")
                             .map((desc, index) => (
-                              <li key={index}>{desc.trim()}</li>
+                              <li key={index}>⭐ {desc.trim()}</li>
                             ))}
                         </ul>
+                      )}
+                      {errors.subscriptionID && touched.subscriptionID && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.subscriptionID}
+                        </p>
                       )}
                     </div>
                     <div className="grid gap-2">
@@ -235,16 +260,8 @@ export default function JobAddPage() {
                         id="requirements"
                         name="requirements"
                         placeholder="Nhập yêu cầu công việc (nhập từng yêu cầu cách nhau bằng dấu phẩy)"
-                        value={values.requirements.join(", ")}
-                        onChange={(e) => {
-                          const requirements = e.target.value.split(", ");
-                          handleChange({
-                            target: {
-                              name: "requirements",
-                              value: requirements,
-                            },
-                          });
-                        }}
+                        value={values.requirements}
+                        onChange={handleChange}
                         onBlur={handleBlur}
                         className={`${
                           errors.requirements && touched.requirements
@@ -252,6 +269,11 @@ export default function JobAddPage() {
                             : ""
                         }`}
                       />
+                      {errors.requirements && touched.requirements && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.requirements}
+                        </p>
+                      )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="grid gap-2">
@@ -270,6 +292,11 @@ export default function JobAddPage() {
                               : ""
                           }`}
                         />
+                        {errors.location && touched.location && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.location}
+                          </p>
+                        )}
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="workingHours">Giờ làm việc</Label>
@@ -287,6 +314,11 @@ export default function JobAddPage() {
                               : ""
                           }`}
                         />
+                        {errors.workingHours && touched.workingHours && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.workingHours}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="grid gap-2">
@@ -336,6 +368,11 @@ export default function JobAddPage() {
                             : ""
                         }`}
                       />
+                      {errors.salary && touched.salary && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.salary}
+                        </p>
+                      )}
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="startDate">Ngày bắt đầu</Label>
@@ -363,52 +400,35 @@ export default function JobAddPage() {
                             : ""
                         }`}
                       />
+                      {errors.startDate && touched.startDate && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {typeof errors.startDate === "string"
+                            ? errors.startDate
+                            : "Có lỗi với ngày bắt đầu"}
+                        </p>
+                      )}
                     </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="imageUrl">Ảnh</Label>
-                      <Input
-                        id="imageUrl"
-                        name="imageUrl"
-                        type="text"
-                        placeholder="Nhập URL ảnh của công việc"
-                        value={values.imageUrl}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={`${
-                          errors.imageUrl && touched.imageUrl
-                            ? "border-red-500"
-                            : ""
-                        }`}
-                      />
+                    <div className="flex justify-end gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          clearForm();
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        Làm mới
+                      </Button>
+                      <Button
+                        ref={submitBtnRef}
+                        type="submit"
+                        disabled={isSubmitting}
+                      >
+                        Đăng bài tuyển dụng
+                      </Button>
                     </div>
-                    {values.imageUrl&&!errors.imageUrl&&touched.imageUrl && (
-                      <div className="mt-4">
-                        <Image
-                          src={values.imageUrl}
-                          alt="Ảnh công việc"
-                          width={300}
-                          height={100}
-                          className="w-full h-auto rounded-md"
-                        />
-                      </div>
-                    )}
                   </Form>
                 </CardContent>
-                <CardFooter className="flex justify-end gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      handleReset();
-                    }}
-                    disabled={isSubmitting}
-                  >
-                    Làm mới
-                  </Button>
-                  <Button type="submit" disabled={isSubmitting}>
-                    Đăng bài tuyển dụng
-                  </Button>
-                </CardFooter>
               </Card>
             </div>
           </>

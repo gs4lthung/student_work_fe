@@ -1,5 +1,6 @@
 "use client";
 
+import { getJobs } from "@/api/job-api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,13 +32,21 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function JobPage() {
+  const [initialData, setInitialData] = useState<JobInterface[]>([]);
+  const [filteredData, setFilteredData] = useState<JobInterface[]>([]);
+  const [displayedData, setDisplayedData] = useState<JobInterface[]>([]);
+  useEffect(() => {
+    async function fetchJobs() {
+      const data = await getJobs();
+      setInitialData(data);
+      setFilteredData(data);
+      setDisplayedData(data.slice(0, initialLimit));
+    }
+    fetchJobs();
+  }, []);
+
   const initialLimit = 5;
-  const [filteredData, setFilteredData] = useState<JobInterface[]>(
-    jobConst.data
-  );
-  const [displayedData, setDisplayedData] = useState<JobInterface[]>(
-    jobConst.data.slice(0, initialLimit)
-  );
+
   const [limit, setLimit] = useState(initialLimit);
   const [isLoading, setIsLoading] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -56,12 +65,12 @@ export default function JobPage() {
 
   // Get unique locations from data
   const uniqueLocations = Array.from(
-    new Set(jobConst.data.map((job) => job.location))
+    new Set(initialData.map((job) => job.location))
   );
 
   const columns: ColumnDef<JobInterface>[] = [
     {
-      accessorKey: "id",
+      accessorKey: "jobID",
     },
     {
       accessorKey: "title",
@@ -180,7 +189,7 @@ export default function JobPage() {
   // Apply manual filters whenever filter states change
   const applyManualFilters = useCallback(() => {
     // Start with all data
-    let filtered = [...jobConst.data];
+    let filtered = [...initialData];
 
     // Apply title search filter
     if (searchValue.trim()) {
@@ -236,11 +245,23 @@ export default function JobPage() {
     }
 
     setColumnFilters(newColumnFilters);
-  }, [searchValue, salaryFilter, selectedCategories, selectedLocations, initialLimit]);
+  }, [
+    searchValue,
+    salaryFilter,
+    selectedCategories,
+    selectedLocations,
+    initialLimit,
+  ]);
 
   useEffect(() => {
     applyManualFilters();
-  }, [searchValue, salaryFilter, selectedCategories, selectedLocations, applyManualFilters]);
+  }, [
+    searchValue,
+    salaryFilter,
+    selectedCategories,
+    selectedLocations,
+    applyManualFilters,
+  ]);
 
   function clearFilters() {
     setSearchValue("");
@@ -260,9 +281,9 @@ export default function JobPage() {
     setIsLoading(false);
 
     // Reset to original data
-    setFilteredData(jobConst.data);
+    setFilteredData(initialData);
     setLimit(initialLimit);
-    setDisplayedData(jobConst.data.slice(0, initialLimit));
+    setDisplayedData(initialData.slice(0, initialLimit));
 
     window.scrollTo(0, 0);
   }
@@ -535,7 +556,7 @@ export default function JobPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
             {displayedData.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <Link key={row.id} href={`/job/${row.getValue("id")}`}>
+                <Link key={row.id} href={`/job/${row.getValue("jobID")}`}>
                   <Card className="p-4 shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-lg font-semibold">

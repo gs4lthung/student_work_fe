@@ -25,10 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TypographyH2 } from "@/components/ui/typography";
-import {
-  JobInterface,
-  JobSubcriptionInterface,
-} from "@/interfaces/job-interface";
+import { JobInterface } from "@/interfaces/job-interface";
 import { cn } from "@/lib/utils";
 import {
   ColumnDef,
@@ -48,13 +45,14 @@ import { ChevronDown, ChevronRight, Eye } from "lucide-react";
 import Image from "next/image";
 import React, { useMemo, useState } from "react";
 import ApplicationTable from "./application-table";
+import { SubscriptionInterface } from "@/interfaces/subscription-interface";
 
 export default function JobTable({
   jobs,
   jobSubscriptions,
 }: {
   jobs: JobInterface[];
-  jobSubscriptions: JobSubcriptionInterface[];
+  jobSubscriptions: SubscriptionInterface[];
 }) {
   const [limit, setLimit] = useState(10);
   const [pagination, setPagination] = useState({
@@ -299,8 +297,9 @@ export default function JobTable({
                   <span>
                     <strong>Gói dịch vụ: </strong>
                     {jobSubscriptions.find(
-                      (sub) => sub.id === row.original.subscriptionId
-                    )?.name || "Không có gói dịch vụ"}
+                      (sub) =>
+                        sub.subscriptionID === row.original.subscriptionID
+                    )?.subscriptionName || "Không có gói dịch vụ"}
                   </span>
                   <span>
                     <strong>Danh mục:</strong> {row.getValue("category")}
@@ -328,8 +327,7 @@ export default function JobTable({
                     }).format(new Date(row.getValue("startDate")))}
                   </span>
                   <span>
-                    <strong>Yêu cầu:</strong>{" "}
-                    {row.original.requirements.join(", ")}
+                    <strong>Yêu cầu:</strong> {row.original.requirements}
                   </span>
                   <span>
                     <strong>Ngày tạo: </strong>
@@ -370,7 +368,7 @@ export default function JobTable({
     return (
       <tr>
         <td colSpan={columns.length} className="p-4">
-          <ApplicationTable jobId={row.original.id ?? ""} />
+          <ApplicationTable jobId={row.original.jobID ?? ""} />
         </td>
       </tr>
     );

@@ -11,13 +11,9 @@ export const JobValidationSchema: Yup.ObjectSchema<JobInterface> = Yup.object({
   description: Yup.string()
     .required("Mô tả công việc không được để trống")
     .max(2000, "Mô tả công việc không được quá 2000 ký tự"),
-  requirements: Yup.array()
-    .of(
-      Yup.string()
-        .max(500, "Yêu cầu không được quá 500 ký tự")
-        .required("Yêu cầu không được để trống")
-    )
-    .required("Yêu cầu công việc không được để trống"),
+  requirements: Yup.string()
+    .required("Yêu cầu công việc không được để trống")
+    .max(1000, "Yêu cầu công việc không được quá 1000 ký tự"),
   location: Yup.string()
     .required("Địa điểm làm việc không được để trống")
     .max(100, "Địa điểm làm việc không được quá 100 ký tự"),
@@ -33,16 +29,10 @@ export const JobValidationSchema: Yup.ObjectSchema<JobInterface> = Yup.object({
   startDate: Yup.date()
     .required("Ngày bắt đầu không được để trống")
     .min(new Date(), "Ngày bắt đầu phải là ngày trong tương lai"),
-  endDate: Yup.date()
-    .required("Ngày kết thúc không được để trống")
-    .min(Yup.ref("startDate"), "Ngày kết thúc phải sau ngày bắt đầu"),
-  imageUrl: Yup.string()
-    .url("URL hình ảnh không hợp lệ")
-    .optional()
-    .max(500, "URL hình ảnh không được quá 500 ký tự"),
+  imageUrl: Yup.string().optional(),
   employerId: Yup.string().optional(),
-  subscriptionId: Yup.string().optional(),
-  id: Yup.string().optional(),
+  subscriptionID: Yup.number().required("ID gói đăng ký không được để trống"),
+  jobID: Yup.string().optional(),
   createdAt: Yup.date().optional(),
   updatedAt: Yup.date().optional(),
 });

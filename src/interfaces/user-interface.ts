@@ -17,8 +17,9 @@ export interface StudentInterface extends Omit<UserInterface, "role"> {
   role: "Student";
 }
 
-export interface EmployerInterface extends Omit<UserInterface, "role"> {
-  role: "Employer";
+export interface EmployerInterface {
+  userId?: string;
+  role: string | "Employer";
   companyName: string;
   companySize: number;
   description: string;
