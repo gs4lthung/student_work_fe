@@ -3,6 +3,11 @@ import { toast } from "sonner";
 
 // Extend Axios request config to include requiresAuth
 declare module "axios" {
+  export interface AxiosRequestConfig {
+    requiresAuth?: boolean;
+    _retry?: boolean;
+  }
+
   export interface InternalAxiosRequestConfig {
     requiresAuth?: boolean;
     _retry?: boolean;
@@ -13,7 +18,7 @@ const api = axios.create({
   baseURL: process.env.API_URL,
   timeout: 5000,
   headers: {
-    "Content-Type": "application/json",
+    // "Content-Type": "application/json",
     Accept: "application/json",
   },
   withCredentials: true, // if using refresh token from HttpOnly cookie
@@ -23,16 +28,14 @@ export async function getAuthToken() {
   return {
     accessToken: document.cookie
       .split("; ")
-      .find((row) => row.startsWith("accessToken=")),
+      .find((row) => row.startsWith("accessToken="))?.split("=")[1] || localStorage.getItem("accessToken"),
     refreshToken: document.cookie
       .split("; ")
-      .find((row) => row.startsWith("refreshToken=")),
+      .find((row) => row.startsWith("refreshToken="))?.split("=")[1] || localStorage.getItem("refreshToken"),
   };
 }
 
-export function logout() {
-
-}
+export function logout() {}
 
 api.interceptors.request.use(
   (config) => {

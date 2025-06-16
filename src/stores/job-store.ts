@@ -3,7 +3,7 @@ import { createPersistentFormStore } from "./persisten-store";
 
 type DraftJobPostStore = Pick<
   JobInterface,
-  | "subscriptionId"
+  | "subscriptionID"
   | "title"
   | "category"
   | "description"

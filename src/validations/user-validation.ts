@@ -1,4 +1,8 @@
-import { LoginUser, UserInterface } from "@/interfaces/user-interface";
+import {
+  EmployerInterface,
+  LoginUser,
+  UserInterface,
+} from "@/interfaces/user-interface";
 import * as Yup from "yup";
 export const RegisterValidationSchema: Yup.ObjectSchema<UserInterface> =
   Yup.object({
@@ -56,3 +60,22 @@ export const LoginValidationSchema: Yup.ObjectSchema<LoginUser> = Yup.object({
   ),
   password: Yup.string().required("Mật khẩu là bắt buộc"),
 });
+
+export const EmployerValidationSchema: Yup.ObjectSchema<EmployerInterface> =
+  Yup.object({
+    userId: Yup.string().optional(),
+    role: Yup.string()
+      .oneOf(["Employer"], "Vai trò phải là Nhà tuyển dụng")
+      .required("Vai trò không được để trống"),
+    companyName: Yup.string().required("Tên công ty không được để trống"),
+    companySize: Yup.number()
+      .required("Quy mô công ty không được để trống")
+      .min(1, "Quy mô công ty phải lớn hơn 0"),
+    description: Yup.string().required("Mô tả không được để trống"),
+    location: Yup.string().required("Địa chỉ không được để trống"),
+    industry: Yup.string().required("Ngành nghề không được để trống"),
+    website: Yup.string()
+      .required("Website không được để trống")
+      .url("Website không hợp lệ"),
+    logoUrl: Yup.string().url("URL logo không hợp lệ"),
+  });

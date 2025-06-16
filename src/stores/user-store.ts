@@ -1,7 +1,7 @@
 import { UserInterface } from "@/interfaces/user-interface";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-type UserStore = Pick<
+export type UserStore = Pick<
   UserInterface,
   | "userId"
   | "firstName"

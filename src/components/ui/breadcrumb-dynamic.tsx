@@ -17,6 +17,8 @@ const breadcrumbLabelMap: Record<string, string> = {
   post: "Tin đăng",
   service: "Dịch vụ",
   "my-cv": "CV của tôi",
+  "saved-jobs": "Việc làm đã lưu",
+  "applied-jobs": "Việc làm đã ứng tuyển",
   // Add more mappings here
 };
 

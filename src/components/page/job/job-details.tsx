@@ -1,5 +1,6 @@
 "use client";
 
+import { getJobById } from "@/api/job-api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +15,6 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { jobConst } from "@/const/job-const";
 import type { JobInterface } from "@/interfaces/job-interface";
 import {
   StarIcon,
@@ -40,7 +40,6 @@ interface JobComment {
   createdAt: Date;
 }
 
-// Mock comments data
 const mockComments: JobComment[] = [
   {
     id: "1",
@@ -88,16 +87,15 @@ export default function JobDetailPage({
   const [activeTab, setActiveTab] = useState("details");
   const [isLoading, setIsLoading] = useState(true);
 
-  // In a real app, you would fetch the job by ID from an API
   useEffect(() => {
-    const foundJob =
-      jobConst.data.find((j) => j.id === resolvedParams.slug) ||
-      jobConst.data[0];
-    setJob(foundJob);
-    setIsLoading(false);
-    
-    // In a real app, you would fetch comments for this specific job
-    // For now, we'll just use our mock data
+    const fetchJob = async (slug: string) => {
+      setIsLoading(true);
+      const fetchedJob = await getJobById(Number(slug));
+      setJob(fetchedJob);
+      setIsLoading(false);
+    };
+
+    fetchJob(resolvedParams.slug);
   }, [resolvedParams.slug]);
 
   const handleCommentSubmit = () => {
@@ -108,7 +106,7 @@ export default function JobDetailPage({
       userId: "current-user",
       userName: "Bạn",
       userAvatar: "/placeholder.svg?height=40&width=40",
-      jobId: job?.id || "",
+      jobId: job?.jobID || "",
       text: newComment,
       rating: userRating,
       createdAt: new Date(),
@@ -149,15 +147,8 @@ export default function JobDetailPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section with Job Image */}
-      <div className="relative h-80 bg-gradient-to-r from-green-600 to-green-200 overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src={job?.imageUrl || "/placeholder.svg?height=320&width=1200"}
-            alt={job?.title || "Job Image"}
-            fill
-            className="object-cover opacity-20"
-          />
-        </div>
+      <div className="relative h-80 bg-gradient-to-r from-green-400 to-green-300 overflow-hidden">
+        <div className="absolute inset-0"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="text-white max-w-4xl">
             <div className="flex items-center gap-2 mb-4">
@@ -252,7 +243,7 @@ export default function JobDetailPage({
                         Yêu cầu công việc
                       </h3>
                       <ul className="space-y-2 mb-8">
-                        {job?.requirements.map((req, index) => (
+                        {job?.requirements.split(".").map((req, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
                             <span className="text-gray-700">{req}</span>
@@ -299,7 +290,11 @@ export default function JobDetailPage({
                                 <span>Ngày bắt đầu</span>
                               </div>
                               <span className="font-medium text-gray-900">
-                                {job?.startDate.toLocaleDateString("vi-VN")}
+                                {job?.startDate
+                                  ? new Date(job.startDate).toLocaleDateString(
+                                      "vi-VN"
+                                    )
+                                  : ""}
                               </span>
                             </div>
                           </div>
@@ -325,7 +320,11 @@ export default function JobDetailPage({
                                 <span>Ngày đăng</span>
                               </div>
                               <span className="font-medium text-gray-900">
-                                {job?.createdAt?.toLocaleDateString("vi-VN")}
+                                {job?.createdAt
+                                  ? new Date(job.createdAt).toLocaleDateString(
+                                      "vi-VN"
+                                    )
+                                  : ""}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
@@ -334,22 +333,16 @@ export default function JobDetailPage({
                                 <span>Cập nhật</span>
                               </div>
                               <span className="font-medium text-gray-900">
-                                {job?.updatedAt?.toLocaleDateString("vi-VN")}
+                                {job?.updatedAt
+                                  ? new Date(job.updatedAt).toLocaleDateString(
+                                      "vi-VN"
+                                    )
+                                  : ""}
                               </span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <Image
-                        src={
-                          job?.imageUrl ||
-                          "/placeholder.svg?height=400&width=800"
-                        }
-                        alt={job?.title || "Job Image"}
-                        width={800}
-                        height={400}
-                        className="mt-6 rounded-lg object-cover w-full"
-                      />
                     </div>
                   </CardContent>
                   <CardFooter>
@@ -451,9 +444,11 @@ export default function JobDetailPage({
                                     ))}
                                   </div>
                                   <span className="text-xs text-gray-500">
-                                    {comment.createdAt.toLocaleDateString(
-                                      "vi-VN"
-                                    )}
+                                    {comment.createdAt
+                                      ? new Date(
+                                          comment.createdAt
+                                        ).toLocaleDateString("vi-VN")
+                                      : ""}
                                   </span>
                                 </div>
                               </div>
@@ -546,7 +541,9 @@ export default function JobDetailPage({
                         Ngày bắt đầu
                       </h3>
                       <p className="font-semibold text-gray-900">
-                        {job?.startDate.toLocaleDateString("vi-VN")}
+                        {job?.startDate
+                          ? new Date(job.startDate).toLocaleDateString("vi-VN")
+                          : ""}
                       </p>
                     </div>
                   </div>
@@ -568,22 +565,12 @@ export default function JobDetailPage({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {jobConst.data.slice(0, 3).map((similarJob) => (
+                  {/* {jobConst.data.slice(0, 3).map((similarJob) => (
                     <div
-                      key={similarJob.id}
+                      key={similarJob.jobID}
                       className="p-4 border border-gray-100 rounded-lg hover:shadow-sm transition-shadow cursor-pointer"
                     >
                       <div className="flex gap-3">
-                        <Image
-                          src={
-                            similarJob.imageUrl ||
-                            "/placeholder.svg?height=60&width=60"
-                          }
-                          alt={similarJob.title}
-                          width={60}
-                          height={60}
-                          className="rounded-lg object-cover"
-                        />
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium text-gray-900 truncate">
                             {similarJob.title}
@@ -603,7 +590,7 @@ export default function JobDetailPage({
                         </div>
                       </div>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
               </CardContent>
               <CardFooter>
