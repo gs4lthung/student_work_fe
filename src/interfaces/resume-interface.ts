@@ -1,25 +1,23 @@
 import { StudentInterface } from "./user-interface";
 
 export interface ResumeInterface {
-  id?: string;
-  student?: StudentInterface;
+  resumeID?: string;
+  studentID?: StudentInterface;
   isDefault: boolean;
-  personalInfo: ResumePersonalInfo;
-  education: ResumeEducation[];
-  experience: ResumeExperience[];
-  skills: string[];
-  languages: ResumeLanguage[];
-  awards: ResumeAward[];
-  certificates: ResumeCertificate[];
-}
-
-export interface ResumePersonalInfo {
   fullName: string;
   email: string;
   phoneNumber: string;
   address: string;
   jobTitle: string;
   introduction: string;
+  education: ResumeEducation[];
+  experience: ResumeExperience[];
+  skills: string[];
+  languages: ResumeLanguage[];
+  awards: ResumeAward[];
+  certificates: ResumeCertificate[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ResumeEducation {

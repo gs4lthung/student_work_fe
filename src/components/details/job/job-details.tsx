@@ -1,6 +1,8 @@
 "use client";
 
+import { createApplication } from "@/api/application-api";
 import { getJobById } from "@/api/job-api";
+import { searchResumes } from "@/api/resume-api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +13,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import type { ApplicationInterface } from "@/interfaces/application-interface";
 import type { JobInterface } from "@/interfaces/job-interface";
+import type { ResumeInterface } from "@/interfaces/resume-interface";
+import { useUserStore } from "@/stores/user-store";
+import { ApplicationValidationSchema } from "@/validations/application-validation";
+import { Form, Formik } from "formik";
 import {
   StarIcon,
   MapPin,
@@ -26,7 +43,9 @@ import {
   Save,
 } from "lucide-react";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
+import Link from "next/link";
+import { use, useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 
 // Mock comment interface
 interface JobComment {
@@ -79,13 +98,30 @@ export default function JobDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const resolvedParams = use(params);
+  const { user } = useUserStore();
   const [job, setJob] = useState<JobInterface | null>(null);
+  const [userResumes, setUserResumes] = useState<ResumeInterface[]>([]);
+  const applicationData: ApplicationInterface = {
+    jobID: resolvedParams.slug,
+    studentID: user?.studentID || "",
+    status: "PENDING",
+    coverletter: "",
+    resumeID: "",
+    appliedAt: new Date(),
+    updateAt: new Date(),
+  };
   const [comments, setComments] = useState<JobComment[]>(mockComments);
   const [newComment, setNewComment] = useState("");
   const [userRating, setUserRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [activeTab, setActiveTab] = useState("details");
   const [isLoading, setIsLoading] = useState(true);
+
+  const fetchResumes = useCallback(async () => {
+    if (!user?.studentID) return;
+    const res = await searchResumes(user.studentID, 1, 10);
+    setUserResumes(res);
+  }, [user?.studentID]);
 
   useEffect(() => {
     const fetchJob = async (slug: string) => {
@@ -96,7 +132,8 @@ export default function JobDetailPage({
     };
 
     fetchJob(resolvedParams.slug);
-  }, [resolvedParams.slug]);
+    fetchResumes();
+  }, [fetchResumes, resolvedParams.slug, user?.studentID]);
 
   const handleCommentSubmit = () => {
     if (newComment.trim() === "" || userRating === 0) return;
@@ -147,7 +184,7 @@ export default function JobDetailPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section with Job Image */}
-      <div className="relative h-80 bg-gradient-to-r from-green-400 to-green-300 overflow-hidden">
+      <div className="relative h-80 bg-gradient-to-r from-green-400 to-blue-300 overflow-hidden">
         <div className="absolute inset-0"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="text-white max-w-4xl">
@@ -346,7 +383,135 @@ export default function JobDetailPage({
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button className="w-full">Ứng tuyển ngay</Button>
+                    <Dialog>
+                      <DialogTrigger asChild className="w-full">
+                        <Button>Ứng tuyển ngay</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                          <DialogTitle className="text-lg font-semibold mb-4">
+                            Chọn CV của bạn để ứng tuyển
+                          </DialogTitle>
+                        </DialogHeader>
+                        <Formik
+                          initialValues={applicationData}
+                          validationSchema={ApplicationValidationSchema}
+                          onSubmit={async (values, { setSubmitting }) => {
+                            // Handle application submission logic here
+                            setSubmitting(true);
+                            console.log("Submitting application:", values);
+                            const res = await createApplication(values);
+                            if (res) {
+                              toast.success("Ứng tuyển thành công!");
+                              setTimeout(()=>{
+                                window.location.reload();
+                              },1000)
+                            } else {
+                              toast.error("Ứng tuyển thất bại!");
+                            }
+                            setSubmitting(false);
+                          }}
+                        >
+                          {({
+                            errors,
+                            touched,
+                            handleSubmit,
+                            handleChange,
+                            handleBlur,
+                            values,
+                            isSubmitting,
+                          }) => (
+                            <Form onSubmit={handleSubmit}>
+                              <div className="space-y-4">
+                                <Label className="text-sm font-medium">
+                                  Chọn CV để ứng tuyển
+                                </Label>
+                                <RadioGroup
+                                  value={values.resumeID}
+                                  onValueChange={(value) => {
+                                    handleChange({
+                                      target: { name: "resumeID", value },
+                                    });
+                                  }}
+                                  className="space-y-4"
+                                >
+                                  {userResumes.length > 0 ? (
+                                    userResumes.map((resume) => (
+                                      <div
+                                        key={resume.resumeID}
+                                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                                      >
+                                        <div className="flex items-center space-x-3">
+                                          <RadioGroupItem
+                                            value={resume.resumeID ?? ""}
+                                            id={`resume-${resume.resumeID}`}
+                                          />
+                                          <Label
+                                            htmlFor={`resume-${resume.resumeID}`}
+                                            className="text-sm font-medium cursor-pointer"
+                                          >
+                                            {resume.jobTitle ||
+                                              resume.fullName ||
+                                              "CV không có tiêu đề"}
+                                          </Label>
+                                        </div>
+                                        <Link
+                                          href={`/cv/${resume.resumeID}`}
+                                          className="text-blue-600 hover:underline text-sm"
+                                          target="_blank"
+                                        >
+                                          Xem CV
+                                        </Link>
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="text-center py-8">
+                                      <div className="text-gray-500 mb-2">
+                                        Bạn chưa có CV nào.
+                                      </div>
+                                      <Link
+                                        href="/cv/create"
+                                        className="text-blue-600 hover:underline text-sm"
+                                      >
+                                        Tạo CV mới
+                                      </Link>
+                                    </div>
+                                  )}
+                                </RadioGroup>
+
+                                {errors.resumeID && touched.resumeID && (
+                                  <div className="text-red-600 text-sm mt-2">
+                                    {errors.resumeID}
+                                  </div>
+                                )}
+                              </div>
+                              <Label htmlFor="coverLetter" className="mt-4">
+                                Cover Letter
+                              </Label>
+                              <Textarea
+                                id="coverletter"
+                                placeholder="Viết thư xin việc của bạn tại đây..."
+                                className="min-h-[100px] resize-none my-4"
+                                value={values.coverletter}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+
+                              {errors.coverletter && touched.coverletter && (
+                                <div className="text-red-600 text-sm">
+                                  {errors.coverletter}
+                                </div>
+                              )}
+                              <DialogFooter>
+                                <Button type="submit" disabled={isSubmitting}>
+                                  Ứng tuyển
+                                </Button>
+                              </DialogFooter>
+                            </Form>
+                          )}
+                        </Formik>
+                      </DialogContent>
+                    </Dialog>
                   </CardFooter>
                 </Card>
               </TabsContent>

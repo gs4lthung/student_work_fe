@@ -41,7 +41,7 @@ const items = [
   },
   {
     title: "Hồ sơ & CV",
-    url: "/cv/add",
+    url: "/cv",
     role: ["Student"],
   },
 

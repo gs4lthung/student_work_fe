@@ -63,7 +63,7 @@ export const LoginValidationSchema: Yup.ObjectSchema<LoginUser> = Yup.object({
 
 export const EmployerValidationSchema: Yup.ObjectSchema<EmployerInterface> =
   Yup.object({
-    userId: Yup.string().optional(),
+    employerID: Yup.string().optional(),
     role: Yup.string()
       .oneOf(["Employer"], "Vai trò phải là Nhà tuyển dụng")
       .required("Vai trò không được để trống"),

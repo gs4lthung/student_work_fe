@@ -26,12 +26,11 @@ export const createJob = async (data: JobInterface) => {
   }
 };
 
-export const getJobs = async () => {
-  const url = "/api/Job/pagination?pageIndex=1&pageSize=1000";
+export const getJobs = async (pageIndex: number, pageSize: number) => {
+  const url = `/api/Job/pagination?pageIndex=${pageIndex}&pageSize=${pageSize}`;
   const response = await api.get(url);
   if (response.status === 200) {
-    console.log("Jobs fetched successfully:", response);
-    return response.data.items;
+    return response.data;
   }
 };
 
@@ -45,4 +44,16 @@ export const getJobById = async (id: number) => {
     console.error("Failed to fetch job:", response);
     throw new Error("Failed to fetch job");
   }
+};
+
+export const getJobByEmployerId = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const url = `/api/Job/employer-jobs?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+  const response = await api.get(url, { requiresAuth: true });
+  if (response.status === 200) {
+    return response.data;
+  }
+  throw new Error("Failed to fetch jobs by employer ID");
 };

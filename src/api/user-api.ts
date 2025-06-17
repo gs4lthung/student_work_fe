@@ -37,6 +37,63 @@ export const login = async (data: LoginUser) => {
     document.cookie = `accessToken=${accessToken}; path=/; secure; SameSite=Strict`;
     document.cookie = `refreshToken=${refreshToken}; path=/; secure; SameSite=Strict`;
     document.cookie = `userRole=${role}; path=/; secure; SameSite=Strict`;
+
+    if (role === "Employer") {
+      await getEmployerInfoByUserID(user.userId);
+    } else if (role === "Student") {
+      await getStudentInfoByUserID(user.userId);
+    }
+
     toast.success("Đăng nhập thành công!");
+  }
+};
+
+const getStudentInfoByUserID = async (userId: string) => {
+  const url = `/api/Student/user/${userId}`;
+  const response = await api.get(url, {
+    requiresAuth: true,
+  });
+  if (response?.status === 200) {
+    console.log("Student info:", response);
+    const currentUser = useUserStore.getState().user;
+    if (currentUser) {
+      useUserStore.getState().setUser({
+        ...currentUser,
+        studentID: response.data.studentID,
+        university: response.data.university,
+        major: response.data.major,
+        yearOfStudy: response.data.yearOfStudy,
+        dateOfBirth: response.data.dateOfBirth,
+        bio: response.data.bio,
+      });
+    }
+  } else {
+    throw new Error("Failed to fetch student info");
+  }
+};
+
+const getEmployerInfoByUserID = async (userId: string) => {
+  const url = `/api/Employer/user/${userId}`;
+  const response = await api.get(url, {
+    requiresAuth: true,
+  });
+  if (response?.status === 200) {
+    console.log("Employer info:", response);
+    const currentUser = useUserStore.getState().user;
+    if (currentUser) {
+      useUserStore.getState().setUser({
+        ...currentUser,
+        employerID: response.data.employerID,
+        companyName: response.data.companyName,
+        companySize: response.data.companySize,
+        description: response.data.description,
+        industry: response.data.industry,
+        location: response.data.location,
+        website: response.data.website,
+        logoUrl: response.data.logoUrl,
+      });
+    }
+  } else {
+    throw new Error("Failed to fetch employer info");
   }
 };

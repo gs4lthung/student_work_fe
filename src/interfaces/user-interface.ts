@@ -13,12 +13,18 @@ export interface UserInterface {
   isActive?: boolean;
 }
 
-export interface StudentInterface extends Omit<UserInterface, "role"> {
-  role: "Student";
+export interface StudentInterface {
+  studentID?: string;
+  role: string | "Student";
+  university?: string;
+  major?: string;
+  yearOfStudy?: number;
+  dateOfBirth?: Date;
+  bio?: string;
 }
 
 export interface EmployerInterface {
-  userId?: string;
+  employerID?: string;
   role: string | "Employer";
   companyName: string;
   companySize: number;
