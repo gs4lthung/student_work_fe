@@ -22,7 +22,7 @@ import React, { useEffect } from "react";
 
 export default function AppliedJobsPage() {
   const [page, setPage] = React.useState(1);
-  const [limit, setLimit] = React.useState(10);
+  // const [limit, setLimit] = React.useState(10);
   const [totalPages, setTotalPages] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(true);
   const [applications, setApplications] = React.useState<
@@ -31,13 +31,13 @@ export default function AppliedJobsPage() {
   useEffect(() => {
     async function fetchApplications() {
       setIsLoading(true);
-      const res = await getApplicationsByStudent(page, limit);
+      const res = await getApplicationsByStudent(page, 10);
       setApplications(res.items);
       setTotalPages(res.totalPagesCount);
       setIsLoading(false);
     }
     fetchApplications();
-  }, [page, limit]);
+  }, [page]);
   return (
     <div>
       {isLoading ? (

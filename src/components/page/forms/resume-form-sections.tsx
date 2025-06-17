@@ -18,8 +18,17 @@ import {
   ResumeExperience,
 } from "@/interfaces/resume-interface";
 
+interface PersonalInfo {
+  fullName: string;
+  jobTitle: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  introduction: string;
+}
+
 interface PersonalInfoSectionProps {
-  personalInfo: any;
+  personalInfo: PersonalInfo;
   onChange: (field: string, value: string) => void;
 }
 

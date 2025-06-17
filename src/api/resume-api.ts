@@ -14,7 +14,7 @@ export const searchResumes = async (
   const response = await api.get(url);
   if (response.status === 200) {
     console.log("Fetched resumes:", response.data);
-    return response.data.items.map((item: any) => parseResumeFromAPI(item));
+    return response.data.items.map((item: unknown) => parseResumeFromAPI(item));
   } else {
     throw new Error("Failed to fetch resumes");
   }

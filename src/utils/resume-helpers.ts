@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ResumeAward, ResumeCertificate, ResumeEducation, ResumeExperience, ResumeInterface, ResumeLanguage } from "@/interfaces/resume-interface";
 
 // Helper functions to convert between interface and database string format
-export const convertArrayToString = (array: any[]): string => {
+export const convertArrayToString = (array: unknown[]): string => {
   return JSON.stringify(array)
 }
 
