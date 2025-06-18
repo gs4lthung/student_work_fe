@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import type { JobInterface } from "@/interfaces/job-interface";
 import type { ApplicationInterface } from "@/interfaces/application-interface";
 import { getJobByEmployerId } from "@/api/job-api";
-import { getApplicationsByJob } from "@/api/application-api";
+import {
+  getApplicationsByJob,
+  updateApplicationStatus,
+} from "@/api/application-api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +28,18 @@ import {
   Calendar,
   FileText,
 } from "lucide-react";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 
 export default function DashboardPost() {
   const [isLoading, setIsLoading] = useState(true);
@@ -104,7 +119,7 @@ export default function DashboardPost() {
         className: "text-blue-600",
         text: "Đã xem",
       },
-      ACCEPTED: {
+      APPROVED: {
         variant: "outline" as const,
         className: "text-green-600",
         text: "Chấp nhận",
@@ -183,7 +198,11 @@ export default function DashboardPost() {
                     </TableCell>
                     <TableCell className="max-w-xs">
                       <div className="truncate" title={job.requirements}>
-                        {job.requirements.slice(0, 30)}...
+                        {job.requirements.split(".").map((req, index) => (
+                          <div key={index} className="mb-1">
+                            {req.trim()}
+                          </div>
+                        ))}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -289,12 +308,108 @@ export default function DashboardPost() {
                                           </TableCell>
                                           <TableCell>
                                             <div className="flex gap-2">
-                                              <Button
-                                                variant="outline"
-                                                size="sm"
+                                              {app.status === "PENDING" ? (
+                                                <>
+                                                  <Button
+                                                    size={"sm"}
+                                                    onClick={async () => {
+                                                      if (
+                                                        app.stt !== undefined
+                                                      ) {
+                                                        const res =
+                                                          await updateApplicationStatus(
+                                                            Number(app.stt),
+                                                            "APPROVED"
+                                                          );
+                                                        if (res) {
+                                                          toast.success(
+                                                            "Đã duyệt ứng viên thành công"
+                                                          );
+                                                          window.location.reload();
+                                                        }
+                                                      }
+                                                    }}
+                                                  >
+                                                    Duyệt
+                                                  </Button>
+                                                  <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                      <Button
+                                                        variant={"destructive"}
+                                                        size="sm"
+                                                      >
+                                                        Từ chối
+                                                      </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                      <AlertDialogHeader>
+                                                        <AlertDialogTitle>
+                                                          Bạn có chắc chắn muốn
+                                                          từ chối ứng viên này?
+                                                        </AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                          Việc này sẽ không thể
+                                                          hoàn tác. Ứng viên sẽ
+                                                          không được xem xét cho
+                                                          công việc này nữa.
+                                                        </AlertDialogDescription>
+                                                      </AlertDialogHeader>
+                                                      <AlertDialogFooter>
+                                                        <AlertDialogCancel>
+                                                          Hủy
+                                                        </AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                          onClick={async () => {
+                                                            if (
+                                                              app.stt !==
+                                                              undefined
+                                                            ) {
+                                                              await updateApplicationStatus(
+                                                                Number(app.stt),
+                                                                "REJECTED"
+                                                              )
+                                                                .then((res) => {
+                                                                  if (res) {
+                                                                    toast.success(
+                                                                      "Đã từ chối ứng viên thành công"
+                                                                    );
+                                                                    window.location.reload();
+                                                                  }
+                                                                })
+                                                                .catch(
+                                                                  (error) => {
+                                                                    console.error(
+                                                                      "Error rejecting application:",
+                                                                      error
+                                                                    );
+                                                                    toast.error(
+                                                                      "Lỗi khi từ chối ứng viên"
+                                                                    );
+                                                                  }
+                                                                );
+                                                            }
+                                                          }}
+                                                        >
+                                                          Xác nhận
+                                                        </AlertDialogAction>
+                                                      </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                  </AlertDialog>
+                                                </>
+                                              ) : (
+                                                <></>
+                                              )}
+                                              <Link
+                                                href={`/cv/${app.resumeID}`}
+                                                target="_blank"
                                               >
-                                                Xem CV
-                                              </Button>
+                                                <Button
+                                                  variant="outline"
+                                                  size="sm"
+                                                >
+                                                  Xem CV
+                                                </Button>
+                                              </Link>
                                               <Button
                                                 variant="outline"
                                                 size="sm"

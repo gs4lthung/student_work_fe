@@ -215,6 +215,18 @@ export default function Header() {
               </>
             )}
 
+            {user?.studentID && (
+              <Badge>
+                Sinh viên: {user?.firstName} {user?.lastName || "Chưa cập nhật"}
+              </Badge>
+            )}
+
+            {user?.employerID && (
+              <Badge>
+                Nhà tuyển dụng: {user?.companyName || "Chưa cập nhật"}
+              </Badge>
+            )}
+
             <ModeToggle />
             {user && (
               <>

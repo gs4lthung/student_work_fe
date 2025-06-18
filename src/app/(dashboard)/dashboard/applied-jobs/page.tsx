@@ -92,7 +92,7 @@ export default function AppliedJobsPage() {
                       <Badge variant={"outline"} className="text-yellow-500">
                         Đang chờ
                       </Badge>
-                    ) : application.status === "ACCEPTED" ? (
+                    ) : application.status === "APPROVED" ? (
                       <Badge variant={"outline"} className="text-green-500">
                         Đã chấp nhận
                       </Badge>

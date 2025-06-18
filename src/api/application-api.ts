@@ -57,3 +57,23 @@ export const getApplicationsByJob = async (
     throw new Error("Failed to fetch applications by job");
   }
 };
+
+export const updateApplicationStatus = async (
+  applicationID: number,
+  status: string
+) => {
+  const url = `/api/Application/${applicationID}`;
+  const form = new FormData();
+  form.append("status", status);
+  form.append("applicationID", applicationID.toString());
+  const response = await api.put(url, form, {
+    requiresAuth: true,
+  });
+
+  if (response.status === 200) {
+    console.log("Application status updated successfully:", response.data);
+    return response.data;
+  } else {
+    throw new Error("Failed to update application status");
+  }
+};

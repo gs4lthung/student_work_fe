@@ -4,7 +4,13 @@ export interface ApplicationInterface {
   jobID: string;
   resumeID: string;
   coverletter: string;
-  status: "PENDING" | "ACCEPTED" | "REJECTED";
+  status:
+    | "PENDING"
+    | "APPROVED"
+    | "WORKING"
+    | "REJECTED"
+    | "FINISHED"
+    | "DELETE";
   appliedAt?: Date;
   updateAt?: Date;
 }
