@@ -13,7 +13,6 @@ import { LoginUser } from "@/interfaces/user-interface";
 import { Form, Formik } from "formik";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import axios from "axios";
@@ -34,17 +33,17 @@ export default function LoginPage() {
       setRedirect(redirectParam);
 
       // Show toasts based on redirect
-      if (redirectParam.includes("cv")) {
-        toast.error("Bạn cần đăng nhập để xem CV");
-      } else if (redirectParam.includes("job")) {
-        toast.error("Bạn cần đăng nhập để xem công việc");
-      } else if (redirectParam.includes("company")) {
-        toast.error("Bạn cần đăng nhập để xem công ty");
-      } else if (redirectParam.includes("profile")) {
-        toast.error("Bạn cần đăng nhập để xem hồ sơ cá nhân");
-      } else if (redirectParam !== "/") {
-        toast.error("Bạn cần đăng nhập để truy cập trang này");
-      }
+      // if (redirectParam.includes("cv")) {
+      //   toast.error("Bạn cần đăng nhập để xem CV");
+      // } else if (redirectParam.includes("job")) {
+      //   toast.error("Bạn cần đăng nhập để xem công việc");
+      // } else if (redirectParam.includes("company")) {
+      //   toast.error("Bạn cần đăng nhập để xem công ty");
+      // } else if (redirectParam.includes("profile")) {
+      //   toast.error("Bạn cần đăng nhập để xem hồ sơ cá nhân");
+      // } else if (redirectParam !== "/") {
+      //   toast.error("Bạn cần đăng nhập để truy cập trang này");
+      // }
     }
   }, []);
 
