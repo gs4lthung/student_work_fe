@@ -18,7 +18,7 @@ export const createJob = async (data: JobInterface) => {
   if (data.imageUrl) {
     form.append("imageUrl", data.imageUrl);
   }
-  const url = "/api/Job/create";
+  const url = "/api/Jobs/create";
   const response = await api.post(url, form, { requiresAuth: true });
   if (response.status === 201) {
     toast.success("Tạo công việc thành công");
@@ -27,7 +27,7 @@ export const createJob = async (data: JobInterface) => {
 };
 
 export const getJobs = async (pageIndex: number, pageSize: number) => {
-  const url = `/api/Job/pagination?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+  const url = `/api/Jobs/pagination?pageIndex=${pageIndex}&pageSize=${pageSize}`;
   const response = await api.get(url);
   if (response.status === 200) {
     return response.data;
@@ -35,7 +35,7 @@ export const getJobs = async (pageIndex: number, pageSize: number) => {
 };
 
 export const getJobById = async (id: number) => {
-  const url = `/api/Job/getById/${id}`;
+  const url = `/api/Jobs/getById/${id}`;
   const response = await api.get(url);
   if (response.status === 200) {
     console.log("Job fetched successfully:", response);
@@ -50,7 +50,7 @@ export const getJobByEmployerId = async (
   pageIndex: number,
   pageSize: number
 ) => {
-  const url = `/api/Job/employer-jobs?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+  const url = `/api/Jobs/employer-jobs?pageIndex=${pageIndex}&pageSize=${pageSize}`;
   const response = await api.get(url, { requiresAuth: true });
   if (response.status === 200) {
     return response.data;

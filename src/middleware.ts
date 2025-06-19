@@ -13,6 +13,7 @@ export async function middleware(request: NextRequest) {
     "/dashboard/post",
     "/dashboard/profile",
     "/dashboard/service",
+    "/dashboard/interview",
     "/job/add",
   ];
   const studentRoutes = [

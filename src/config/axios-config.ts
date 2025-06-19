@@ -26,12 +26,16 @@ const api = axios.create({
 
 export async function getAuthToken() {
   return {
-    accessToken: document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("accessToken="))?.split("=")[1] || localStorage.getItem("accessToken"),
-    refreshToken: document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("refreshToken="))?.split("=")[1] || localStorage.getItem("refreshToken"),
+    accessToken:
+      document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("accessToken="))
+        ?.split("=")[1] || localStorage.getItem("accessToken"),
+    refreshToken:
+      document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("refreshToken="))
+        ?.split("=")[1] || localStorage.getItem("refreshToken"),
   };
 }
 
@@ -119,6 +123,11 @@ api.interceptors.response.use(
         setTimeout(() => {
           window.location.href = "/login";
         }, 2000);
+      } else if (status === 400) {
+        toast.error(
+          error?.response?.data?.split("!")[0]?.split(":")[1] ||
+            "Yêu cầu không hợp lệ."
+        );
       } else if (status === 403) {
         toast.error("Bạn không có quyền truy cập vào tài nguyên này.");
       } else if (status === 404) {
@@ -128,7 +137,7 @@ api.interceptors.response.use(
       } else {
         toast.error(
           `Đã xảy ra lỗi: ${
-            error.response.data.message || "Lỗi không xác định"
+            error?.response?.data?.message || "Lỗi không xác định"
           }`
         );
       }

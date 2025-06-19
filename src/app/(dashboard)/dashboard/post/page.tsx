@@ -40,6 +40,22 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Form, Formik } from "formik";
+import { InterviewInterface } from "@/interfaces/interview-interface";
+import { CreateInterviewSchema } from "@/validations/interview-validation";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { createInterview } from "@/api/interview-api";
 
 export default function DashboardPost() {
   const [isLoading, setIsLoading] = useState(true);
@@ -144,6 +160,15 @@ export default function DashboardPost() {
     );
   };
 
+  const createInterviewInvitationData: InterviewInterface = {
+    applicationID: "",
+    scheduledTime: new Date(),
+    location: "",
+    note: "",
+    duration_minutes: 30,
+    meetingLink: "",
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {isLoading ? (
@@ -215,7 +240,7 @@ export default function DashboardPost() {
                       {new Date(job.startDate).toLocaleDateString("vi-VN")}
                     </TableCell>
                     <TableCell>
-                      {job.status === "Active" ? (
+                      {job.status === "ACTIVE" ? (
                         <Badge variant="outline" className="text-green-500">
                           Hoạt động
                         </Badge>
@@ -235,7 +260,7 @@ export default function DashboardPost() {
                           {loadingApplications.has(String(job.jobID)) ? (
                             <div className="flex items-center justify-center py-8">
                               <div className="flex items-center gap-2">
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                <LoadingSpinner />
                                 <span className="text-sm text-gray-600">
                                   Đang tải danh sách ứng viên...
                                 </span>
@@ -396,6 +421,255 @@ export default function DashboardPost() {
                                                     </AlertDialogContent>
                                                   </AlertDialog>
                                                 </>
+                                              ) : app.status === "APPROVED" ? (
+                                                <Dialog>
+                                                  <DialogTrigger asChild>
+                                                    <Button size={"sm"}>
+                                                      Mời phỏng vấn
+                                                    </Button>
+                                                  </DialogTrigger>
+                                                  <DialogContent>
+                                                    <DialogHeader>
+                                                      <DialogTitle>
+                                                        Mời phỏng vấn ứng viên
+                                                      </DialogTitle>
+                                                      <DialogDescription>
+                                                        Bạn có thể gửi lời mời
+                                                        phỏng vấn đến ứng viên
+                                                        này qua email hoặc liên
+                                                        hệ trực tiếp.
+                                                      </DialogDescription>
+                                                    </DialogHeader>
+                                                    <Formik
+                                                      initialValues={
+                                                        createInterviewInvitationData
+                                                      }
+                                                      validationSchema={
+                                                        CreateInterviewSchema
+                                                      }
+                                                      onSubmit={async (
+                                                        values,
+                                                        { setSubmitting }
+                                                      ) => {
+                                                        values.scheduledTime =
+                                                          new Date(
+                                                            values.scheduledTime
+                                                          );
+                                                        setSubmitting(false);
+                                                        const res =
+                                                          await createInterview(
+                                                            values
+                                                          );
+                                                        if (res) {
+                                                          toast.success(
+                                                            "Đã gửi lời mời phỏng vấn thành công"
+                                                          );
+                                                          window.location.reload();
+                                                        }
+                                                        setSubmitting(true);
+                                                      }}
+                                                    >
+                                                      {({
+                                                        errors,
+                                                        touched,
+                                                        isSubmitting,
+                                                        handleChange,
+                                                        handleBlur,
+                                                        handleSubmit,
+                                                        values,
+                                                      }) => (
+                                                        <Form
+                                                          onSubmit={
+                                                            handleSubmit
+                                                          }
+                                                          className="flex flex-col gap-4"
+                                                        >
+                                                          <div className="hidden">
+                                                            {
+                                                              (values.applicationID =
+                                                                app.stt || "")
+                                                            }
+                                                          </div>
+                                                          <Label htmlFor="scheduledTime">
+                                                            Ngày phỏng vấn
+                                                          </Label>
+                                                          <Input
+                                                            type="datetime-local"
+                                                            id="scheduledTime"
+                                                            name="scheduledTime"
+                                                            value={
+                                                              values.scheduledTime
+                                                                ? typeof values.scheduledTime ===
+                                                                  "string"
+                                                                  ? values.scheduledTime
+                                                                  : new Date(
+                                                                      values.scheduledTime
+                                                                    )
+                                                                      .toISOString()
+                                                                      .slice(
+                                                                        0,
+                                                                        16
+                                                                      )
+                                                                : ""
+                                                            }
+                                                            onChange={
+                                                              handleChange
+                                                            }
+                                                            onBlur={handleBlur}
+                                                            className={`${
+                                                              errors.scheduledTime &&
+                                                              touched.scheduledTime
+                                                                ? "border-red-500"
+                                                                : ""
+                                                            }`}
+                                                          />
+                                                          {errors.scheduledTime &&
+                                                            touched.scheduledTime && (
+                                                              <div className="text-red-500 text-sm">
+                                                                {typeof errors.scheduledTime ===
+                                                                "string"
+                                                                  ? errors.scheduledTime
+                                                                  : ""}
+                                                              </div>
+                                                            )}
+                                                          <Label htmlFor="duration_minutes">
+                                                            Thời gian phỏng vấn
+                                                            (phút)
+                                                          </Label>
+                                                          <Input
+                                                            type="number"
+                                                            id="duration_minutes"
+                                                            name="duration_minutes"
+                                                            value={
+                                                              values.duration_minutes
+                                                            }
+                                                            step={5}
+                                                            onChange={
+                                                              handleChange
+                                                            }
+                                                            onBlur={handleBlur}
+                                                            className={`${
+                                                              errors.duration_minutes &&
+                                                              touched.duration_minutes
+                                                                ? "border-red-500"
+                                                                : ""
+                                                            }`}
+                                                          />
+                                                          {errors.duration_minutes &&
+                                                            touched.duration_minutes && (
+                                                              <div className="text-red-500 text-sm">
+                                                                {typeof errors.duration_minutes ===
+                                                                "string"
+                                                                  ? errors.duration_minutes
+                                                                  : ""}
+                                                              </div>
+                                                            )}
+                                                          <Label htmlFor="location">
+                                                            Địa điểm phỏng vấn
+                                                          </Label>
+                                                          <Input
+                                                            type="text"
+                                                            id="location"
+                                                            name="location"
+                                                            value={
+                                                              values.location
+                                                            }
+                                                            onChange={
+                                                              handleChange
+                                                            }
+                                                            onBlur={handleBlur}
+                                                            className={`${
+                                                              errors.location &&
+                                                              touched.location
+                                                                ? "border-red-500"
+                                                                : ""
+                                                            }`}
+                                                          />
+                                                          {errors.location &&
+                                                            touched.location && (
+                                                              <div className="text-red-500 text-sm">
+                                                                {typeof errors.location ===
+                                                                "string"
+                                                                  ? errors.location
+                                                                  : ""}
+                                                              </div>
+                                                            )}
+                                                          <Label htmlFor="meetingLink">
+                                                            Link họp trực tuyến
+                                                          </Label>
+                                                          <Input
+                                                            type="text"
+                                                            id="meetingLink"
+                                                            name="meetingLink"
+                                                            value={
+                                                              values.meetingLink
+                                                            }
+                                                            onChange={
+                                                              handleChange
+                                                            }
+                                                            onBlur={handleBlur}
+                                                            className={`${
+                                                              errors.meetingLink &&
+                                                              touched.meetingLink
+                                                                ? "border-red-500"
+                                                                : ""
+                                                            }`}
+                                                          />
+                                                          {errors.meetingLink &&
+                                                            touched.meetingLink && (
+                                                              <div className="text-red-500 text-sm">
+                                                                {typeof errors.meetingLink ===
+                                                                "string"
+                                                                  ? errors.meetingLink
+                                                                  : ""}
+                                                              </div>
+                                                            )}
+                                                          <Label htmlFor="notes">
+                                                            Ghi chú
+                                                          </Label>
+                                                          <Textarea
+                                                            id="note"
+                                                            name="note"
+                                                            value={values.note}
+                                                            onChange={
+                                                              handleChange
+                                                            }
+                                                            onBlur={handleBlur}
+                                                            className={`${
+                                                              errors.note &&
+                                                              touched.note
+                                                                ? "border-red-500"
+                                                                : ""
+                                                            }`}
+                                                          />
+                                                          {errors.note &&
+                                                            touched.note && (
+                                                              <div className="text-red-500 text-sm">
+                                                                {typeof errors.note ===
+                                                                "string"
+                                                                  ? errors.note
+                                                                  : ""}
+                                                              </div>
+                                                            )}
+                                                          <Button
+                                                            type="submit"
+                                                            disabled={
+                                                              isSubmitting ||
+                                                              !values.applicationID
+                                                            }
+                                                            className="mt-4"
+                                                          >
+                                                            {isSubmitting ? (
+                                                              <LoadingSpinner />
+                                                            ) : (
+                                                              "Gửi lời mời phỏng vấn"
+                                                            )}
+                                                          </Button>
+                                                        </Form>
+                                                      )}
+                                                    </Formik>
+                                                  </DialogContent>
+                                                </Dialog>
                                               ) : (
                                                 <></>
                                               )}

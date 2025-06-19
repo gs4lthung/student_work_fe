@@ -20,8 +20,8 @@ export const JobValidationSchema: Yup.ObjectSchema<JobInterface> = Yup.object({
   salary: Yup.number()
     .required("Mức lương không được để trống")
     .min(0, "Mức lương phải lớn hơn hoặc bằng 0"),
-  status: Yup.mixed<"Active" | "Inactive">()
-    .oneOf(["Active", "Inactive"], "Trạng thái không hợp lệ")
+  status: Yup.mixed<"ACTIVE" | "INACTIVE">()
+    .oneOf(["ACTIVE", "INACTIVE"], "Trạng thái không hợp lệ")
     .required("Trạng thái không được để trống"),
   workingHours: Yup.string()
     .required("Giờ làm việc không được để trống")

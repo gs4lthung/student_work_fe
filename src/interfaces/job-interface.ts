@@ -10,7 +10,7 @@ export interface JobInterface {
   salary: number;
   workingHours: string;
   startDate: Date;
-  status: "Active" | "Inactive";
+  status: "ACTIVE" | "INACTIVE";
   imageUrl?: string;
   createdAt?: Date;
   updatedAt?: Date;

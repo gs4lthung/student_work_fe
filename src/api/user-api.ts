@@ -38,10 +38,36 @@ export const login = async (data: LoginUser) => {
     document.cookie = `refreshToken=${refreshToken}; path=/; secure; SameSite=Strict`;
     document.cookie = `userRole=${role}; path=/; secure; SameSite=Strict`;
 
-    if (role === "Employer") {
-      await getEmployerInfoByUserID(user.userId);
-    } else if (role === "Student") {
-      await getStudentInfoByUserID(user.userId);
+    if (role === "Student") {
+      const res = await getStudentInfoByUserID(user.userId);
+      const currentUser = useUserStore.getState().user;
+      if (currentUser) {
+        useUserStore.getState().setUser({
+          ...currentUser,
+          studentID: res.studentID,
+          university: res.university,
+          major: res.major,
+          yearOfStudy: res.yearOfStudy,
+          dateOfBirth: res.dateOfBirth,
+          bio: res.bio,
+        });
+      }
+    } else if (role === "Employer") {
+      const res = await getEmployerInfoByUserID(user.userId);
+      const currentUser = useUserStore.getState().user;
+      if (currentUser) {
+        useUserStore.getState().setUser({
+          ...currentUser,
+          employerID: res.employerID,
+          companyName: res.companyName,
+          companySize: res.companySize,
+          description: res.description,
+          industry: res.industry,
+          location: res.location,
+          website: res.website,
+          logoUrl: res.logoUrl,
+        });
+      }
     }
 
     toast.success("Đăng nhập thành công!");
@@ -55,18 +81,7 @@ const getStudentInfoByUserID = async (userId: string) => {
   });
   if (response?.status === 200) {
     console.log("Student info:", response);
-    const currentUser = useUserStore.getState().user;
-    if (currentUser) {
-      useUserStore.getState().setUser({
-        ...currentUser,
-        studentID: response.data.studentID,
-        university: response.data.university,
-        major: response.data.major,
-        yearOfStudy: response.data.yearOfStudy,
-        dateOfBirth: response.data.dateOfBirth,
-        bio: response.data.bio,
-      });
-    }
+    return response.data;
   } else {
     throw new Error("Failed to fetch student info");
   }
@@ -79,20 +94,7 @@ const getEmployerInfoByUserID = async (userId: string) => {
   });
   if (response?.status === 200) {
     console.log("Employer info:", response);
-    const currentUser = useUserStore.getState().user;
-    if (currentUser) {
-      useUserStore.getState().setUser({
-        ...currentUser,
-        employerID: response.data.employerID,
-        companyName: response.data.companyName,
-        companySize: response.data.companySize,
-        description: response.data.description,
-        industry: response.data.industry,
-        location: response.data.location,
-        website: response.data.website,
-        logoUrl: response.data.logoUrl,
-      });
-    }
+    return response.data;
   } else {
     throw new Error("Failed to fetch employer info");
   }

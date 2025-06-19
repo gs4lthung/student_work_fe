@@ -15,6 +15,7 @@ import {
 import { TypographyH2 } from "@/components/ui/typography";
 import { PasswordInput } from "@/components/ui/input-password";
 import { register } from "@/api/user-api";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 export default function RegisterPage() {
   const initialValues: RegisterUser = {
     firstName: "",
@@ -216,7 +217,7 @@ export default function RegisterPage() {
               type="submit"
               disabled={isSubmitting}
             >
-              <p>Đăng ký</p>
+              {isSubmitting ? <LoadingSpinner /> : <p>Đăng ký</p>}
             </Button>
             <div className="flex items-center justify-between w-full text-sm text-gray-500">
               Đã có tài khoản?

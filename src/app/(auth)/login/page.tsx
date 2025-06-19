@@ -12,6 +12,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function LoginPage() {
   const [redirect, setRedirect] = useState("/"); // Default redirect
@@ -47,8 +48,10 @@ export default function LoginPage() {
       initialValues={initialValues}
       validationSchema={LoginValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(false);
+        setSubmitting(true);
         await login(values);
+        setSubmitting(false);
+        console.log("Login successful, redirecting to:", redirect);
         router.push(redirect);
       }}
     >
@@ -58,6 +61,7 @@ export default function LoginPage() {
         handleChange,
         handleBlur,
         handleSubmit,
+        isSubmitting,
         values,
       }) => {
         return (
@@ -88,11 +92,12 @@ export default function LoginPage() {
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
             <Button
+              disabled={isSubmitting}
               className="w-full hover:bg-green-300"
               variant="secondary"
               type="submit"
             >
-              <p>Đăng nhập</p>
+              {isSubmitting ? <LoadingSpinner /> : <p>Đăng nhập</p>}
             </Button>
             <div className="flex items-center justify-between w-full">
               <Button variant="link" className="text-gray-500">
