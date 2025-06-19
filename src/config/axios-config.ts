@@ -1,5 +1,5 @@
 import axios from "axios";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 // Extend Axios request config to include requiresAuth
 declare module "axios" {
@@ -119,32 +119,32 @@ api.interceptors.response.use(
 
       // 🔐 Other common HTTP errors
       if (status === 401) {
-        toast.error("Bạn cần đăng nhập để thực hiện hành động này.");
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 2000);
+        // toast.error("Bạn cần đăng nhập để thực hiện hành động này.");
+        // setTimeout(() => {
+        //   window.location.href = "/login";
+        // }, 2000);
       } else if (status === 400) {
-        toast.error(
-          error?.response?.data?.split("!")[0]?.split(":")[1] ||
-            "Yêu cầu không hợp lệ."
-        );
+        // toast.error(
+        //   error?.response?.data?.split("!")[0]?.split(":")[1] ||
+        //     "Yêu cầu không hợp lệ."
+        // );
       } else if (status === 403) {
-        toast.error("Bạn không có quyền truy cập vào tài nguyên này.");
+        // toast.error("Bạn không có quyền truy cập vào tài nguyên này.");
       } else if (status === 404) {
-        toast.error("Tài nguyên bạn đang tìm kiếm không tồn tại.");
+        // toast.error("Tài nguyên bạn đang tìm kiếm không tồn tại.");
       } else if (status >= 500) {
-        toast.error("Máy chủ gặp sự cố. Vui lòng thử lại sau.");
+        // toast.error("Máy chủ gặp sự cố. Vui lòng thử lại sau.");
       } else {
-        toast.error(
-          `Đã xảy ra lỗi: ${
-            error?.response?.data?.message || "Lỗi không xác định"
-          }`
-        );
+        // toast.error(
+        //   `Đã xảy ra lỗi: ${
+        //     error?.response?.data?.message || "Lỗi không xác định"
+        //   }`
+        // );
       }
     } else if (error.request) {
-      toast.error("Không nhận được phản hồi từ máy chủ.");
+      // toast.error("Không nhận được phản hồi từ máy chủ.");
     } else {
-      toast.error(`Đã xảy ra lỗi: ${error.message || "Lỗi không xác định"}`);
+      // toast.error(`Đã xảy ra lỗi: ${error.message || "Lỗi không xác định"}`);
     }
 
     return Promise.reject(error);
