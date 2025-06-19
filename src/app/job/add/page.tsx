@@ -42,7 +42,7 @@ export default function JobAddPage() {
     salary: 0,
     workingHours: "",
     startDate: new Date(),
-    status: "Active",
+    status: "ACTIVE",
     imageUrl: "",
   });
 
@@ -72,7 +72,7 @@ export default function JobAddPage() {
       salary: data?.salary || 0,
       workingHours: data?.workingHours || "",
       startDate: data?.startDate ? new Date(data.startDate) : new Date(),
-      status: "Active",
+      status: "ACTIVE",
       imageUrl: data?.imageUrl || "",
     });
   }, [data]);
