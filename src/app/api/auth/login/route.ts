@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       user,
       accessToken,
       refreshToken,
-      role: [role],
+      role: role,
     },
   });
 }
