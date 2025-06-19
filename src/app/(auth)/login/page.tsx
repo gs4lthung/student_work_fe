@@ -1,6 +1,9 @@
 "use client";
 
-import { login } from "@/api/user-api";
+import {
+  getEmployerInfoByUserID,
+  getStudentInfoByUserID,
+} from "@/api/user-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/input-password";
@@ -13,6 +16,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import axios from "axios";
+import { useUserStore } from "@/stores/user-store";
 
 export default function LoginPage() {
   const [redirect, setRedirect] = useState("/"); // Default redirect
@@ -49,7 +54,53 @@ export default function LoginPage() {
       validationSchema={LoginValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        await login(values);
+        const res = await axios.post("/api/auth/login", values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (res) {
+          console.log("Login response:", res.data);
+          useUserStore.getState().setUser(res.data.result.user);
+
+          if (res.data.result.role === "Student") {
+            const studentRes = await getStudentInfoByUserID(
+              res.data.result.user.userId
+            );
+            const currentUser = useUserStore.getState().user;
+            if (currentUser) {
+              useUserStore.getState().setUser({
+                ...currentUser,
+                studentID: studentRes.studentID,
+                university: studentRes.university,
+                major: studentRes.major,
+                yearOfStudy: studentRes.yearOfStudy,
+                dateOfBirth: studentRes.dateOfBirth,
+                bio: studentRes.bio,
+              });
+            }
+          } else if (res.data.result.role === "Employer") {
+            const employerRes = await getEmployerInfoByUserID(
+              res.data.result.user.userId
+            );
+            const currentUser = useUserStore.getState().user;
+            if (currentUser) {
+              useUserStore.getState().setUser({
+                ...currentUser,
+                employerID: employerRes.employerID,
+                companyName: employerRes.companyName,
+                companySize: employerRes.companySize,
+                description: employerRes.description,
+                industry: employerRes.industry,
+                location: employerRes.location,
+                website: employerRes.website,
+                logoUrl: employerRes.logoUrl,
+              });
+            }
+          }
+
+          toast.success("Đăng nhập thành công!");
+        }
         setSubmitting(false);
         console.log("Login successful, redirecting to:", redirect);
         router.push(redirect);

@@ -4,7 +4,7 @@ import {
   UserInterface,
 } from "@/interfaces/user-interface";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 export type UserStore = Pick<
   UserInterface,
   | "userId"
@@ -50,6 +50,10 @@ export const useUserStore = create<UserState>()(
     }),
     {
       name: "user-storage",
+      storage:
+        typeof window !== "undefined"
+          ? createJSONStorage(() => localStorage)
+          : undefined,
     }
   )
 );

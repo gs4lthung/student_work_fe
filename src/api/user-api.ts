@@ -1,6 +1,5 @@
 import api from "@/config/axios-config";
 import { LoginUser, RegisterUser } from "@/interfaces/user-interface";
-import { useUserStore } from "@/stores/user-store";
 import { toast } from "sonner";
 
 export const register = async (data: RegisterUser) => {
@@ -32,49 +31,16 @@ export const login = async (data: LoginUser) => {
     const accessToken = response.data.result.token;
     const refreshToken = response.data.result.refreshToken;
 
-    useUserStore.getState().setUser(user);
-
-    document.cookie = `accessToken=${accessToken}; path=/; secure; SameSite=Strict; max-age=3600`; // 1 hour
-    document.cookie = `refreshToken=${refreshToken}; path=/; secure; SameSite=Strict; max-age=86400`; // 1 day
-    document.cookie = `userRole=${role}; path=/; secure; SameSite=Strict; max-age=3600`; // 1 hour
-
-    if (role === "Student") {
-      const res = await getStudentInfoByUserID(user.userId);
-      const currentUser = useUserStore.getState().user;
-      if (currentUser) {
-        useUserStore.getState().setUser({
-          ...currentUser,
-          studentID: res.studentID,
-          university: res.university,
-          major: res.major,
-          yearOfStudy: res.yearOfStudy,
-          dateOfBirth: res.dateOfBirth,
-          bio: res.bio,
-        });
-      }
-    } else if (role === "Employer") {
-      const res = await getEmployerInfoByUserID(user.userId);
-      const currentUser = useUserStore.getState().user;
-      if (currentUser) {
-        useUserStore.getState().setUser({
-          ...currentUser,
-          employerID: res.employerID,
-          companyName: res.companyName,
-          companySize: res.companySize,
-          description: res.description,
-          industry: res.industry,
-          location: res.location,
-          website: res.website,
-          logoUrl: res.logoUrl,
-        });
-      }
-    }
-
-    toast.success("Đăng nhập thành công!");
+    return {
+      user,
+      accessToken,
+      refreshToken,
+      role,
+    };
   }
 };
 
-const getStudentInfoByUserID = async (userId: string) => {
+export const getStudentInfoByUserID = async (userId: string) => {
   const url = `/api/Student/user/${userId}`;
   const response = await api.get(url, {
     requiresAuth: true,
@@ -87,7 +53,7 @@ const getStudentInfoByUserID = async (userId: string) => {
   }
 };
 
-const getEmployerInfoByUserID = async (userId: string) => {
+export const getEmployerInfoByUserID = async (userId: string) => {
   const url = `/api/Employer/user/${userId}`;
   const response = await api.get(url, {
     requiresAuth: true,
