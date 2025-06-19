@@ -99,7 +99,6 @@ export default function LoginPage() {
             }
           }
 
-          toast.success("Đăng nhập thành công!");
         }
         setSubmitting(false);
         console.log("Login successful, redirecting to:", redirect);
