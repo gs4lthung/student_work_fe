@@ -23,7 +23,6 @@ export const login = async (data: LoginUser) => {
     const user = response.data.result.user;
     console.log("User data:", user);
     if (user.emailConfirmed === false) {
-      toast.error("Vui lòng xác thực email trước khi đăng nhập.");
       throw new Error("Email not confirmed");
     }
     const role = response.data.result.role[0];
