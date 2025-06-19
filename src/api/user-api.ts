@@ -34,9 +34,9 @@ export const login = async (data: LoginUser) => {
 
     useUserStore.getState().setUser(user);
 
-    document.cookie = `accessToken=${accessToken}; path=/; secure; SameSite=Strict`;
-    document.cookie = `refreshToken=${refreshToken}; path=/; secure; SameSite=Strict`;
-    document.cookie = `userRole=${role}; path=/; secure; SameSite=Strict`;
+    document.cookie = `accessToken=${accessToken}; path=/; secure; SameSite=Strict; max-age=3600`; // 1 hour
+    document.cookie = `refreshToken=${refreshToken}; path=/; secure; SameSite=Strict; max-age=86400`; // 1 day
+    document.cookie = `userRole=${role}; path=/; secure; SameSite=Strict; max-age=3600`; // 1 hour
 
     if (role === "Student") {
       const res = await getStudentInfoByUserID(user.userId);
