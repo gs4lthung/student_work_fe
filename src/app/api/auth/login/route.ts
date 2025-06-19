@@ -26,14 +26,14 @@ export async function POST(req: NextRequest) {
   (await cookies()).set("accessToken", accessToken, {
     maxAge: 3600, // 1 hour
     path: "/",
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
   (await cookies()).set("refreshToken", refreshToken, {
     maxAge: 86400, // 1 day
     path: "/",
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
