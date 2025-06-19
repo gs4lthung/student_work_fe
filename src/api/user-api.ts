@@ -1,19 +1,10 @@
 import api from "@/config/axios-config";
 import { LoginUser, RegisterUser } from "@/interfaces/user-interface";
-import { toast } from "sonner";
 
 export const register = async (data: RegisterUser) => {
   delete data.confirmPassword;
   const url = "/api/Auth/register";
-  const response = await api.post(url, data);
-  if (response?.status === 200) {
-    toast.success(
-      "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản."
-    );
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 1000);
-  }
+  await api.post(url, data);
 };
 
 export const login = async (data: LoginUser) => {
