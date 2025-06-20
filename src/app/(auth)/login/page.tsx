@@ -97,7 +97,6 @@ export default function LoginPage() {
               });
             }
           }
-
         }
         setSubmitting(false);
         console.log("Login successful, redirecting to:", redirect);
