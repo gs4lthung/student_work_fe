@@ -15,7 +15,7 @@ declare module "axios" {
 }
 
 const api = axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: "http://localhost:7042",
   timeout: 5000,
   headers: {
     // "Content-Type": "application/json",
