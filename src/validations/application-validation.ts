@@ -29,4 +29,5 @@ export const ApplicationValidationSchema: Yup.ObjectSchema<ApplicationInterface>
       .optional()
       .default(() => new Date())
       .min(Yup.ref("appliedAt"), "Ngày cập nhật phải sau ngày nộp đơn"),
+    studentName: Yup.string().optional(),
   });
