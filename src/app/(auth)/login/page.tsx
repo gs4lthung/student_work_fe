@@ -1,9 +1,5 @@
 "use client";
 
-import {
-  getEmployerInfoByUserID,
-  getStudentInfoByUserID,
-} from "@/api/user-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/input-password";

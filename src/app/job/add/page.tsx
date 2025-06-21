@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function JobAddPage() {
-  const { subscriptions, clearSubscriptions } = useSubscriptionStore();
+  const { subscriptions } = useSubscriptionStore();
 
   const { data, setData } = useDraftJobPostStore();
 

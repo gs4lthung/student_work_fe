@@ -226,7 +226,7 @@ export default function JobDetailPage({
   return (
     <div className="min-h-screen">
       {/* Hero Section with Job Image */}
-      <div className="relative h-80 bg-gradient-to-r from-green-500 to-zinc-100 dark:from-slate-950 dark:to-green-300 overflow-hidden">
+      <div className="relative h-80 bg-gradient-to-r from-green-400 to-green-100 dark:from-slate-950 dark:to-green-300 overflow-hidden">
         <div className="absolute inset-0"></div>
         {isApplied && (
           <div className="absolute top-4 right-4 flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg shadow-md font-semibold text-base z-10">
