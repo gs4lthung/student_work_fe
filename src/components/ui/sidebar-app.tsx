@@ -3,6 +3,7 @@ import {
   Home,
   LayoutDashboard,
   Newspaper,
+  NotepadTextDashed,
   Save,
   Settings,
   User,
@@ -62,6 +63,12 @@ const items = [
     url: "/dashboard/post",
     icon: Newspaper,
     roles: ["Employer"] as UserInterface["role"][],
+  },
+  {
+    title: "Phỏng vấn",
+    url: "/dashboard/interview",
+    icon: NotepadTextDashed,
+    roles: ["Student", "Employer"] as UserInterface["role"][],
   },
   {
     title: "Dịch vụ",

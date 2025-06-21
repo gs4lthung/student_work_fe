@@ -10,6 +10,8 @@ export interface UserInterface {
   role: "Student" | "Employer";
   rating?: number;
   avatarUrl?: string;
+  walletID?: number;
+  walletBalance?: number;
   isActive?: boolean;
 }
 

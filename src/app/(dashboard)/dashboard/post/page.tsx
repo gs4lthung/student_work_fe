@@ -281,7 +281,7 @@ export default function DashboardPost() {
                                 <Table>
                                   <TableHeader>
                                     <TableRow>
-                                      <TableHead>Mã sinh viên</TableHead>
+                                      <TableHead>Tên ứng viên</TableHead>
                                       <TableHead>Trạng thái</TableHead>
                                       <TableHead>Ngày nộp</TableHead>
                                       <TableHead>Thư xin việc</TableHead>
@@ -297,7 +297,7 @@ export default function DashboardPost() {
                                               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                                                 <User className="h-4 w-4 text-blue-600" />
                                               </div>
-                                              {app.studentID}
+                                              {app.studentName}
                                             </div>
                                           </TableCell>
                                           <TableCell>
@@ -687,7 +687,7 @@ export default function DashboardPost() {
                                               <Button
                                                 variant="outline"
                                                 size="sm"
-                                              >
+                                                >
                                                 Liên hệ
                                               </Button>
                                             </div>

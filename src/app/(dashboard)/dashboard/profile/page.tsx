@@ -1,11 +1,13 @@
 "use client";
 
+import { createEmployerInfo, createStudentInfo } from "@/api/user-api";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import {
   Select,
   SelectContent,
@@ -15,13 +17,22 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { TypographyH2 } from "@/components/ui/typography";
-import { EmployerInterface } from "@/interfaces/user-interface";
+import {
+  EmployerInterface,
+  StudentInterface,
+} from "@/interfaces/user-interface";
 import { UserStore, useUserStore } from "@/stores/user-store";
-import { EmployerValidationSchema } from "@/validations/user-validation";
+import {
+  EmployerValidationSchema,
+  StudentValidationSchema,
+} from "@/validations/user-validation";
+import { AxiosError } from "axios";
 import { Form, Formik } from "formik";
 import Image from "next/image";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 const AccountTab = ({
   user,
@@ -106,6 +117,167 @@ const AccountTab = ({
   );
 };
 
+const StudentTab = ({
+  user,
+  isUpdate,
+  setIsUpdate,
+}: {
+  user: UserStore;
+  isUpdate: boolean;
+  setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const initialValues: StudentInterface = {
+    role: user.role,
+    university: user.university || "",
+    major: user.major || "",
+    yearOfStudy: user.yearOfStudy || 4,
+    dateOfBirth: user.dateOfBirth || new Date("2003-12-04"),
+    bio: user.bio || "",
+  };
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="text-lg font-semibold mb-4 text-gray-600">
+        Thông tin sinh viên
+      </h2>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={StudentValidationSchema}
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
+            setSubmitting(true);
+            const res = await createStudentInfo(values);
+            if (res) {
+              toast.success("Tạo thông tin sinh viên thành công");
+              useUserStore.getState().setUser({
+                ...user,
+                studentID: res.studentID,
+                university: res.university,
+                major: res.major,
+                yearOfStudy: res.yearOfStudy,
+                dateOfBirth: res.dateOfBirth,
+                bio: res.bio,
+              });
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }
+          } catch (error) {
+            if (error instanceof AxiosError) {
+              toast.error(
+                error.response?.data?.message ||
+                  "Tạo thông tin sinh viên thất bại"
+              );
+            }
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({
+          errors,
+          touched,
+          isSubmitting,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+        }) => (
+          <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <Label htmlFor="university">Trường đại học</Label>
+            <Input
+              id="university"
+              type="text"
+              placeholder="Trường đại học"
+              value={values.university}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={!isUpdate}
+            />
+            {errors.university && touched.university && (
+              <p className="text-red-500 text-sm mt-1">{errors.university}</p>
+            )}
+            <Label htmlFor="major">Chuyên ngành</Label>
+            <Input
+              id="major"
+              type="text"
+              placeholder="Chuyên ngành"
+              value={values.major}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={!isUpdate}
+            />
+            {errors.major && touched.major && (
+              <p className="text-red-500 text-sm mt-1">{errors.major}</p>
+            )}
+            <Label htmlFor="yearOfStudy">Số năm học</Label>
+            <Input
+              id="yearOfStudy"
+              type="number"
+              placeholder="Số năm học"
+              value={values.yearOfStudy}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={!isUpdate}
+            />
+            {errors.yearOfStudy && touched.yearOfStudy && (
+              <p className="text-red-500 text-sm mt-1">{errors.yearOfStudy}</p>
+            )}
+            <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+            <Input
+              id="dateOfBirth"
+              type="date"
+              placeholder="Ngày sinh"
+              value={
+                values.dateOfBirth
+                  ? new Date(values.dateOfBirth).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={!isUpdate}
+            />
+            {errors.dateOfBirth && touched.dateOfBirth && (
+              <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth}</p>
+            )}
+            <Label htmlFor="bio">Tiểu sử</Label>
+            <Textarea
+              id="bio"
+              placeholder="Tiểu sử"
+              value={values.bio}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={!isUpdate}
+            />
+            {errors.bio && touched.bio && (
+              <p className="text-red-500 text-sm mt-1">{errors.bio}</p>
+            )}
+            <div className="flex justify-end">
+              <Button
+                variant={isUpdate ? "secondary" : "outline"}
+                disabled={isSubmitting}
+                className="w-1/3"
+                onClick={() => {
+                  setIsUpdate(!isUpdate);
+                }}
+              >
+                {isUpdate ? "Hủy bỏ" : "Chỉnh sửa"}
+              </Button>
+              <Button
+                type="submit"
+                className="w-1/3 ml-2"
+                hidden={!isUpdate}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <LoadingSpinner /> : <p>Lưu thay đổi</p>}
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
+
 const CompanyTab = ({
   user,
   isUpdate,
@@ -117,19 +289,49 @@ const CompanyTab = ({
 }) => {
   const initialValues: EmployerInterface = {
     role: user.role,
-    companyName: "",
-    companySize: 0,
-    description: "",
-    location: "",
-    industry: "",
-    website: "",
-    logoUrl: "",
+    companyName: user.companyName || "",
+    companySize: user.companySize || 0,
+    description: user.description || "",
+    location: user.location || "",
+    industry: user.industry || "",
+    website: user.website || "",
+    logoUrl: user.logoUrl || "",
   };
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={EmployerValidationSchema}
-      onSubmit={() => {}}
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          setSubmitting(true);
+          const res = await createEmployerInfo(values);
+          if (res) {
+            toast.success("Tạo thông tin công ty thành công");
+            useUserStore.getState().setUser({
+              ...user,
+              employerID: res.employerID,
+              companyName: res.companyName,
+              companySize: res.companySize,
+              description: res.description,
+              location: res.location,
+              industry: res.industry,
+              website: res.website,
+              logoUrl: res.logoUrl,
+            });
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          }
+        } catch (error) {
+          if (error instanceof AxiosError) {
+            toast.error(
+              error.response?.data?.message || "Tạo thông tin công ty thất bại"
+            );
+          }
+        } finally {
+          setSubmitting(false);
+        }
+      }}
     >
       {({
         errors,
@@ -180,9 +382,8 @@ const CompanyTab = ({
                 )}
 
                 <Label htmlFor="description">Mô tả</Label>
-                <Input
+                <Textarea
                   id="description"
-                  type="text"
                   placeholder="Mô tả công ty"
                   value={values.description}
                   onChange={handleChange}
@@ -262,6 +463,7 @@ const CompanyTab = ({
                 )}
                 <div className="flex justify-end">
                   <Button
+                    variant={isUpdate ? "secondary" : "outline"}
                     disabled={isSubmitting}
                     className="w-1/3"
                     onClick={() => {
@@ -273,11 +475,10 @@ const CompanyTab = ({
                   <Button
                     type="submit"
                     className="w-1/3 ml-2"
-                    variant="outline"
                     hidden={!isUpdate}
                     disabled={isSubmitting}
                   >
-                    Lưu thay đổi
+                    {isSubmitting ? <LoadingSpinner /> : <p>Lưu thay đổi</p>}
                   </Button>
                 </div>
               </div>
@@ -307,6 +508,7 @@ const tabItems = [
     ) => (
       <AccountTab user={user} isUpdate={isUpdate} setIsUpdate={setIsUpdate} />
     ),
+    roles: ["Student", "Employer"],
   },
   {
     title: "Thông tin công ty",
@@ -318,6 +520,19 @@ const tabItems = [
     ) => (
       <CompanyTab user={user} isUpdate={isUpdate} setIsUpdate={setIsUpdate} />
     ),
+    roles: ["Employer"],
+  },
+  {
+    title: "Thông tin sinh viên",
+    value: "student",
+    render: (
+      user: UserStore,
+      isUpdate: boolean,
+      setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>
+    ) => (
+      <StudentTab user={user} isUpdate={isUpdate} setIsUpdate={setIsUpdate} />
+    ),
+    roles: ["Student"],
   },
 ];
 
@@ -336,17 +551,21 @@ export default function DashBoardProfilePage() {
 
       <Tabs defaultValue="account">
         <TabsList className="w-full p-0 bg-background justify-start border-b rounded-none">
-          {tabItems.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
-              {tab.title}
-            </TabsTrigger>
-          ))}
+          {tabItems
+            .filter((tab) => tab.roles.includes(user?.role || ""))
+            .map((tab) => (
+              <TabsTrigger key={tab.value} value={tab.value}>
+                {tab.title}
+              </TabsTrigger>
+            ))}
         </TabsList>
-        {tabItems.map((tab) => (
-          <TabsContent key={tab.value} value={tab.value}>
-            {user ? tab.render(user, isUpdate, setIsUpdate) : null}
-          </TabsContent>
-        ))}
+        {tabItems
+          .filter((tab) => tab.roles.includes(user?.role || ""))
+          .map((tab) => (
+            <TabsContent key={tab.value} value={tab.value}>
+              {user ? tab.render(user, isUpdate, setIsUpdate) : null}
+            </TabsContent>
+          ))}
       </Tabs>
     </div>
   );

@@ -6,6 +6,8 @@ export interface InterviewInterface {
   location: string;
   meetingLink: string;
   note?: string;
-  status?: "SCHEDULED" | "ACCEPTED" | "REJECTED" | "COMPLETED" | "CANCELED";
+  status?: "ACCEPTED" | "REJECTED" | "COMPLETED" | "CANCELED" | "PENDING";
   createdAt?: Date;
+  jobTitle?: string;
+  studentName?: string;
 }

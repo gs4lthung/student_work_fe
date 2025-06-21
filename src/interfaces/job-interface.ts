@@ -1,6 +1,6 @@
 export interface JobInterface {
   jobID?: string;
-  employerId?: string;
+  employerID?: string;
   subscriptionID: number;
   title: string;
   category: string;

@@ -40,12 +40,18 @@ export const createResume = async (
 
   console.log("Prepared resume data for API:", requestData);
 
-  const response = await api.post(url, {
-    ...requestData,
-    studentId: studentId,
-    fileUrl: "content",
-    resumeType: "content",
-  });
+  const response = await api.post(
+    url,
+    {
+      ...requestData,
+      studentId: studentId,
+      fileUrl: "content",
+      resumeType: "content",
+    },
+    {
+      requiresAuth: true,
+    }
+  );
   if (response.status === 200) {
     return response.data;
   } else {

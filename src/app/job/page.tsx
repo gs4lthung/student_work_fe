@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import { getApplicationsByStudent } from "@/api/application-api";
 import { getJobs } from "@/api/job-api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,9 +16,11 @@ import {
 import PaginationFixed from "@/components/ui/pagination-fixed";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { JobInterface } from "@/interfaces/job-interface";
+import { useUserStore } from "@/stores/user-store";
 import {
   Banknote,
-  CircleSmall,
+  Circle,
+  CircleIcon as CircleSmall,
   Clock,
   MapPin,
 } from "lucide-react";
@@ -25,9 +28,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function JobPage() {
+  const { user } = useUserStore();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const [appliedJobs, setAppliedJobs] = useState<JobInterface[]>([]);
   const [initialData, setInitialData] = useState<JobInterface[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,8 +47,16 @@ export default function JobPage() {
       }
       setIsLoading(false);
     }
+    async function checkAppliedJobs() {
+      if (!user || !user.studentID) return;
+      const res = await getApplicationsByStudent(1, 10);
+      if (res) {
+        setAppliedJobs(res.items);
+      }
+    }
+    checkAppliedJobs();
     fetchJobs();
-  }, [page, pageSize]);
+  }, [page, pageSize, user]);
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -73,7 +86,8 @@ export default function JobPage() {
             </div>
           </div>
         </div>
-      </div>{" "}
+      </div>
+
       <div className="flex w-full mt-4 gap-4">
         <div className="flex flex-col w-1/4">s</div>
         {isLoading ? (
@@ -82,9 +96,19 @@ export default function JobPage() {
           <div className="w-2/4">
             {initialData.length > 0 ? (
               initialData.map((job) => (
-                <Card key={job.jobID} className="mb-4">
+                <Card key={job.jobID} className="mb-4 relative">
+                  <div className="absolute top-4 right-4 z-10">
+                    {appliedJobs.some(
+                      (appliedJob) => appliedJob.jobID === job.jobID
+                    ) ? (
+                      <Badge variant="secondary">Đã ứng tuyển</Badge>
+                    ) : (
+                      <Badge variant="outline">Chưa ứng tuyển</Badge>
+                    )}
+                  </div>
+
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl gap-2">
+                    <CardTitle className="flex items-center text-xl gap-2 pr-32">
                       {job.title}
                       <Badge>{job.category}</Badge>
                     </CardTitle>
@@ -94,7 +118,7 @@ export default function JobPage() {
                     <ul className="space-y-2">
                       {job.requirements.split(".").map((des, index) => (
                         <li key={index} className="flex items-center">
-                          <CircleSmall />
+                          🟢
                           <p>{des.trim()}</p>
                         </li>
                       ))}

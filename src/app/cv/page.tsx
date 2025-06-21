@@ -16,6 +16,7 @@ import type { ResumeInterface } from "@/interfaces/resume-interface";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect, useState } from "react";
 import { FileText, Calendar, Eye, Download, Edit } from "lucide-react";
+import Link from "next/link";
 
 export default function CvPage() {
   const { user } = useUserStore();
@@ -120,10 +121,12 @@ export default function CvPage() {
       <div className="w-full max-w-4xl">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">CV của bạn</h1>
-          <Button onClick={() => (window.location.href = "/cv/add")}>
-            <FileText className="h-4 w-4 mr-2" />
-            Tạo CV mới
-          </Button>
+          <Link href="/cv/add">
+            <Button>
+              <FileText className="h-4 w-4 mr-2" />
+              Tạo CV mới
+            </Button>
+          </Link>
         </div>
 
         {resumes.length === 0 ? (
@@ -135,10 +138,12 @@ export default function CvPage() {
                 Bạn chưa tạo CV nào. Hãy tạo CV đầu tiên để bắt đầu tìm kiếm
                 việc làm.
               </p>
-              <Button onClick={() => (window.location.href = "/cv/add")}>
-                <FileText className="h-4 w-4 mr-2" />
-                Tạo CV đầu tiên
-              </Button>
+              <Link href="/cv/add">
+                <Button>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Tạo CV đầu tiên
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ) : (
@@ -212,7 +217,10 @@ export default function CvPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => resume.resumeID && handleViewResume(resume.resumeID)}
+                            onClick={() =>
+                              resume.resumeID &&
+                              handleViewResume(resume.resumeID)
+                            }
                             disabled={!resume.resumeID}
                           >
                             <Eye className="h-4 w-4 mr-1" />

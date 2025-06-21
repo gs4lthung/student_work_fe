@@ -89,6 +89,9 @@ export default function CreateResumePage() {
       const result = await createResume(user?.studentID || "", resumeData);
       toast.success("CV đã được tạo thành công");
       console.log("Created resume:", result);
+      setTimeout(() => {
+        window.location.href = `/cv/${result.resumeId}`;
+      }, 2000);
     } catch (error) {
       toast.error("Không thể tạo CV. Vui lòng thử lại.");
       console.error("Error creating resume:", error);

@@ -13,6 +13,7 @@ export interface ApplicationInterface {
     | "DELETE";
   appliedAt?: Date;
   updateAt?: Date;
+  studentName?: string;
 }
 
 export type StudentApplicationResType = Pick<

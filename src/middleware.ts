@@ -14,6 +14,7 @@ export async function middleware(request: NextRequest) {
     "/dashboard/profile",
     "/dashboard/service",
     "/dashboard/interview",
+    "/payment",
     "/job/add",
   ];
   const studentRoutes = [
@@ -22,6 +23,7 @@ export async function middleware(request: NextRequest) {
     "/dashboard/saved-jobs",
     "/dashboard/applied-jobs",
     "/dashboard/profile",
+    "/dashboard/interview",
     "/cv",
     "/cv/add",
   ];
@@ -82,5 +84,6 @@ export const config = {
     "/job/add",
     "/cv",
     "/cv/add",
+    "/payment",
   ],
 };

@@ -18,6 +18,8 @@ export type UserStore = Pick<
   | "avatarUrl"
   | "isActive"
   | "rating"
+  | "walletID"
+  | "walletBalance"
 > &
   Pick<
     StudentInterface,

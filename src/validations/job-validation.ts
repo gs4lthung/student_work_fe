@@ -30,7 +30,7 @@ export const JobValidationSchema: Yup.ObjectSchema<JobInterface> = Yup.object({
     .required("Ngày bắt đầu không được để trống")
     .min(new Date(), "Ngày bắt đầu phải là ngày trong tương lai"),
   imageUrl: Yup.string().optional(),
-  employerId: Yup.string().optional(),
+  employerID: Yup.string().optional(),
   subscriptionID: Yup.number().required("ID gói đăng ký không được để trống"),
   jobID: Yup.string().optional(),
   createdAt: Yup.date().optional(),

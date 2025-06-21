@@ -216,15 +216,23 @@ export default function Header() {
             )}
 
             {user?.studentID && (
-              <Badge>
+              <Badge
+                variant={"outline"}
+                className="border-2 border-green-500 dark:border-green-400"
+              >
                 Sinh viên: {user?.firstName} {user?.lastName || "Chưa cập nhật"}
               </Badge>
             )}
 
             {user?.employerID && (
-              <Badge>
-                Nhà tuyển dụng: {user?.companyName || "Chưa cập nhật"}
-              </Badge>
+              <>
+                <Badge
+                  variant={"outline"}
+                  className="border-2 border-green-500 dark:border-green-400"
+                >
+                  Nhà tuyển dụng: {user?.companyName || "Chưa cập nhật"}
+                </Badge>
+              </>
             )}
 
             <ModeToggle />
@@ -297,9 +305,9 @@ export default function Header() {
                           <p>{user.email}</p>
                           <Badge
                             variant={"outline"}
-                            className="mt-2 bg-yellow-300 dark:bg-yellow-500"
+                            className="mt-2 bg-green-400 dark:bg-green-500"
                           >
-                            100 SPoint
+                            {user.walletBalance?.toLocaleString("vi-VN")} SPoint
                           </Badge>
                         </div>
                       </div>

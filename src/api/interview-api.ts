@@ -25,6 +25,23 @@ export const getInterviewsByApplicationId = async (applicationID: string) => {
   return response.data;
 };
 
+export const getInterviewsByEmployerId = async (employerID: string) => {
+  const url = `/api/Interview/employer/${employerID}`;
+  const response = await api.get(url, {
+    requiresAuth: true,
+  });
+  console.log("Interviews by employer ID response:", response.data);
+  return response.data;
+};
+
+export const getInterviewsByStudentId = async (studentID: string) => {
+  const url = `/api/Interview/student/${studentID}`;
+  const response = await api.get(url, {
+    requiresAuth: true,
+  });
+  return response.data;
+};
+
 export const createInterview = async (data: InterviewInterface) => {
   const url = "/api/Interview";
   const form = new FormData();

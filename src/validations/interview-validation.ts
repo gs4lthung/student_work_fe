@@ -23,12 +23,14 @@ export const CreateInterviewSchema: Yup.ObjectSchema<InterviewInterface> =
       .required("Đường dẫn cuộc họp không được để trống"),
     note: Yup.string().optional().max(500, "Ghi chú không được quá 500 ký tự"),
     status: Yup.mixed<
-      "SCHEDULED" | "ACCEPTED" | "REJECTED" | "COMPLETED" | "CANCELED"
+      "PENDING" | "ACCEPTED" | "REJECTED" | "COMPLETED" | "CANCELED"
     >()
       .oneOf(
-        ["SCHEDULED", "ACCEPTED", "REJECTED", "COMPLETED", "CANCELED"],
+        ["PENDING", "ACCEPTED", "REJECTED", "COMPLETED", "CANCELED"],
         "Trạng thái không hợp lệ"
       )
       .optional(),
     createdAt: Yup.date().optional(), 
+    jobTitle: Yup.string().optional(),
+    studentName: Yup.string().optional(),
   });

@@ -1,6 +1,5 @@
 import api from "@/config/axios-config";
 import { JobInterface } from "@/interfaces/job-interface";
-import { toast } from "sonner";
 
 export const createJob = async (data: JobInterface) => {
   console.log("Creating job with data:", data);
@@ -16,12 +15,12 @@ export const createJob = async (data: JobInterface) => {
   form.append("requirements", data.requirements);
   form.append("status", data.status);
   if (data.imageUrl) {
-    form.append("imageUrl", data.imageUrl);
+    console.log("Appending image URL:", data.imageUrl);
+    form.append("image", data.imageUrl);
   }
   const url = "/api/Jobs/create";
   const response = await api.post(url, form, { requiresAuth: true });
-  if (response.status === 201) {
-    toast.success("Tạo công việc thành công");
+  if (response) {
     return response.data;
   }
 };

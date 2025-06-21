@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import axios from "axios";
 import { useUserStore } from "@/stores/user-store";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [redirect, setRedirect] = useState("/"); // Default redirect
@@ -53,54 +54,27 @@ export default function LoginPage() {
       validationSchema={LoginValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        const res = await axios.post("/api/auth/login", values, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (res) {
-          console.log("Login response:", res.data);
-          useUserStore.getState().setUser(res.data.result.user);
-
-          if (res.data.result.role === "Student") {
-            const studentRes = await getStudentInfoByUserID(
-              res.data.result.user.userId
-            );
-            const currentUser = useUserStore.getState().user;
-            if (currentUser) {
-              useUserStore.getState().setUser({
-                ...currentUser,
-                studentID: studentRes.studentID,
-                university: studentRes.university,
-                major: studentRes.major,
-                yearOfStudy: studentRes.yearOfStudy,
-                dateOfBirth: studentRes.dateOfBirth,
-                bio: studentRes.bio,
-              });
-            }
-          } else if (res.data.result.role === "Employer") {
-            const employerRes = await getEmployerInfoByUserID(
-              res.data.result.user.userId
-            );
-            const currentUser = useUserStore.getState().user;
-            if (currentUser) {
-              useUserStore.getState().setUser({
-                ...currentUser,
-                employerID: employerRes.employerID,
-                companyName: employerRes.companyName,
-                companySize: employerRes.companySize,
-                description: employerRes.description,
-                industry: employerRes.industry,
-                location: employerRes.location,
-                website: employerRes.website,
-                logoUrl: employerRes.logoUrl,
-              });
-            }
+        try {
+          const res = await axios.post("/api/auth/login", values, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (res) {
+            console.log("Login response:", res.data); 
+            useUserStore.getState().setUser(res.data.result.user);
           }
+          setSubmitting(false);
+          console.log("Login successful, redirecting to:", redirect);
+          router.push(redirect);
+        } catch (error) {
+          console.error("Login error:", error);
+          if (error instanceof axios.AxiosError) {
+            toast.error(error.response?.data?.error || "Đăng nhập thất bại");
+          }
+        } finally {
+          setSubmitting(false);
         }
-        setSubmitting(false);
-        console.log("Login successful, redirecting to:", redirect);
-        router.push(redirect);
       }}
     >
       {({

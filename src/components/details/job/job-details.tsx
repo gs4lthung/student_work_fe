@@ -1,8 +1,12 @@
 "use client";
 
-import { createApplication } from "@/api/application-api";
+import {
+  createApplication,
+  getApplicationsByStudent,
+} from "@/api/application-api";
 import { getJobById } from "@/api/job-api";
 import { searchResumes } from "@/api/resume-api";
+import { getEmployerInfoByID } from "@/api/user-api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { ApplicationInterface } from "@/interfaces/application-interface";
 import type { JobInterface } from "@/interfaces/job-interface";
 import type { ResumeInterface } from "@/interfaces/resume-interface";
+import { EmployerInterface } from "@/interfaces/user-interface";
 import { useUserStore } from "@/stores/user-store";
 import { ApplicationValidationSchema } from "@/validations/application-validation";
 import { Form, Formik } from "formik";
@@ -38,9 +43,11 @@ import {
   MapPin,
   Clock,
   Banknote,
-  Calendar,
   Building,
   Save,
+  Filter,
+  PersonStanding,
+  Link2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -100,6 +107,10 @@ export default function JobDetailPage({
   const resolvedParams = use(params);
   const { user } = useUserStore();
   const [job, setJob] = useState<JobInterface | null>(null);
+  const [jobEmployer, setJobEmployer] = useState<EmployerInterface | null>(
+    null
+  );
+  const [isApplied, setIsApplied] = useState(false);
   const [userResumes, setUserResumes] = useState<ResumeInterface[]>([]);
   const applicationData: ApplicationInterface = {
     jobID: resolvedParams.slug,
@@ -131,9 +142,40 @@ export default function JobDetailPage({
       setIsLoading(false);
     };
 
+    const checkAppliedJob = async () => {
+      if (!user?.studentID) return;
+      const res = await getApplicationsByStudent(1, 10);
+      if (res) {
+        console.log("Fetched applications:", res.items);
+        console.log(resolvedParams.slug);
+        const appliedJob = res.items.find(
+          (app: ApplicationInterface) =>
+            String(app.jobID) === String(resolvedParams.slug)
+        );
+        if (appliedJob) {
+          setIsApplied(true);
+        } else {
+          setIsApplied(false);
+        }
+      }
+    };
+    checkAppliedJob();
+
     fetchJob(resolvedParams.slug);
     fetchResumes();
   }, [fetchResumes, resolvedParams.slug, user?.studentID]);
+
+  useEffect(() => {
+    const fetchJobEmployer = async () => {
+      if (job?.employerID) {
+        console.log("Fetching employer info for ID:", job.employerID);
+        const res = await getEmployerInfoByID(job.employerID);
+        setJobEmployer(res);
+      }
+    };
+
+    fetchJobEmployer();
+  }, [job?.employerID]);
 
   const handleCommentSubmit = () => {
     if (newComment.trim() === "" || userRating === 0) return;
@@ -182,24 +224,43 @@ export default function JobDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hero Section with Job Image */}
-      <div className="relative h-80 bg-gradient-to-r from-green-400 to-blue-300 overflow-hidden">
+      <div className="relative h-80 bg-gradient-to-r from-green-500 to-zinc-100 dark:from-slate-950 dark:to-green-300 overflow-hidden">
         <div className="absolute inset-0"></div>
+        {isApplied && (
+          <div className="absolute top-4 right-4 flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg shadow-md font-semibold text-base z-10">
+            <svg
+              className="w-5 h-5 text-green-500"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M5 13l4 4L19 7"
+              />
+            </svg>
+            Đã ứng tuyển
+          </div>
+        )}
         <div className="relative container mx-auto px-4 h-full flex items-center">
-          <div className="text-white max-w-4xl">
+          <div className="max-w-4xl">
             <div className="flex items-center gap-2 mb-4">
               <Badge variant={"secondary"}>{job?.category}</Badge>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               {job?.title}
+              {isApplied}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-white/90">
+            <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
                 <Building className="h-5 w-5" />
-                <span>ID: {job?.employerId}</span>
+                <span>{jobEmployer?.companyName}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
@@ -230,7 +291,7 @@ export default function JobDetailPage({
                   />
                 ))}
               </div>
-              <span className="text-white/90">
+              <span className="">
                 {averageRating.toFixed(1)} ({comments.length} đánh giá)
               </span>
             </div>
@@ -248,7 +309,7 @@ export default function JobDetailPage({
               value={activeTab}
               onValueChange={setActiveTab}
             >
-              <TabsList className="mb-6 bg-white shadow-sm">
+              <TabsList className="mb-6 shadow-sm">
                 <TabsTrigger value="details" className="px-6">
                   Chi tiết công việc
                 </TabsTrigger>
@@ -263,7 +324,7 @@ export default function JobDetailPage({
                     <CardTitle className="text-xl">Mô tả công việc</CardTitle>
                     <Button
                       variant="outline"
-                      className="text-gray-600 hover:text-gray-900"
+                      className=""
                       onClick={() => alert("Chia sẻ công việc")}
                     >
                       <Save />
@@ -272,246 +333,160 @@ export default function JobDetailPage({
                   </CardHeader>
                   <CardContent>
                     <div className="prose max-w-none">
-                      <p className="text-gray-700 leading-relaxed mb-8">
-                        {job?.description}
-                      </p>
+                      <p className="leading-relaxed mb-8">{job?.description}</p>
 
-                      <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                      <h3 className="text-lg font-semibold mb-4">
                         Yêu cầu công việc
                       </h3>
                       <ul className="space-y-2 mb-8">
                         {job?.requirements.split(".").map((req, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
-                            <span className="text-gray-700">{req}</span>
+                            🟢 <span className="">{req}</span>
                           </li>
                         ))}
                       </ul>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="bg-gray-50 p-6 rounded-lg">
-                          <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                            Thông tin chung
-                          </h3>
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <MapPin className="h-4 w-4" />
-                                <span>Địa điểm</span>
-                              </div>
-                              <span className="font-medium text-gray-900">
-                                {job?.location}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <Banknote className="h-4 w-4" />
-                                <span>Mức lương</span>
-                              </div>
-                              <span className="font-medium text-gray-900">
-                                {job?.salary.toLocaleString("vi-VN")}₫
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <Clock className="h-4 w-4" />
-                                <span>Giờ làm việc</span>
-                              </div>
-                              <span className="font-medium text-gray-900">
-                                {job?.workingHours}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <Calendar className="h-4 w-4" />
-                                <span>Ngày bắt đầu</span>
-                              </div>
-                              <span className="font-medium text-gray-900">
-                                {job?.startDate
-                                  ? new Date(job.startDate).toLocaleDateString(
-                                      "vi-VN"
-                                    )
-                                  : ""}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="bg-blue-50 p-6 rounded-lg">
-                          <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                            Thông tin nhà tuyển dụng
-                          </h3>
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <Building className="h-4 w-4" />
-                                <span>ID nhà tuyển dụng</span>
-                              </div>
-                              <span className="font-medium text-gray-900">
-                                {job?.employerId}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <Calendar className="h-4 w-4" />
-                                <span>Ngày đăng</span>
-                              </div>
-                              <span className="font-medium text-gray-900">
-                                {job?.createdAt
-                                  ? new Date(job.createdAt).toLocaleDateString(
-                                      "vi-VN"
-                                    )
-                                  : ""}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <Calendar className="h-4 w-4" />
-                                <span>Cập nhật</span>
-                              </div>
-                              <span className="font-medium text-gray-900">
-                                {job?.updatedAt
-                                  ? new Date(job.updatedAt).toLocaleDateString(
-                                      "vi-VN"
-                                    )
-                                  : ""}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <div className="mt-8">{jobEmployer?.description}</div>
+                      <Image
+                        src={job?.imageUrl || "/placeholder.svg"}
+                        alt={job?.title || "Job Image"}
+                        width={800}
+                        height={400}
+                        className="mt-4 w-full h-auto rounded-lg shadow-sm mb-6"
+                      />
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Dialog>
-                      <DialogTrigger asChild className="w-full">
-                        <Button>Ứng tuyển ngay</Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                          <DialogTitle className="text-lg font-semibold mb-4">
-                            Chọn CV của bạn để ứng tuyển
-                          </DialogTitle>
-                        </DialogHeader>
-                        <Formik
-                          initialValues={applicationData}
-                          validationSchema={ApplicationValidationSchema}
-                          onSubmit={async (values, { setSubmitting }) => {
-                            // Handle application submission logic here
-                            setSubmitting(true);
-                            console.log("Submitting application:", values);
-                            const res = await createApplication(values);
-                            if (res) {
-                              toast.success("Ứng tuyển thành công!");
-                              setTimeout(()=>{
-                                window.location.reload();
-                              },1000)
-                            } else {
-                              toast.error("Ứng tuyển thất bại!");
-                            }
-                            setSubmitting(false);
-                          }}
-                        >
-                          {({
-                            errors,
-                            touched,
-                            handleSubmit,
-                            handleChange,
-                            handleBlur,
-                            values,
-                            isSubmitting,
-                          }) => (
-                            <Form onSubmit={handleSubmit}>
-                              <div className="space-y-4">
-                                <Label className="text-sm font-medium">
-                                  Chọn CV để ứng tuyển
-                                </Label>
-                                <RadioGroup
-                                  value={values.resumeID}
-                                  onValueChange={(value) => {
-                                    handleChange({
-                                      target: { name: "resumeID", value },
-                                    });
-                                  }}
-                                  className="space-y-4"
-                                >
-                                  {userResumes.length > 0 ? (
-                                    userResumes.map((resume) => (
-                                      <div
-                                        key={resume.resumeID}
-                                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
-                                      >
-                                        <div className="flex items-center space-x-3">
-                                          <RadioGroupItem
-                                            value={resume.resumeID ?? ""}
-                                            id={`resume-${resume.resumeID}`}
-                                          />
-                                          <Label
-                                            htmlFor={`resume-${resume.resumeID}`}
-                                            className="text-sm font-medium cursor-pointer"
+                    {user?.role === "Student" && !isApplied && (
+                      <Dialog>
+                        <DialogTrigger asChild className="w-full">
+                          <Button>Ứng tuyển ngay</Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                          <DialogHeader>
+                            <DialogTitle className="text-lg font-semibold mb-4">
+                              Chọn CV của bạn để ứng tuyển
+                            </DialogTitle>
+                          </DialogHeader>
+                          <Formik
+                            initialValues={applicationData}
+                            validationSchema={ApplicationValidationSchema}
+                            onSubmit={async (values, { setSubmitting }) => {
+                              // Handle application submission logic here
+                              setSubmitting(true);
+                              console.log("Submitting application:", values);
+                              const res = await createApplication(values);
+                              if (res) {
+                                toast.success("Ứng tuyển thành công!");
+                                setTimeout(() => {
+                                  window.location.reload();
+                                }, 1000);
+                              } else {
+                                toast.error("Ứng tuyển thất bại!");
+                              }
+                              setSubmitting(false);
+                            }}
+                          >
+                            {({
+                              errors,
+                              touched,
+                              handleSubmit,
+                              handleChange,
+                              handleBlur,
+                              values,
+                              isSubmitting,
+                            }) => (
+                              <Form onSubmit={handleSubmit}>
+                                <div className="space-y-4">
+                                  <Label className="text-sm font-medium">
+                                    Chọn CV để ứng tuyển
+                                  </Label>
+                                  <RadioGroup
+                                    value={values.resumeID}
+                                    onValueChange={(value) => {
+                                      handleChange({
+                                        target: { name: "resumeID", value },
+                                      });
+                                    }}
+                                    className="space-y-4"
+                                  >
+                                    {userResumes.length > 0 ? (
+                                      userResumes.map((resume) => (
+                                        <div
+                                          key={resume.resumeID}
+                                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                                        >
+                                          <div className="flex items-center space-x-3">
+                                            <RadioGroupItem
+                                              value={resume.resumeID ?? ""}
+                                              id={`resume-${resume.resumeID}`}
+                                            />
+                                            <Label
+                                              htmlFor={`resume-${resume.resumeID}`}
+                                              className="text-sm font-medium cursor-pointer"
+                                            >
+                                              {resume.jobTitle ||
+                                                resume.fullName ||
+                                                "CV không có tiêu đề"}
+                                            </Label>
+                                          </div>
+                                          <Link
+                                            href={`/cv/${resume.resumeID}`}
+                                            className="text-blue-600 hover:underline text-sm"
+                                            target="_blank"
                                           >
-                                            {resume.jobTitle ||
-                                              resume.fullName ||
-                                              "CV không có tiêu đề"}
-                                          </Label>
+                                            Xem CV
+                                          </Link>
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div className="text-center py-8">
+                                        <div className="text-gray-500 mb-2">
+                                          Bạn chưa có CV nào.
                                         </div>
                                         <Link
-                                          href={`/cv/${resume.resumeID}`}
+                                          href="/cv/add"
                                           className="text-blue-600 hover:underline text-sm"
-                                          target="_blank"
                                         >
-                                          Xem CV
+                                          Tạo CV mới
                                         </Link>
                                       </div>
-                                    ))
-                                  ) : (
-                                    <div className="text-center py-8">
-                                      <div className="text-gray-500 mb-2">
-                                        Bạn chưa có CV nào.
-                                      </div>
-                                      <Link
-                                        href="/cv/create"
-                                        className="text-blue-600 hover:underline text-sm"
-                                      >
-                                        Tạo CV mới
-                                      </Link>
+                                    )}
+                                  </RadioGroup>
+
+                                  {errors.resumeID && touched.resumeID && (
+                                    <div className="text-red-600 text-sm mt-2">
+                                      {errors.resumeID}
                                     </div>
                                   )}
-                                </RadioGroup>
+                                </div>
+                                <Label htmlFor="coverLetter" className="mt-4">
+                                  Cover Letter
+                                </Label>
+                                <Textarea
+                                  id="coverletter"
+                                  placeholder="Viết thư xin việc của bạn tại đây..."
+                                  className="min-h-[100px] resize-none my-4"
+                                  value={values.coverletter}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                />
 
-                                {errors.resumeID && touched.resumeID && (
-                                  <div className="text-red-600 text-sm mt-2">
-                                    {errors.resumeID}
+                                {errors.coverletter && touched.coverletter && (
+                                  <div className="text-red-600 text-sm">
+                                    {errors.coverletter}
                                   </div>
                                 )}
-                              </div>
-                              <Label htmlFor="coverLetter" className="mt-4">
-                                Cover Letter
-                              </Label>
-                              <Textarea
-                                id="coverletter"
-                                placeholder="Viết thư xin việc của bạn tại đây..."
-                                className="min-h-[100px] resize-none my-4"
-                                value={values.coverletter}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-
-                              {errors.coverletter && touched.coverletter && (
-                                <div className="text-red-600 text-sm">
-                                  {errors.coverletter}
-                                </div>
-                              )}
-                              <DialogFooter>
-                                <Button type="submit" disabled={isSubmitting}>
-                                  Ứng tuyển
-                                </Button>
-                              </DialogFooter>
-                            </Form>
-                          )}
-                        </Formik>
-                      </DialogContent>
-                    </Dialog>
+                                <DialogFooter>
+                                  <Button type="submit" disabled={isSubmitting}>
+                                    Ứng tuyển
+                                  </Button>
+                                </DialogFooter>
+                              </Form>
+                            )}
+                          </Formik>
+                        </DialogContent>
+                      </Dialog>
+                    )}
                   </CardFooter>
                 </Card>
               </TabsContent>
@@ -581,7 +556,7 @@ export default function JobDetailPage({
                         {comments.map((comment) => (
                           <div
                             key={comment.id}
-                            className="bg-white p-4 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow"
+                            className="p-4 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow"
                           >
                             <div className="flex items-center gap-3 mb-3">
                               <Image
@@ -626,13 +601,13 @@ export default function JobDetailPage({
                       </div>
                     ) : (
                       <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <StarIcon className="h-8 w-8 text-gray-400" />
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <StarIcon className="h-8 w-8" />
                         </div>
-                        <p className="text-gray-500 text-lg">
+                        <p className="text-lg">
                           Chưa có đánh giá nào cho công việc này
                         </p>
-                        <p className="text-gray-400 text-sm mt-1">
+                        <p className="text-sm mt-1">
                           Hãy là người đầu tiên chia sẻ trải nghiệm của bạn
                         </p>
                       </div>
@@ -646,82 +621,65 @@ export default function JobDetailPage({
           {/* Enhanced Sidebar */}
           <div className="space-y-6">
             <Card className="shadow-sm">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-green-50">
-                <CardTitle className="text-lg">Thông tin nhanh</CardTitle>
+              <CardHeader className="bg-zinc-100 dark:bg-slate-900 pt-2">
+                <CardTitle className="text-lg">Về chúng tôi</CardTitle>
               </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Building className="h-5 w-5 text-blue-600" />
+              <CardContent className="">
+                <div className="">
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
+                    <Building />
                     <div>
                       <h3 className="text-sm font-medium text-gray-600">
-                        Vị trí
+                        Công ty
                       </h3>
-                      <p className="font-semibold text-gray-900">
-                        {job?.title}
+                      <p className="font-semibold">
+                        {jobEmployer?.companyName}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <MapPin className="h-5 w-5 text-green-600" />
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
+                    <MapPin />
                     <div>
-                      <h3 className="text-sm font-medium text-gray-600">
-                        Địa điểm
-                      </h3>
-                      <p className="font-semibold text-gray-900">
-                        {job?.location}
+                      <h3 className="text-sm font-medium">Địa điểm</h3>
+                      <p className="font-semibold">{jobEmployer?.location}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
+                    <Filter />
+                    <div>
+                      <h3 className="text-sm font-medium">Lĩnh vực</h3>
+                      <p className="font-semibold">{jobEmployer?.industry}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
+                    <PersonStanding />
+                    <div>
+                      <h3 className="text-sm font-medium">Quy mô</h3>
+                      <p className="font-semibold">
+                        {Number(jobEmployer?.companySize).toLocaleString(
+                          "vi-VN"
+                        )}{" "}
+                        nhân viên
                       </p>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Banknote className="h-5 w-5 text-yellow-600" />
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
+                    <Link2 />
                     <div>
-                      <h3 className="text-sm font-medium text-gray-600">
-                        Mức lương
-                      </h3>
-                      <p className="font-semibold text-gray-900">
-                        {job?.salary.toLocaleString("vi-VN")}₫
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Clock className="h-5 w-5 text-green-600" />
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-600">
-                        Giờ làm việc
-                      </h3>
-                      <p className="font-semibold text-gray-900">
-                        {job?.workingHours}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Calendar className="h-5 w-5 text-red-600" />
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-600">
-                        Ngày bắt đầu
-                      </h3>
-                      <p className="font-semibold text-gray-900">
-                        {job?.startDate
-                          ? new Date(job.startDate).toLocaleDateString("vi-VN")
-                          : ""}
-                      </p>
+                      <h3 className="text-sm font-medium">Website</h3>
+                      <Link
+                        href={jobEmployer?.website || "#"}
+                        target="_blank"
+                        className="text-blue-600 hover:underline"
+                      >
+                        <p className="font-semibold">{jobEmployer?.website}</p>
+                      </Link>
                     </div>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  onClick={() => alert("Ứng tuyển công việc")}
-                >
-                  Ứng tuyển ngay
-                </Button>
-              </CardFooter>
+              <CardFooter></CardFooter>
             </Card>
 
             <Card className="shadow-sm">
