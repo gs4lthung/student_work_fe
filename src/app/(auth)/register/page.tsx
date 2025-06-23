@@ -38,13 +38,10 @@ export default function RegisterPage() {
         try {
           const res = await register(values);
           if (res) {
-            toast.success("Đăng ký thành công");
-            // Redirect to login page after successful registration
-            setTimeout(() => {
-              window.location.href = "/login";
-            }, 1000);
+            toast.success("Đăng ký thành công, vui lòng kiểm tra email để xác thực tài khoản");
           }
         } catch (error) {
+          console.error("Registration error:", error);
           if (error instanceof AxiosError) {
             toast.error(error.response?.data?.message || "Đăng ký thất bại");
           }

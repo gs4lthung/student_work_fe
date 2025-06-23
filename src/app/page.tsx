@@ -56,8 +56,8 @@ type SpecialJob = {
 
 const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
   return (
-    <div className="fixed bottom-4 right-4 z-100">
-      <BackgroundGradient className="rounded-[22px] w-[400px] max-w-sm bg-white dark:bg-zinc-900">
+    <div className="fixed bottom-4 right-4 z-100 hidden lg:block">
+      <BackgroundGradient className="rounded-[22px] w-[400px] lg:w-[400px] md:w-[350px] max-w-sm bg-white dark:bg-zinc-900">
         <Card
           className="bg-transparent border-none"
           style={{
@@ -85,7 +85,7 @@ const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
           <CardContent className="flex gap-4 items-center">
             <div className="flex-shrink-0">
               <Image
-                src={specialJob.companyLogo}
+                src={specialJob.companyLogo || "/placeholder.svg"}
                 alt="Company Logo"
                 width={70}
                 height={70}
@@ -143,7 +143,7 @@ const feedbacks = [
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-24 sm:p-20">
+    <div className="flex flex-col items-center justify-items-center min-h-screen p-4 sm:p-8 pb-20 gap-12 sm:gap-16 lg:gap-24 lg:p-20">
       <CheckRoles />
       <CheckWallet />
       <SpecialJobCard specialJob={specialJob} />
@@ -160,29 +160,29 @@ export default function Home() {
 
 const HeroSection = () => {
   return (
-    <section className="flex flerx-row justify-between items-center gap-8 w-full">
-      <div className="flex flex-col items-start gap-4">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
+    <section className="flex flex-col lg:flex-row justify-between items-center gap-8 w-full">
+      <div className="flex flex-col items-start gap-4 w-full lg:w-auto">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter lg:text-4xl xl:text-5xl/none">
           Nền tảng tìm kiếm công việc hàng đầu
         </h1>
-        <p className="text-gray-500 w-1/2">
+        <p className="text-gray-500 w-full lg:w-1/2">
           Chúng tôi giúp bạn tìm kiếm các công việc part-time linh hoạt nhất,
           phù hợp với thời gian của bạn
         </p>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
           <HowToUseLoader />
           <Input
             type="text"
-            className="w-[300px]"
+            className="w-full sm:w-[300px]"
             placeholder="Nhập từ khóa tìm kiếm"
           />
           <Link href={"/job"}>
-            <Button variant="default">
+            <Button variant="default" className="w-full sm:w-auto">
               <Search />
             </Button>
           </Link>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <p className="text-gray-500 dark:text-gray-400">Phổ biến: </p>
           {["Lập trình viên", "Thiết kế", "Marketing"].map((item, index) => (
             <Badge key={index} variant="secondary">
@@ -191,7 +191,9 @@ const HeroSection = () => {
           ))}
         </div>
       </div>
-      <Banner />
+      <div className="w-full lg:w-auto">
+        <Banner />
+      </div>
     </section>
   );
 };
@@ -312,9 +314,11 @@ const RegisterSection = () => {
 
 const CompanySection = () => {
   return (
-    <section className="flex flex-col items-center justify-center">
-      <TypographyH2>Đối tác hàng đầu của chúng tôi</TypographyH2>
-      <div className="-z-1 relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">
+    <section className="flex flex-col items-center justify-center px-4">
+      <TypographyH2 className="text-center mb-8">
+        Đối tác hàng đầu của chúng tôi
+      </TypographyH2>
+      <div className="-z-1 relative flex h-[300px] sm:h-[400px] lg:h-[500px] w-full flex-col items-center justify-center overflow-hidden">
         <OrbitingCircles iconSize={50} radius={100}>
           <Image
             src={
@@ -426,8 +430,8 @@ const ReviewSection = () => {
 
 const ForCustomerSection = () => {
   return (
-    <section className="flex justify-around gap-4 w-full">
-      <div className="flex flex-col items-start gap-4">
+    <section className="flex flex-col lg:flex-row justify-around gap-8 w-full">
+      <div className="flex flex-col items-start gap-4 w-full lg:w-1/2">
         <TypographyH2>Dành cho ứng viên tìm việc</TypographyH2>
         {[
           "Tiếp cận hàng ngàn cơ hội bán thời gian linh hoạt",
@@ -438,14 +442,14 @@ const ForCustomerSection = () => {
         ].map((item, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 text-gray-500 dark:text-gray-300"
+            className="flex items-start gap-2 text-gray-500 dark:text-gray-300"
           >
-            <Sparkles className="h-4 w-4 text-green-500 dark:text-green-400" />
-            <p>{item}</p>
+            <Sparkles className="h-4 w-4 text-green-500 dark:text-green-400 mt-0.5 flex-shrink-0" />
+            <p className="text-sm sm:text-base">{item}</p>
           </div>
         ))}
       </div>
-      <div className="flex flex-col items-start gap-4">
+      <div className="flex flex-col items-start gap-4 w-full lg:w-1/2">
         <TypographyH2>Dành cho nhà tuyển dụng</TypographyH2>
         {[
           "Tiếp cận với một lượng lớn các ứng viên bán thời gian đủ điều kiện",
@@ -456,10 +460,10 @@ const ForCustomerSection = () => {
         ].map((item, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 text-gray-500 dark:text-gray-300"
+            className="flex items-start gap-2 text-gray-500 dark:text-gray-300"
           >
-            <Sparkles className="h-4 w-4 text-green-500 dark:text-green-400" />
-            <p>{item}</p>
+            <Sparkles className="h-4 w-4 text-green-500 dark:text-green-400 mt-0.5 flex-shrink-0" />
+            <p className="text-sm sm:text-base">{item}</p>
           </div>
         ))}
       </div>

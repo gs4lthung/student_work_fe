@@ -60,29 +60,39 @@ export default function JobPage() {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <div className="w-full bg-gradient-to-r from-green-400 to-blue-300 text-white py-16 px-4 rounded-lg mb-8">
+      <div className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-16 px-4 rounded-xl mb-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-4">
-            Tìm Công Việc <span className="text-yellow-300">Mơ Ước</span> Của
-            Bạn
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+            Tìm Công Việc <span className="text-yellow-300">Mơ Ước</span> Của Bạn
           </h1>
-          <p className="text-lg mb-8 opacity-90">
+
+          <p className="text-lg sm:text-xl mb-12 text-green-50 max-w-2xl mx-auto">
             Khám phá hàng nghìn cơ hội việc làm từ các công ty hàng đầu
           </p>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-bold text-yellow-300">1000+</div>
-              <div className="text-sm opacity-80">Công việc</div>
+              <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                1000+
+              </div>
+              <div className="text-sm sm:text-base text-green-100">
+                Công việc
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-yellow-300">500+</div>
-              <div className="text-sm opacity-80">Công ty</div>
+              <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                500+
+              </div>
+              <div className="text-sm sm:text-base text-green-100">Công ty</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-yellow-300">50+</div>
-              <div className="text-sm opacity-80">Lĩnh vực</div>
+              <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                50+
+              </div>
+              <div className="text-sm sm:text-base text-green-100">
+                Lĩnh vực
+              </div>
             </div>
           </div>
         </div>

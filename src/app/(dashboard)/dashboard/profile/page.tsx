@@ -482,13 +482,17 @@ const CompanyTab = ({
                   </Button>
                 </div>
               </div>
-              <Image
-                src={values.logoUrl || "/default-logo.png"}
-                alt="Company Logo"
-                width={300}
-                height={300}
-                className="rounded-lg"
-              />
+              {values.logoUrl && !errors.logoUrl && !touched.logoUrl && (
+                <div className="flex items-center justify-center w-1/3">
+                  <Image
+                    src={values.logoUrl}
+                    alt="Company Logo"
+                    width={300}
+                    height={300}
+                    className="rounded-lg"
+                  />
+                </div>
+              )}
             </div>
           </Form>
         );

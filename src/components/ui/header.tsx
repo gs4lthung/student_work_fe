@@ -9,7 +9,7 @@ import {
   BellIcon,
   Briefcase,
   CircleUserRound,
-  FileUser,
+  FileIcon as FileUser,
   Heart,
   LayoutDashboard,
   Lock,
@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Settings,
   Wallet,
+  Menu,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,6 +34,7 @@ import { useUserStore } from "@/stores/user-store";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./skeleton";
 import { toast } from "sonner";
+import { Sheet, SheetContent, SheetTrigger } from "./sheet";
 
 const items = [
   {
@@ -44,7 +46,6 @@ const items = [
     url: "/cv",
     role: ["Student"],
   },
-
   {
     title: "Tìm kiếm việc làm",
     url: "/job",
@@ -128,6 +129,7 @@ export default function Header() {
   const pathname = usePathname();
   const { user } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const nonDashboardPaths = [
     "/dashboard",
@@ -155,96 +157,112 @@ export default function Header() {
     return null;
   }
 
+  const filteredItems = items.filter(
+    (item) => !item.role || item.role.includes(user?.role || "") || !user
+  );
+
   return (
     <>
-      <div className="h-10 w-full bg-gradient-to-r from-yellow-100 to-yellow-300 dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-600">
-        <div className="flex h-full items-center justify-center gap-4">
-          <p className="text-sm font-extrabold">
+      {/* Promotional Banner */}
+      <div className="h-auto min-h-[40px] w-full bg-gradient-to-r from-yellow-100 to-yellow-300 dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-600">
+        <div className="flex h-full items-center justify-center gap-4 px-4 py-2">
+          <p className="text-xs sm:text-sm font-extrabold text-center leading-relaxed">
             Nền tảng tuyển dụng thông minh ❤️ Hỗ trợ tìm kiếm việc làm một cách
             dễ dàng
           </p>
         </div>
       </div>
-      <header className="z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-20 w-full shrink-0 items-center px-4 md:px-6">
+
+      {/* Main Header */}
+      <header className="z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-16 sm:h-20 w-full shrink-0 items-center px-4 md:px-6">
+        {/* Logo */}
         <Link
           href="/"
-          className="mr-6 hidden lg:flex items-center gap-2"
+          className="mr-4 sm:mr-6 flex items-center gap-2"
           prefetch={false}
         >
-          <Image src="/images/logo.png" alt="Logo" width={150} height={60} />
+          <Image
+            src="/images/logo.png"
+            alt="Logo"
+            width={120}
+            height={48}
+            className="w-20 h-8 sm:w-[120px] sm:h-12 lg:w-[150px] lg:h-[60px]"
+          />
         </Link>
+
         {isLoading ? (
-          <Skeleton className="h-10 w-[70%] rounded-md" />
+          <Skeleton className="h-8 sm:h-10 flex-1 max-w-md rounded-md ml-auto" />
         ) : (
-          <div className="ml-auto flex gap-2">
-            {items.map(
-              (item) =>
-                (!item.role ||
-                  item.role.includes(user?.role || "") ||
-                  !user) && (
-                  <Link
-                    key={item.title}
-                    href={item.url}
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    prefetch={false}
-                  >
-                    {item.title}
-                  </Link>
-                )
-            )}
-
-            {!user && (
-              <>
-                <Button
-                  variant="outline"
-                  className="justify-self-end"
-                  onClick={() => {
-                    router.push("/login");
-                  }}
+          <>
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex ml-auto items-center gap-1">
+              {filteredItems.map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.url}
+                  className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap"
+                  prefetch={false}
                 >
-                  Đăng nhập
-                </Button>
-                <Button
-                  className="justify-self-end"
-                  onClick={() => {
-                    router.push("/register");
-                  }}
-                >
-                  Đăng ký
-                </Button>
-              </>
-            )}
+                  {item.title}
+                </Link>
+              ))}
+            </nav>
 
-            {user?.studentID && (
-              <Badge
-                variant={"outline"}
-                className="border-2 border-green-500 dark:border-green-400"
-              >
-                Sinh viên: {user?.firstName} {user?.lastName || "Chưa cập nhật"}
-              </Badge>
-            )}
-
-            {user?.employerID && (
-              <>
+            {/* Right Side Actions */}
+            <div className="ml-auto lg:ml-4 flex items-center gap-2">
+              {/* User Badge - Hidden on small screens */}
+              {user?.studentID && (
                 <Badge
                   variant={"outline"}
-                  className="border-2 border-green-500 dark:border-green-400"
+                  className="hidden sm:flex border-2 border-green-500 dark:border-green-400 text-xs max-w-[200px] truncate"
                 >
-                  Nhà tuyển dụng: {user?.companyName || "Chưa cập nhật"}
+                  <span className="hidden md:inline">Sinh viên: </span>
+                  {user?.firstName} {user?.lastName || "Chưa cập nhật"}
                 </Badge>
-              </>
-            )}
+              )}
 
-            <ModeToggle />
-            {user && (
-              <>
+              {user?.employerID && (
+                <Badge
+                  variant={"outline"}
+                  className="hidden sm:flex border-2 border-green-500 dark:border-green-400 text-xs max-w-[200px] truncate"
+                >
+                  <span className="hidden md:inline">NTD: </span>
+                  {user?.companyName || "Chưa cập nhật"}
+                </Badge>
+              )}
+
+              {/* Auth Buttons for Non-logged Users */}
+              {!user && (
+                <div className="hidden sm:flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => router.push("/login")}
+                  >
+                    Đăng nhập
+                  </Button>
+                  <Button size="sm" onClick={() => router.push("/register")}>
+                    Đăng ký
+                  </Button>
+                </div>
+              )}
+
+              {/* Mode Toggle */}
+              <ModeToggle />
+
+              {/* Notifications - Only for logged users */}
+              {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="hidden md:flex">
-                      <Bell size={20} />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="hidden sm:flex"
+                    >
+                      <Bell size={16} />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="p-4 w-[500px] max-w-[300px]">
+                  <DropdownMenuContent className="p-4 w-[90vw] max-w-[400px] mr-4">
                     <DropdownMenuLabel>
                       <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                         Thông báo
@@ -257,58 +275,69 @@ export default function Header() {
                     {notificationItems.map((item) => (
                       <DropdownMenuItem
                         key={item.title}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 p-3"
                       >
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400">
+                        <div className="flex items-center gap-2 w-full">
+                          <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400 flex-shrink-0">
                             {item.icon}
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col flex-1 min-w-0">
                             <Link
                               href={item.url}
-                              className="text-sm font-medium"
+                              className="text-sm font-medium truncate"
                             >
                               {item.title}
                             </Link>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
                               {item.description}
                             </p>
                           </div>
                         </div>
                       </DropdownMenuItem>
                     ))}
-                    <DropdownMenuSeparator className="my-1" />
-                    <Button variant="outline" className="w-full text-left mb-1">
-                      Xem tất cả thông báo
-                    </Button>
-                    <Button className="w-full text-left">
-                      Đánh dấu tất cả đã đọc
-                    </Button>
+                    <DropdownMenuSeparator className="my-2" />
+                    <div className="space-y-2">
+                      <Button variant="outline" size="sm" className="w-full">
+                        Xem tất cả thông báo
+                      </Button>
+                      <Button size="sm" className="w-full">
+                        Đánh dấu tất cả đã đọc
+                      </Button>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
+              )}
+
+              {/* User Profile Dropdown */}
+              {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Link href={"/dashboard"}>
-                      <Button variant={"outline"} className="justify-self-end">
-                        <CircleUserRound />
-                      </Button>
-                    </Link>
+                    <Button variant="outline" size="sm">
+                      <CircleUserRound size={16} />
+                    </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-150 max-w-[300px]">
-                    <DropdownMenuItem>
-                      <div className="flex flex-row items-center gap-2">
-                        <CircleUserRound width={20} height={20} />
-                        <div className="flex flex-col">
-                          <p className="text-sm font-medium text-green-500">
+                  <DropdownMenuContent className="w-[90vw] max-w-[300px] mr-4">
+                    <DropdownMenuItem className="p-3">
+                      <div className="flex flex-row items-center gap-3 w-full">
+                        <CircleUserRound
+                          width={24}
+                          height={24}
+                          className="flex-shrink-0"
+                        />
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <p className="text-sm font-extrabold truncate">
                             {user?.firstName} {user?.lastName}
                           </p>
-                          <p>{user.email}</p>
-                          <Badge
-                            variant={"outline"}
-                            className="mt-2 bg-green-400 dark:bg-green-500"
-                          >
-                            {user.walletBalance?.toLocaleString("vi-VN")} SPoint
-                          </Badge>
+                          <p className="text-xs truncate">{user.email}</p>
+                          {user.employerID && (
+                            <Badge
+                              variant={"outline"}
+                              className="mt-2 bg-green-400 dark:bg-green-500 w-fit text-xs"
+                            >
+                              {user.walletBalance?.toLocaleString("vi-VN")}{" "}
+                              SPoint
+                            </Badge>
+                          )}
                         </div>
                       </div>
                     </DropdownMenuItem>
@@ -324,8 +353,8 @@ export default function Header() {
                           }
                         }}
                       >
-                        <DropdownMenuItem>
-                          {item.title}
+                        <DropdownMenuItem className="p-2">
+                          <span className="flex-1">{item.title}</span>
                           <DropdownMenuShortcut>
                             {item.icon}
                           </DropdownMenuShortcut>
@@ -334,9 +363,109 @@ export default function Header() {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </>
-            )}
-          </div>
+              )}
+
+              {/* Mobile Menu */}
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="lg:hidden">
+                    <Menu size={16} />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <div className="flex flex-col gap-4 mt-6">
+                    {/* Mobile Navigation Links */}
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-lg mb-4">Menu</h3>
+                      {filteredItems.map((item) => (
+                        <Link
+                          key={item.title}
+                          href={item.url}
+                          className="block px-4 py-3 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+                          prefetch={false}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {item.title}
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* Mobile User Info */}
+                    {user && (
+                      <div className="border-t pt-4 space-y-3">
+                        <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                          <p className="text-sm font-medium text-green-500">
+                            {user?.firstName} {user?.lastName}
+                          </p>
+                          <p className="text-xs text-gray-500">{user.email}</p>
+                          {user?.studentID && (
+                            <Badge variant="outline" className="mt-2 text-xs">
+                              Sinh viên
+                            </Badge>
+                          )}
+                          {user?.employerID && (
+                            <Badge variant="outline" className="mt-2 text-xs">
+                              Nhà tuyển dụng
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Mobile Notifications */}
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">Thông báo</h4>
+                          {notificationItems.map((item) => (
+                            <Link
+                              key={item.title}
+                              href={item.url}
+                              className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400">
+                                {item.icon}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium">
+                                  {item.title}
+                                </p>
+                                <p className="text-xs text-gray-500 line-clamp-1">
+                                  {item.description}
+                                </p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Mobile Auth Buttons */}
+                    {!user && (
+                      <div className="border-t pt-4 space-y-3">
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => {
+                            router.push("/login");
+                            setIsMobileMenuOpen(false);
+                          }}
+                        >
+                          Đăng nhập
+                        </Button>
+                        <Button
+                          className="w-full"
+                          onClick={() => {
+                            router.push("/register");
+                            setIsMobileMenuOpen(false);
+                          }}
+                        >
+                          Đăng ký
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </>
         )}
       </header>
     </>

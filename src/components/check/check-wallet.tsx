@@ -11,7 +11,6 @@ export default function CheckWallet() {
     async function fetchWallet() {
       if (!user || isChecked || user.role === "Student") return;
       if (user.walletID !== undefined) {
-        // If wallet is already set, no need to fetch again
         setIsChecked(true);
         return;
       }

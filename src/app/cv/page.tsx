@@ -17,6 +17,7 @@ import { useUserStore } from "@/stores/user-store";
 import { useEffect, useState } from "react";
 import { FileText, Calendar, Eye, Download, Edit } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function CvPage() {
   const { user } = useUserStore();
@@ -26,6 +27,17 @@ export default function CvPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    if (!user?.studentID) {
+      toast.warning(
+        "Bạn cần điền thông tin sinh viên để sử dụng tính năng này"
+      );
+      setTimeout(() => {
+        window.location.href = "/dashboard/profile";
+      }, 3000);
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchResumes = async () => {

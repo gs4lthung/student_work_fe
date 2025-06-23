@@ -48,7 +48,7 @@ export default function RootLayout({
             <Toaster
               toastOptions={{
                 unstyled: true,
-                duration: 1000,
+                duration: 3000,
                 classNames: {
                   success: "flex items-center gap-2 px-4 py-2 bg-green-500 text-white",
                   info: "flex items-center gap-2 px-4 py-2 bg-blue-500 text-white",

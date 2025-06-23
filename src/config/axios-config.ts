@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios, { AxiosError } from "axios";
 
 // Extend Axios request config to include requiresAuth
@@ -15,7 +16,7 @@ declare module "axios" {
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 12000,
+  timeout: 40000,
   headers: {
     // "Content-Type": "application/json",
     Accept: "application/json",
@@ -99,35 +100,47 @@ api.interceptors.response.use(
 
         isRefreshing = true;
 
-        try {
-          const response = await api.post("/auth/refresh");
-          const newAccessToken = response.data.accessToken;
-          localStorage.setItem("accessToken", newAccessToken);
+        // try {
+        //   const response = await api.post("/auth/refresh");
+        //   const newAccessToken = response.data.accessToken;
+        //   localStorage.setItem("accessToken", newAccessToken);
 
-          processQueue(null, newAccessToken);
+        //   processQueue(null, newAccessToken);
 
-          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-          return api(originalRequest);
-        } catch (refreshError) {
-          processQueue(refreshError, null);
-          return Promise.reject(refreshError);
-        } finally {
-          isRefreshing = false;
-        }
+        //   originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        //   return api(originalRequest);
+        // } catch (refreshError) {
+        //   processQueue(refreshError, null);
+        //   return Promise.reject(refreshError);
+        // } finally {
+        //   isRefreshing = false;
+        // }
       }
 
       // 🔐 Other common HTTP errors
-      if (status === 401) {
+      if (status === 400) {
+        console.log("Yêu cầu không hợp lệ:", error.response.data);
         throw new AxiosError(
-          "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+          error.response.data ||
+            error?.response?.data.errorMessages[0] ||
+            "Yêu cầu không hợp lệ."
         );
-      } else if (status === 400) {
-        console.log("Lỗi yêu cầu:", error);
-        throw new AxiosError(error?.response?.data || "Yêu cầu không hợp lệ.");
+      } else if (status === 401) {
+        console.log(
+          "Phiên đăng nhập đã hết hạn hoặc không hợp lệ:",
+          error.response
+        );
+        throw new AxiosError(
+          "Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại."
+        );
       } else if (status === 403) {
-        throw new AxiosError("Bạn không có quyền truy cập vào tài nguyên này.");
+        throw new AxiosError(
+          error?.response?.data?.errorMessages[0] ||
+            "Bạn không có quyền truy cập vào tài nguyên này."
+        );
       } else if (status === 404) {
-        throw new AxiosError("Tài nguyên bạn đang tìm kiếm không tồn tại.");
+        console.log("Tài nguyên không tìm thấy:", error.response);
+        throw new AxiosError("Tài nguyên không tìm thấy.");
       } else if (status >= 500) {
         console.log("Lỗi máy chủ:", error);
         throw new AxiosError("Máy chủ gặp sự cố. Vui lòng thử lại sau.");
@@ -139,6 +152,7 @@ api.interceptors.response.use(
         );
       }
     } else if (error.request) {
+      console.error("Không nhận được phản hồi từ máy chủ:", error);
       throw new AxiosError("Không nhận được phản hồi từ máy chủ.");
     } else {
       throw new AxiosError(
