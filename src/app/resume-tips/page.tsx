@@ -13,7 +13,6 @@ import {
   Users,
   TrendingUp,
   Star,
-  Download,
   Eye,
   Edit,
 } from "lucide-react";
@@ -306,15 +305,7 @@ export default function ResumeTips() {
           <h3 className="text-3xl font-bold mb-4">
             Bạn đã sẵn sàng xây dựng bản sơ yếu lý lịch hoàn hảo chưa?
           </h3>
-          <p className="text-xl mb-8 opacity-90">
-            Tải xuống mẫu sơ yếu lý lịch miễn phí của chúng tôi và bắt đầu tạo
-            một sơ yếu lý lịch mang lại kết quả.
-          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary">
-              <Download className="h-5 w-5 mr-2" />
-              Tải Mẫu CV Miễn Phí
-            </Button>
             <Button
               size="lg"
               variant="outline"

@@ -50,7 +50,7 @@ export default function Footer() {
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <FileText className="h-4 w-4" />
-                  <span>Resume Tips</span>
+                  <span>Mẹo viết CV</span>
                 </Link>
               </li>
               <li>
@@ -59,7 +59,7 @@ export default function Footer() {
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <Users className="h-4 w-4" />
-                  <span>Interview Preparation</span>
+                  <span>Trang bị phỏng vấn</span>
                 </Link>
               </li>
               <li>
@@ -68,7 +68,7 @@ export default function Footer() {
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <BookOpen className="h-4 w-4" />
-                  <span>Career Advice</span>
+                  <span>Tư vấn nghề nghiệp</span>
                 </Link>
               </li>
               <li>
@@ -77,7 +77,7 @@ export default function Footer() {
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <Briefcase className="h-4 w-4" />
-                  <span>Salary Guide</span>
+                  <span>Hướng dẫn lương</span>
                 </Link>
               </li>
             </ul>
@@ -157,6 +157,14 @@ export default function Footer() {
                   className="hover:text-slate-900 dark:hover:text-slate-400"
                 >
                   <span>Gửi phản hồi</span>
+                </Link>
+              </li>
+               <li className="text-slate-600 dark:text-slate-50">
+                <Link
+                  href="/about-us"
+                  className="hover:text-slate-900 dark:hover:text-slate-400"
+                >
+                  <span>Về chúng tôi</span>
                 </Link>
               </li>
             </ul>
