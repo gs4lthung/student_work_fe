@@ -1,5 +1,4 @@
-import axios from "axios";
-import { toast } from "sonner";
+import axios, { AxiosError } from "axios";
 
 // Extend Axios request config to include requiresAuth
 declare module "axios" {
@@ -15,8 +14,8 @@ declare module "axios" {
 }
 
 const api = axios.create({
-  baseURL: process.env.API_URL,
-  timeout: 5000,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 12000,
   headers: {
     // "Content-Type": "application/json",
     Accept: "application/json",
@@ -26,12 +25,16 @@ const api = axios.create({
 
 export async function getAuthToken() {
   return {
-    accessToken: document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("accessToken="))?.split("=")[1] || localStorage.getItem("accessToken"),
-    refreshToken: document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("refreshToken="))?.split("=")[1] || localStorage.getItem("refreshToken"),
+    accessToken:
+      document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("accessToken="))
+        ?.split("=")[1] || localStorage.getItem("accessToken"),
+    refreshToken:
+      document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("refreshToken="))
+        ?.split("=")[1] || localStorage.getItem("refreshToken"),
   };
 }
 
@@ -115,27 +118,32 @@ api.interceptors.response.use(
 
       // 🔐 Other common HTTP errors
       if (status === 401) {
-        toast.error("Bạn cần đăng nhập để thực hiện hành động này.");
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 2000);
+        throw new AxiosError(
+          "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+        );
+      } else if (status === 400) {
+        console.log("Lỗi yêu cầu:", error);
+        throw new AxiosError(error?.response?.data || "Yêu cầu không hợp lệ.");
       } else if (status === 403) {
-        toast.error("Bạn không có quyền truy cập vào tài nguyên này.");
+        throw new AxiosError("Bạn không có quyền truy cập vào tài nguyên này.");
       } else if (status === 404) {
-        toast.error("Tài nguyên bạn đang tìm kiếm không tồn tại.");
+        throw new AxiosError("Tài nguyên bạn đang tìm kiếm không tồn tại.");
       } else if (status >= 500) {
-        toast.error("Máy chủ gặp sự cố. Vui lòng thử lại sau.");
+        console.log("Lỗi máy chủ:", error);
+        throw new AxiosError("Máy chủ gặp sự cố. Vui lòng thử lại sau.");
       } else {
-        toast.error(
+        throw new AxiosError(
           `Đã xảy ra lỗi: ${
-            error.response.data.message || "Lỗi không xác định"
+            error?.response?.data?.message || "Lỗi không xác định"
           }`
         );
       }
     } else if (error.request) {
-      toast.error("Không nhận được phản hồi từ máy chủ.");
+      throw new AxiosError("Không nhận được phản hồi từ máy chủ.");
     } else {
-      toast.error(`Đã xảy ra lỗi: ${error.message || "Lỗi không xác định"}`);
+      throw new AxiosError(
+        `Đã xảy ra lỗi: ${error.message || "Lỗi không xác định"}`
+      );
     }
 
     return Promise.reject(error);

@@ -1,6 +1,5 @@
 "use client";
 
-import { login } from "@/api/user-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/input-password";
@@ -10,8 +9,11 @@ import { LoginUser } from "@/interfaces/user-interface";
 import { Form, Formik } from "formik";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import axios from "axios";
+import { useUserStore } from "@/stores/user-store";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [redirect, setRedirect] = useState("/"); // Default redirect
@@ -28,17 +30,17 @@ export default function LoginPage() {
       setRedirect(redirectParam);
 
       // Show toasts based on redirect
-      if (redirectParam.includes("cv")) {
-        toast.error("Bạn cần đăng nhập để xem CV");
-      } else if (redirectParam.includes("job")) {
-        toast.error("Bạn cần đăng nhập để xem công việc");
-      } else if (redirectParam.includes("company")) {
-        toast.error("Bạn cần đăng nhập để xem công ty");
-      } else if (redirectParam.includes("profile")) {
-        toast.error("Bạn cần đăng nhập để xem hồ sơ cá nhân");
-      } else if (redirectParam !== "/") {
-        toast.error("Bạn cần đăng nhập để truy cập trang này");
-      }
+      // if (redirectParam.includes("cv")) {
+      //   toast.error("Bạn cần đăng nhập để xem CV");
+      // } else if (redirectParam.includes("job")) {
+      //   toast.error("Bạn cần đăng nhập để xem công việc");
+      // } else if (redirectParam.includes("company")) {
+      //   toast.error("Bạn cần đăng nhập để xem công ty");
+      // } else if (redirectParam.includes("profile")) {
+      //   toast.error("Bạn cần đăng nhập để xem hồ sơ cá nhân");
+      // } else if (redirectParam !== "/") {
+      //   toast.error("Bạn cần đăng nhập để truy cập trang này");
+      // }
     }
   }, []);
 
@@ -47,9 +49,28 @@ export default function LoginPage() {
       initialValues={initialValues}
       validationSchema={LoginValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(false);
-        await login(values);
-        router.push(redirect);
+        setSubmitting(true);
+        try {
+          const res = await axios.post("/api/auth/login", values, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (res) {
+            console.log("Login response:", res.data); 
+            useUserStore.getState().setUser(res.data.result.user);
+          }
+          setSubmitting(false);
+          console.log("Login successful, redirecting to:", redirect);
+          router.push(redirect);
+        } catch (error) {
+          console.error("Login error:", error);
+          if (error instanceof axios.AxiosError) {
+            toast.error(error.response?.data?.error || "Đăng nhập thất bại");
+          }
+        } finally {
+          setSubmitting(false);
+        }
       }}
     >
       {({
@@ -58,6 +79,7 @@ export default function LoginPage() {
         handleChange,
         handleBlur,
         handleSubmit,
+        isSubmitting,
         values,
       }) => {
         return (
@@ -88,11 +110,12 @@ export default function LoginPage() {
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
             <Button
+              disabled={isSubmitting}
               className="w-full hover:bg-green-300"
               variant="secondary"
               type="submit"
             >
-              <p>Đăng nhập</p>
+              {isSubmitting ? <LoadingSpinner /> : <p>Đăng nhập</p>}
             </Button>
             <div className="flex items-center justify-between w-full">
               <Button variant="link" className="text-gray-500">

@@ -1,42 +1,105 @@
 import api from "@/config/axios-config";
-import { LoginUser, RegisterUser } from "@/interfaces/user-interface";
-import { useUserStore } from "@/stores/user-store";
-import { toast } from "sonner";
+import {
+  EmployerInterface,
+  LoginUser,
+  RegisterUser,
+  StudentInterface,
+} from "@/interfaces/user-interface";
 
 export const register = async (data: RegisterUser) => {
   delete data.confirmPassword;
   const url = "/api/Auth/register";
-  const response = await api.post(url, data);
-  if (response?.status === 200) {
-    toast.success(
-      "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản."
-    );
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 1000);
-  }
+  const res = await api.post(url, data);
+  return res.data;
 };
 
 export const login = async (data: LoginUser) => {
   const url = "/api/Auth/login";
   const response = await api.post(url, data);
-  if (response?.status === 200) {
+  if (response) {
     const user = response.data.result.user;
     console.log("User data:", user);
-    if (user.emailConfirmed === false) {
-      toast.error("Vui lòng xác thực email trước khi đăng nhập.");
-      throw new Error("Email not confirmed");
-    }
+
     const role = response.data.result.role[0];
     user.role = role;
     const accessToken = response.data.result.token;
     const refreshToken = response.data.result.refreshToken;
 
-    useUserStore.getState().setUser(user);
+    return {
+      user,
+      accessToken,
+      refreshToken,
+      role,
+    };
+  }
+};
 
-    document.cookie = `accessToken=${accessToken}; path=/; secure; SameSite=Strict`;
-    document.cookie = `refreshToken=${refreshToken}; path=/; secure; SameSite=Strict`;
-    document.cookie = `userRole=${role}; path=/; secure; SameSite=Strict`;
-    toast.success("Đăng nhập thành công!");
+export const getStudentInfoByUserID = async (userId: string) => {
+  const url = `/api/Students/user/${userId}`;
+  const response = await api.get(url, {
+    requiresAuth: true,
+  });
+  if (response?.status === 200) {
+    console.log("Student info:", response);
+    return response.data;
+  } else {
+    throw new Error("Failed to fetch student info");
+  }
+};
+
+export const getEmployerInfoByUserID = async (userId: string) => {
+  const url = `/api/Employer/user/${userId}`;
+  const response = await api.get(url, {
+    requiresAuth: true,
+  });
+  if (response?.status === 200) {
+    console.log("Employer info:", response);
+    return response.data;
+  } else {
+    throw new Error("Failed to fetch employer info");
+  }
+};
+
+export const getEmployerInfoByID = async (employerId: string) => {
+  const url = `/api/Employer/${employerId}`;
+  const response = await api.get(url, {
+    requiresAuth: true,
+  });
+  if (response?.status === 200) {
+    console.log("Employer info by ID:", response);
+    return response.data;
+  } else {
+    throw new Error("Failed to fetch employer info by ID");
+  }
+};
+
+export const createEmployerInfo = async (data: EmployerInterface) => {
+  console.log("Creating employer info with data:", data);
+  const payload = { ...data, companySize: data.companySize.toString() };
+  const url = `/api/Employer`;
+  const response = await api.post(url, payload, {
+    requiresAuth: true,
+  });
+  if (response) {
+    console.log("Created employer info:", response);
+    return response.data;
+  }
+};
+
+export const createStudentInfo = async (data: StudentInterface) => {
+  console.log("Creating student info with data:", data);
+  const payload = { 
+    ...data, 
+    yearOfStudy: data.yearOfStudy !== undefined && data.yearOfStudy !== null 
+      ? data.yearOfStudy.toString() 
+      : "" 
+  };
+  const url = `/api/Students`;
+  const response = await api.post(url, payload, {
+    requiresAuth: true,
+  });
+  if (response) {
+    console.log("Created student info:", response);
+    return response.data;
   }
 };

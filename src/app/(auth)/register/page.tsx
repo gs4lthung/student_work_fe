@@ -15,6 +15,9 @@ import {
 import { TypographyH2 } from "@/components/ui/typography";
 import { PasswordInput } from "@/components/ui/input-password";
 import { register } from "@/api/user-api";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 export default function RegisterPage() {
   const initialValues: RegisterUser = {
     firstName: "",
@@ -32,7 +35,20 @@ export default function RegisterPage() {
       validationSchema={RegisterValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        await register(values);
+        try {
+          const res = await register(values);
+          if (res) {
+            toast.success("Đăng ký thành công");
+            // Redirect to login page after successful registration
+            setTimeout(() => {
+              window.location.href = "/login";
+            }, 1000);
+          }
+        } catch (error) {
+          if (error instanceof AxiosError) {
+            toast.error(error.response?.data?.message || "Đăng ký thất bại");
+          }
+        }
         setSubmitting(false);
       }}
     >
@@ -216,7 +232,7 @@ export default function RegisterPage() {
               type="submit"
               disabled={isSubmitting}
             >
-              <p>Đăng ký</p>
+              {isSubmitting ? <LoadingSpinner /> : <p>Đăng ký</p>}
             </Button>
             <div className="flex items-center justify-between w-full text-sm text-gray-500">
               Đã có tài khoản?

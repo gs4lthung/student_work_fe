@@ -1,6 +1,7 @@
 import {
   EmployerInterface,
   LoginUser,
+  StudentInterface,
   UserInterface,
 } from "@/interfaces/user-interface";
 import * as Yup from "yup";
@@ -44,6 +45,8 @@ export const RegisterValidationSchema: Yup.ObjectSchema<UserInterface> =
     role: Yup.mixed<"Student" | "Employer">()
       .oneOf(["Student", "Employer"], "Vui lòng chọn vai trò")
       .required("Vai trò không được để trống"),
+    walletID: Yup.number().optional(),
+    walletBalance: Yup.number().optional(),
   });
 
 export const getPasswordRules = (password: string) => ({
@@ -63,7 +66,7 @@ export const LoginValidationSchema: Yup.ObjectSchema<LoginUser> = Yup.object({
 
 export const EmployerValidationSchema: Yup.ObjectSchema<EmployerInterface> =
   Yup.object({
-    userId: Yup.string().optional(),
+    employerID: Yup.string().optional(),
     role: Yup.string()
       .oneOf(["Employer"], "Vai trò phải là Nhà tuyển dụng")
       .required("Vai trò không được để trống"),
@@ -78,4 +81,22 @@ export const EmployerValidationSchema: Yup.ObjectSchema<EmployerInterface> =
       .required("Website không được để trống")
       .url("Website không hợp lệ"),
     logoUrl: Yup.string().url("URL logo không hợp lệ"),
+  });
+
+export const StudentValidationSchema: Yup.ObjectSchema<StudentInterface> =
+  Yup.object({
+    studentID: Yup.string().optional(),
+    role: Yup.string()
+      .oneOf(["Student"], "Vai trò phải là Sinh viên")
+      .required("Vai trò không được để trống"),
+    university: Yup.string().required("Trường đại học không được để trống"),
+    major: Yup.string().required("Chuyên ngành không được để trống"),
+    yearOfStudy: Yup.number()
+      .required("Năm học không được để trống")
+      .min(1, "Năm học phải lớn hơn hoặc bằng 1"),
+    dateOfBirth: Yup.date()
+
+      .required("Ngày sinh không được để trống")
+      .max(new Date(), "Ngày sinh phải là ngày trong quá khứ"),
+    bio: Yup.string().max(500, "Tiểu sử không được quá 500 ký tự"),
   });

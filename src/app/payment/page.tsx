@@ -1,265 +1,260 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
-import {
-  Copy,
-  CheckCircle,
-  AlertCircle,
-  BanknoteIcon as Bank,
-  CreditCard,
-  FileText,
-  RefreshCw,
-  Headset,
-  HandCoins,
-  Download,
-  ScanLine,
-} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { PaymentInterface } from "@/interfaces/payment-interface";
+import { useDraftJobPostStore } from "@/stores/job-store";
+import { useSubscriptionStore } from "@/stores/subscription-store";
+import { useUserStore } from "@/stores/user-store";
+import { Form, Formik } from "formik";
+import React from "react";
+import { Wallet, Shield, Info } from "lucide-react";
+import { createPayment } from "@/api/payment-api";
 import { toast } from "sonner";
+import { AxiosError } from "axios";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function PaymentPage() {
-  const [copied, setCopied] = useState<string | null>(null);
+  const { user } = useUserStore();
+  const { subscriptions } = useSubscriptionStore();
+  const { data } = useDraftJobPostStore();
 
-  const copyToClipboard = (text: string, field: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(field);
-    toast.success(`${field} đã được sao chép vào clipboard`, {
-      description: `Bạn có thể dán ${field} vào ứng dụng ngân hàng của mình.`,
-      duration: 2000,
-    });
+  const initialValues = React.useMemo<PaymentInterface>(() => {
+    const subscription = subscriptions.find(
+      (sub) => String(sub.subscriptionID) === String(data?.subscriptionID)
+    );
+    return {
+      amount: subscription?.price || 0,
+      description: `Nạp tiền vào ví SPOINT cho gói ${
+        subscription?.subscriptionName || ""
+      }`,
+      subscriptionName: subscription?.subscriptionName || "",
+      transactionType: "PAYMENT_JOB_POST",
+      walletId: user?.walletID || 0,
+      buyerName: "",
+    };
+  }, [user, subscriptions, data]);
 
-    setTimeout(() => {
-      setCopied(null);
-    }, 2000);
-  };
-
-  const paymentInfo = {
-    accountHolder: "LAM TIEN HUNG",
-    accountNumber: "970422",
-    transferContent: "NAP13853SW",
-    bank: "Ngân hàng TMCP Phương Đông (OCB)",
-    exchangeRate: "1.000 VNĐ = 1 SPoint",
-  };
+  const subscription = subscriptions.find(
+    (sub) => String(sub.subscriptionID) === String(data?.subscriptionID)
+  );
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-5xl">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-          Thanh toán để nạp{" "}
-          <span className="text-green-600 dark:text-green-500">SPoint</span>
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 mt-2">
-          Vui lòng hoàn tất thanh toán để nạp điểm vào tài khoản của bạn
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-green-500 rounded-full mb-4">
+            <Wallet className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Nạp tiền vào ví <span className="text-green-500">SPOINT</span>
+          </h1>
+          <p className="text-gray-600">Nạp tiền để sử dụng dịch vụ đăng tin</p>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        <Card className="col-span-1 lg:col-span-3 border-gray-200 dark:border-gray-800 shadow-md">
-          <CardHeader className="border-b border-gray-200 dark:border-gray-800">
-            <CardTitle className="flex items-center gap-2">
-              <Bank className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-              Thông tin chuyển khoản
-            </CardTitle>
-            <CardDescription>
-              Vui lòng chuyển khoản theo thông tin dưới đây
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Chủ tài khoản:
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-800 dark:text-gray-100">
-                    {paymentInfo.accountHolder}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() =>
-                      copyToClipboard(
-                        paymentInfo.accountHolder,
-                        "Chủ tài khoản"
-                      )
+        {/* Main Content */}
+        <div className="space-y-6">
+          {/* Payment Form */}
+          <Card className="border border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-xl text-gray-900">
+                Thông tin thanh toán
+              </CardTitle>
+              <CardDescription>
+                Nhập số tiền bạn muốn nạp vào ví
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Formik
+                initialValues={initialValues}
+                onSubmit={async (values, { setSubmitting, resetForm }) => {
+                  try {
+                    setSubmitting(true);
+                    const response = await createPayment(values);
+                    if (response) {
+                      toast.success(
+                        "Đang chuyển hướng đến cổng thanh toán. Vui lòng đợi..."
+                      );
+                      setTimeout(() => {
+                        window.location.href = response.data;
+                        resetForm();
+                      }, 2000);
                     }
-                  >
-                    {copied === "Chủ tài khoản" ? (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Bank className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Số tài khoản:
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-800 dark:text-gray-100">
-                    {paymentInfo.accountNumber}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() =>
-                      copyToClipboard(paymentInfo.accountNumber, "Số tài khoản")
+                  } catch (error) {
+                    if (error instanceof AxiosError) {
+                      toast.error(
+                        "Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại sau."
+                      );
                     }
-                  >
-                    {copied === "Số tài khoản" ? (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
+                  } finally {
+                    setSubmitting(false);
+                  }
+                }}
+              >
+                {({
+                  errors,
+                  touched,
+                  isSubmitting,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  values,
+                }) => {
+                  return (
+                    <Form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="space-y-2">
+                        {initialValues.subscriptionName}
+                        <Label
+                          htmlFor="amount"
+                          className="text-base font-medium text-gray-700"
+                        >
+                          Số tiền nạp (SPOINT)
+                        </Label>
+                        <div className="relative">
+                          <Input
+                            id="amount"
+                            name="amount"
+                            type="number"
+                            min={0}
+                            max={1000000}
+                            step={1000}
+                            placeholder="Nhập số tiền"
+                            value={values.amount}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="h-12 text-lg pr-20 focus:border-green-500 focus:ring-green-500"
+                          />
+                          <Badge className="absolute right-3 top-1/2 -translate-y-1/2 bg-green-100 text-green-700 hover:bg-green-100">
+                            SPOINT
+                          </Badge>
+                        </div>
+                        {errors.amount && touched.amount && (
+                          <p className="text-red-500 text-sm">
+                            {errors.amount}
+                          </p>
+                        )}
+                      </div>
 
-              <Separator />
+                      {/* Quick Amount Options */}
+                      <div className="space-y-2">
+                        <Label className="text-sm text-gray-600">
+                          Số tiền gợi ý
+                        </Label>
+                        <div className="grid grid-cols-4 gap-2">
+                          {[10000, 50000, 100000, 500000].map((amount) => (
+                            <Button
+                              key={amount}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleChange({
+                                  target: { name: "amount", value: amount },
+                                })
+                              }
+                              className="border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300"
+                            >
+                              {amount.toLocaleString()}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
 
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Nội dung chuyển khoản:
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full h-12 bg-green-500 hover:bg-green-600 text-white"
+                      >
+                        {isSubmitting ? <LoadingSpinner /> : "Nạp tiền"}
+                      </Button>
+                    </Form>
+                  );
+                }}
+              </Formik>
+            </CardContent>
+          </Card>
+
+          {/* Information Cards */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Subscription Info */}
+            {subscription && (
+              <Card className="border border-gray-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Info className="w-5 h-5 text-green-500" />
+                    Thông tin gói
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tên gói:</span>
+                    <span className="font-medium">
+                      {subscription.subscriptionName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Giá:</span>
+                    <span className="font-semibold text-green-600">
+                      {subscription.price?.toLocaleString()} SPOINT
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Wallet Info */}
+            <Card className="border border-gray-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Wallet className="w-5 h-5 text-green-500" />
+                  Ví của bạn
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Số dư:</span>
+                  <span className="font-mono text-sm">
+                    {user?.walletBalance?.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="font-mono text-gray-800 dark:text-gray-100 px-3 py-1"
-                  >
-                    {paymentInfo.transferContent}
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() =>
-                      copyToClipboard(
-                        paymentInfo.transferContent,
-                        "Nội dung chuyển khoản"
-                      )
-                    }
-                  >
-                    {copied === "Nội dung chuyển khoản" ? (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
+                <div className="text-sm text-gray-500 bg-green-50 p-3 rounded border border-green-100">
+                  Tiền sẽ được nạp vào ví ngay sau khi thanh toán thành công
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Security Notice */}
+          <Card className="border border-green-200 bg-green-50">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <Shield className="w-5 h-5 text-green-600 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-green-800 mb-1">
+                    Thanh toán an toàn
+                  </h3>
+                  <p className="text-sm text-green-700">
+                    Giao dịch được mã hóa và bảo mật. Chúng tôi không lưu trữ
+                    thông tin thanh toán của bạn.
+                  </p>
                 </div>
               </div>
-
-              <Separator />
-
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Bank className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Ngân hàng:
-                  </span>
-                </div>
-                <span className="font-semibold text-gray-800 dark:text-gray-100">
-                  {paymentInfo.bank}
-                </span>
-              </div>
-            </div>
-
-            <Alert className="mt-6 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-              <RefreshCw className="h-4 w-4 text-green-600 dark:text-green-500" />
-              <AlertTitle className="text-green-800 dark:text-green-500">
-                Quy đổi mệnh giá
-              </AlertTitle>
-              <AlertDescription className="text-green-700 dark:text-green-400 font-semibold">
-                {paymentInfo.exchangeRate}
-              </AlertDescription>
-            </Alert>
-
-            <Alert className="mt-2 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
-              <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-500" />
-              <AlertTitle className="text-red-800 dark:text-red-500">
-                Lưu ý quan trọng
-              </AlertTitle>
-              <AlertDescription className="text-red-700 dark:text-red-400">
-                Vui lòng chuyển khoản đúng nội dung để hệ thống tự động nạp!.
-                Nếu chuyển khoản sai nội dung, vui lòng liên hệ với admin để
-                được hỗ trợ.
-              </AlertDescription>
-            </Alert>
-          </CardContent>
-          <CardFooter className="border-t border-gray-200 dark:border-gray-800 flex justify-between">
-            <Button variant="outline">
-              Liên hệ hỗ trợ
-              <Headset />
-            </Button>
-            <Button variant="default">
-              Đã thanh toán
-              <HandCoins />
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <Card className="col-span-1 lg:col-span-2 border-gray-200 dark:border-gray-800 shadow-md">
-          <CardHeader className="border-b border-gray-200 dark:border-gray-800">
-            <CardTitle className="flex items-center gap-2">
-              <ScanLine className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-              Quét mã QR để thanh toán
-            </CardTitle>
-            <CardDescription>
-              Sử dụng ứng dụng ngân hàng để quét mã QR
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center p-6">
-            <div className="p-4 rounded-lg shadow-sm mb-4">
-              <Image
-                src="https://api.vietqr.io/image/970422-fuoverflowbank-x4DKMtC.jpg?accountName=NGUYEN%20THI%20KIM%20CHI&addInfo=NAP13853FUO"
-                alt="QR Code thanh toán"
-                width={300}
-                height={300}
-                className="rounded-lg"
-              />
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-              Mã QR có chứa đầy đủ thông tin chuyển khoản
-            </p>
-          </CardContent>
-          <CardFooter className="bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-800">
-            <Button variant="outline" className="w-full">
-              Tải mã QR
-              <Download />
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-
-      <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-        Hệ thống sẽ tự động cập nhật SPoint sau khi nhận được thanh toán của bạn
-        (thông thường trong vòng 1-5 phút)
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ const breadcrumbLabelMap: Record<string, string> = {
   "my-cv": "CV của tôi",
   "saved-jobs": "Việc làm đã lưu",
   "applied-jobs": "Việc làm đã ứng tuyển",
+  interview: "Phỏng vấn",
   // Add more mappings here
 };
 

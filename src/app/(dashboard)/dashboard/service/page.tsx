@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { getSubscriptions } from "@/api/subscription-api";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import { colorConst } from "@/const/color-const";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import React, { useEffect } from "react";
-
 
 export default function DashboardService() {
   const { subscriptions } = useSubscriptionStore();
@@ -52,11 +51,16 @@ export default function DashboardService() {
             <TableRow key={index}>
               <TableCell className="font-semibold">{index + 1}</TableCell>
               <TableCell>{service.subscriptionName}</TableCell>
-              <TableCell>{service.price}</TableCell>
+              <TableCell>
+                {service.price.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </TableCell>
               <TableCell>
                 {service.description.split(".").map((des, index) => (
                   <p key={index} className="text-sm mb-2">
-                    {des}
+                    ● {des}
                   </p>
                 ))}
               </TableCell>

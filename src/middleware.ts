@@ -13,6 +13,8 @@ export async function middleware(request: NextRequest) {
     "/dashboard/post",
     "/dashboard/profile",
     "/dashboard/service",
+    "/dashboard/interview",
+    "/payment",
     "/job/add",
   ];
   const studentRoutes = [
@@ -21,6 +23,8 @@ export async function middleware(request: NextRequest) {
     "/dashboard/saved-jobs",
     "/dashboard/applied-jobs",
     "/dashboard/profile",
+    "/dashboard/interview",
+    "/cv",
     "/cv/add",
   ];
 
@@ -50,6 +54,7 @@ export async function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/job/add") ||
+    pathname.startsWith("/cv") ||
     pathname.startsWith("/cv/add")
   ) {
     if (!accessToken) {
@@ -77,6 +82,8 @@ export const config = {
     "/job/:path*",
     "/dashboard/:path*",
     "/job/add",
+    "/cv",
     "/cv/add",
+    "/payment",
   ],
 };

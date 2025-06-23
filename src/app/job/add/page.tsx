@@ -24,9 +24,12 @@ import { VietnameseNumberReader } from "@/utils/n2vi";
 import { jobConst } from "@/const/job-const";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { createJob } from "@/api/job-api";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function JobAddPage() {
-  const { subscriptions, clearSubscriptions } = useSubscriptionStore();
+  const { subscriptions } = useSubscriptionStore();
 
   const { data, setData } = useDraftJobPostStore();
 
@@ -42,7 +45,7 @@ export default function JobAddPage() {
     salary: 0,
     workingHours: "",
     startDate: new Date(),
-    status: "Active",
+    status: "ACTIVE",
     imageUrl: "",
   });
 
@@ -72,7 +75,7 @@ export default function JobAddPage() {
       salary: data?.salary || 0,
       workingHours: data?.workingHours || "",
       startDate: data?.startDate ? new Date(data.startDate) : new Date(),
-      status: "Active",
+      status: "ACTIVE",
       imageUrl: data?.imageUrl || "",
     });
   }, [data]);
@@ -96,10 +99,20 @@ export default function JobAddPage() {
       onSubmit={async (values, { setSubmitting }) => {
         console.log("Submitting job post:", values);
         setSubmitting(true);
-        const res = await createJob(values);
-        if (res) {
-          clearSubscriptions();
-          clearForm();
+        try {
+          const res = await createJob(values);
+          if (res) {
+            toast.success("Đăng bài tuyển dụng thành công");
+            // clearSubscriptions();
+            clearForm();
+            setTimeout(() => {
+              window.location.href = "/job";
+            }, 2000);
+          }
+        } catch (error) {
+          if (error instanceof AxiosError) {
+            toast.error(error.message || "Đăng bài tuyển dụng thất bại");
+          }
         }
         setSubmitting(false);
       }}
@@ -111,6 +124,7 @@ export default function JobAddPage() {
         handleChange,
         handleBlur,
         handleSubmit,
+        setFieldValue,
         values,
       }) => {
         return (
@@ -407,6 +421,30 @@ export default function JobAddPage() {
                             : "Có lỗi với ngày bắt đầu"}
                         </p>
                       )}
+                      <Label htmlFor="imageUrl">Ảnh (URL)</Label>
+                      <Input
+                        id="imageUrl"
+                        name="imageUrl"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setFieldValue("imageUrl", file); // this is key
+                          }
+                        }}
+                        onBlur={handleBlur}
+                        className={
+                          errors.imageUrl && touched.imageUrl
+                            ? "border-red-500"
+                            : ""
+                        }
+                      />
+                      {errors.imageUrl && touched.imageUrl && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.imageUrl}
+                        </p>
+                      )}
                     </div>
                     <div className="flex justify-end gap-4">
                       <Button
@@ -424,7 +462,11 @@ export default function JobAddPage() {
                         type="submit"
                         disabled={isSubmitting}
                       >
-                        Đăng bài tuyển dụng
+                        {isSubmitting ? (
+                          <LoadingSpinner />
+                        ) : (
+                          "Đăng bài tuyển dụng"
+                        )}
                       </Button>
                     </div>
                   </Form>
