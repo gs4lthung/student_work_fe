@@ -57,6 +57,7 @@ export default function CheckRoles() {
         try {
           const employer = await getEmployerInfoByUserID(user.userId);
           if (employer) {
+            console.log("Employer info fetched:", employer);
             useUserStore.getState().setUser({
               ...user,
               employerID: employer.employerID,

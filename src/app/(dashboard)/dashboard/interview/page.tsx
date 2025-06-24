@@ -1,6 +1,6 @@
 "use client";
 
-import { getInterviewsByEmployerId } from "@/api/interview-api";
+import { getInterviewsByEmployerId, getInterviewsByStudentId } from "@/api/interview-api";
 import {
   Table,
   TableBody,
@@ -19,8 +19,14 @@ export default function InterviewPage() {
   const { user } = useUserStore();
   useEffect(() => {
     const fetchInterviews = async () => {
+      console.log("Fetching interviews for user:", user);
       if (user?.role === "Employer" && user.employerID) {
         const res = await getInterviewsByEmployerId(user.employerID);
+        console.log(res)
+        setInterviews(res.result);
+      } else if (user?.role === "Student" && user.studentID) {
+        console.log("Fetching interviews for student ID:", user.studentID);
+        const res = await getInterviewsByStudentId(user.studentID);
         setInterviews(res.result);
       }
     };
@@ -41,7 +47,9 @@ export default function InterviewPage() {
         {interviews.length > 0 ? (
           interviews.map((interview) => (
             <TableRow key={interview.interviewID}>
-              <TableHead className="font-semibold">{interview.jobTitle}</TableHead>
+              <TableHead className="font-semibold">
+                {interview.jobTitle}
+              </TableHead>
               <TableHead>
                 {new Date(interview.scheduledTime).toLocaleDateString("vi-VN")}{" "}
                 -{" "}

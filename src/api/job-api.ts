@@ -25,8 +25,20 @@ export const createJob = async (data: JobInterface) => {
   }
 };
 
-export const getJobs = async (pageIndex: number, pageSize: number) => {
-  const url = `/api/Jobs/pagination?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+export const getJobs = async (
+  pageIndex: number,
+  pageSize: number,
+  title: string,
+  category: string,
+  location: string,
+  minSalary: number,
+  max: number
+) => {
+  const url = `/api/Jobs/search?pageIndex=${pageIndex}&pageSize=${pageSize}&title=${encodeURIComponent(
+    title
+  )}&category=${encodeURIComponent(category)}&location=${encodeURIComponent(
+    location
+  )}&minSalary=${minSalary}&maxSalary=${max} `;
   const response = await api.get(url);
   if (response.status === 200) {
     return response.data;
