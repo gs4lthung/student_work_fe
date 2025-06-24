@@ -1,25 +1,25 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Save, Eye, FileText } from "lucide-react";
-import { ResumeInterface } from "@/interfaces/resume-interface";
-import { toast } from "sonner";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Save, Eye, FileText } from "lucide-react"
+import type { ResumeInterface } from "@/interfaces/resume-interface"
+import { toast } from "sonner"
 import {
   EducationSection,
   ExperienceSection,
   PersonalInfoSection,
   SkillsSection,
-} from "@/components/page/forms/resume-form-sections";
-import { useUserStore } from "@/stores/user-store";
-import { createResume } from "@/api/resume-api";
+} from "@/components/page/forms/resume-form-sections"
+import { useUserStore } from "@/stores/user-store"
+import { createResume } from "@/api/resume-api"
 
 export default function CreateResumePage() {
-  const { user } = useUserStore();
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeSection, setActiveSection] = useState("personal");
+  const { user } = useUserStore()
+  const [isLoading, setIsLoading] = useState(false)
+  const [activeSection, setActiveSection] = useState("personal")
 
   const [resumeData, setResumeData] = useState<ResumeInterface>({
     isDefault: false,
@@ -47,80 +47,100 @@ export default function CreateResumePage() {
     languages: [],
     awards: [],
     certificates: [],
-  });
+  })
 
   const updatePersonalInfo = (field: string, value: string) => {
     setResumeData((prev) => ({
       ...prev,
       [field]: value,
-    }));
-  };
+    }))
+  }
 
   const validateForm = (): boolean => {
     if (!resumeData.fullName.trim()) {
-      toast.error("Vui lòng nhập họ tên");
-      return false;
+      toast.error("Vui lòng nhập họ tên")
+      return false
     }
 
     if (!resumeData.email.trim()) {
-      toast.error("Vui lòng nhập email");
-      return false;
+      toast.error("Vui lòng nhập email")
+      return false
     }
 
     if (!resumeData.phoneNumber.trim()) {
-      toast.error("Vui lòng nhập số điện thoại");
-      return false;
+      toast.error("Vui lòng nhập số điện thoại")
+      return false
     }
 
     if (!resumeData.jobTitle.trim()) {
-      toast.error("Vui lòng nhập vị trí mong muốn");
-      return false;
+      toast.error("Vui lòng nhập vị trí mong muốn")
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   const handleSave = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) return
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      console.log("Saving resume data:", resumeData);
-      const result = await createResume(user?.studentID || "", resumeData);
-      toast.success("CV đã được tạo thành công");
-      console.log("Created resume:", result);
+      console.log("Saving resume data:", resumeData)
+      const result = await createResume(user?.studentID || "", resumeData)
+      toast.success("CV đã được tạo thành công")
+      console.log("Created resume:", result)
       setTimeout(() => {
-        window.location.href = `/cv/${result.resumeId}`;
-      }, 2000);
+        window.location.href = `/cv/${result.resumeId}`
+      }, 2000)
     } catch (error) {
-      toast.error("Không thể tạo CV. Vui lòng thử lại.");
-      console.error("Error creating resume:", error);
+      toast.error("Không thể tạo CV. Vui lòng thử lại.")
+      console.error("Error creating resume:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const sections = [
     { id: "personal", label: "Thông tin cá nhân", icon: FileText },
     { id: "education", label: "Học vấn", icon: FileText },
     { id: "experience", label: "Kinh nghiệm", icon: FileText },
     { id: "skills", label: "Kỹ năng", icon: FileText },
-  ];
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Tạo CV mới</h1>
-          <p className="text-gray-600">
-            Điền thông tin để tạo CV chuyên nghiệp của bạn
-          </p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Tạo CV mới</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Điền thông tin để tạo CV chuyên nghiệp của bạn</p>
         </div>
 
-        <div className="flex gap-8">
-          {/* Sidebar Navigation */}
-          <div className="w-64 flex-shrink-0">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
+          {/* Mobile Section Navigation */}
+          <div className="lg:hidden">
+            <Card className="mb-4">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {sections.map((section) => (
+                    <Button
+                      key={section.id}
+                      variant={activeSection === section.id ? "default" : "outline"}
+                      size="sm"
+                      className="text-xs"
+                      onClick={() => setActiveSection(section.id)}
+                    >
+                      <section.icon className="w-3 h-3 mr-1" />
+                      {section.label}
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Desktop Sidebar Navigation */}
+          <div className="hidden lg:block w-64 flex-shrink-0">
             <Card className="sticky top-4">
               <CardHeader>
                 <CardTitle className="text-lg">Các mục CV</CardTitle>
@@ -157,11 +177,7 @@ export default function CreateResumePage() {
                 </div>
 
                 <div className="pt-4 space-y-2">
-                  <Button
-                    onClick={handleSave}
-                    disabled={isLoading}
-                    className="w-full"
-                  >
+                  <Button onClick={handleSave} disabled={isLoading} className="w-full">
                     <Save className="w-4 h-4 mr-2" />
                     {isLoading ? "Đang lưu..." : "Lưu CV"}
                   </Button>
@@ -175,7 +191,42 @@ export default function CreateResumePage() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-4 sm:space-y-6">
+            {/* Mobile Action Buttons */}
+            <div className="lg:hidden">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="isDefault-mobile"
+                        checked={resumeData.isDefault}
+                        onCheckedChange={(checked) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            isDefault: checked as boolean,
+                          }))
+                        }
+                      />
+                      <label htmlFor="isDefault-mobile" className="text-sm">
+                        Đặt làm CV mặc định
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button onClick={handleSave} disabled={isLoading} className="flex-1">
+                      <Save className="w-4 h-4 mr-2" />
+                      {isLoading ? "Đang lưu..." : "Lưu CV"}
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Eye className="w-4 h-4 mr-2" />
+                      Xem trước
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {activeSection === "personal" && (
               <PersonalInfoSection
                 personalInfo={{
@@ -193,32 +244,26 @@ export default function CreateResumePage() {
             {activeSection === "education" && (
               <EducationSection
                 education={resumeData.education}
-                onChange={(education) =>
-                  setResumeData((prev) => ({ ...prev, education }))
-                }
+                onChange={(education) => setResumeData((prev) => ({ ...prev, education }))}
               />
             )}
 
             {activeSection === "experience" && (
               <ExperienceSection
                 experience={resumeData.experience}
-                onChange={(experience) =>
-                  setResumeData((prev) => ({ ...prev, experience }))
-                }
+                onChange={(experience) => setResumeData((prev) => ({ ...prev, experience }))}
               />
             )}
 
             {activeSection === "skills" && (
               <SkillsSection
                 skills={resumeData.skills}
-                onChange={(skills) =>
-                  setResumeData((prev) => ({ ...prev, skills }))
-                }
+                onChange={(skills) => setResumeData((prev) => ({ ...prev, skills }))}
               />
             )}
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

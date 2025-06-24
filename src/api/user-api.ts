@@ -5,12 +5,20 @@ import {
   RegisterUser,
   StudentInterface,
 } from "@/interfaces/user-interface";
+import { AxiosError } from "axios";
 
 export const register = async (data: RegisterUser) => {
   delete data.confirmPassword;
   const url = "/api/Auth/register";
-  const res = await api.post(url, data);
-  return res.data;
+  try {
+    const res = await api.post(url, data);
+    if (res) return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.error("Registration error:", error);
+      throw new Error(error.response?.data?.message || "Registration failed");
+    }
+  }
 };
 
 export const login = async (data: LoginUser) => {
@@ -88,11 +96,12 @@ export const createEmployerInfo = async (data: EmployerInterface) => {
 
 export const createStudentInfo = async (data: StudentInterface) => {
   console.log("Creating student info with data:", data);
-  const payload = { 
-    ...data, 
-    yearOfStudy: data.yearOfStudy !== undefined && data.yearOfStudy !== null 
-      ? data.yearOfStudy.toString() 
-      : "" 
+  const payload = {
+    ...data,
+    yearOfStudy:
+      data.yearOfStudy !== undefined && data.yearOfStudy !== null
+        ? data.yearOfStudy.toString()
+        : "",
   };
   const url = `/api/Students`;
   const response = await api.post(url, payload, {

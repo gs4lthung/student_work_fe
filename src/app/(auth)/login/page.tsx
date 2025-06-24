@@ -23,24 +23,24 @@ export default function LoginPage() {
     password: "",
   };
   useEffect(() => {
+    window.localStorage.setItem("isCheckedRoles", "false");
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const redirectParam = params.get("redirect") || "/";
       console.log("Redirect param:", redirectParam);
       setRedirect(redirectParam);
 
-      // Show toasts based on redirect
-      // if (redirectParam.includes("cv")) {
-      //   toast.error("Bạn cần đăng nhập để xem CV");
-      // } else if (redirectParam.includes("job")) {
-      //   toast.error("Bạn cần đăng nhập để xem công việc");
-      // } else if (redirectParam.includes("company")) {
-      //   toast.error("Bạn cần đăng nhập để xem công ty");
-      // } else if (redirectParam.includes("profile")) {
-      //   toast.error("Bạn cần đăng nhập để xem hồ sơ cá nhân");
-      // } else if (redirectParam !== "/") {
-      //   toast.error("Bạn cần đăng nhập để truy cập trang này");
-      // }
+      if (redirectParam.includes("cv")) {
+        toast.error("Bạn cần đăng nhập để xem CV");
+      } else if (redirectParam.includes("job")) {
+        toast.error("Bạn cần đăng nhập để xem công việc");
+      } else if (redirectParam.includes("company")) {
+        toast.error("Bạn cần đăng nhập để xem công ty");
+      } else if (redirectParam.includes("profile")) {
+        toast.error("Bạn cần đăng nhập để xem hồ sơ cá nhân");
+      } else if (redirectParam !== "/") {
+        toast.error("Bạn cần đăng nhập để truy cập trang này");
+      }
     }
   }, []);
 
@@ -57,8 +57,9 @@ export default function LoginPage() {
             },
           });
           if (res) {
-            console.log("Login response:", res.data); 
+            console.log("Login response:", res.data);
             useUserStore.getState().setUser(res.data.result.user);
+            toast.success("Đăng nhập thành công");
           }
           setSubmitting(false);
           console.log("Login successful, redirecting to:", redirect);

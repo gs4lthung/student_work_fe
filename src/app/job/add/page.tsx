@@ -27,8 +27,10 @@ import { createJob } from "@/api/job-api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useUserStore } from "@/stores/user-store";
 
 export default function JobAddPage() {
+  const { user } = useUserStore();
   const { subscriptions } = useSubscriptionStore();
 
   const { data, setData } = useDraftJobPostStore();
@@ -100,6 +102,23 @@ export default function JobAddPage() {
         console.log("Submitting job post:", values);
         setSubmitting(true);
         try {
+          const selectedSubscription = subscriptions?.find(
+            (sub) =>
+              String(sub.subscriptionID) === String(values.subscriptionID)
+          );
+          if (
+            (typeof user?.walletBalance !== "undefined" &&
+              selectedSubscription &&
+              user.walletBalance < selectedSubscription.price) ||
+            !user?.walletBalance
+          ) {
+            toast.error(
+              "Số dư ví của bạn không đủ để đăng bài tuyển dụng này."
+            );
+            setSubmitting(false);
+            return;
+          }
+
           const res = await createJob(values);
           if (res) {
             toast.success("Đăng bài tuyển dụng thành công");

@@ -226,7 +226,16 @@ export default function JobDetailPage({
   return (
     <div className="min-h-screen">
       {/* Hero Section with Job Image */}
-      <div className="relative h-80 bg-gradient-to-r from-green-400 to-green-100 dark:from-slate-950 dark:to-green-300 overflow-hidden">
+      <div
+        className="relative h-80 overflow-hidden p-4 text-white drop-shadow-lg"
+        style={{
+          backgroundImage: `url('${job?.imageUrl || "/placeholder.svg"}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-md" />
+
         <div className="absolute inset-0"></div>
         {isApplied && (
           <div className="absolute top-4 right-4 flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg shadow-md font-semibold text-base z-10">
@@ -238,9 +247,9 @@ export default function JobDetailPage({
               viewBox="0 0 24 24"
             >
               <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M5 13l4 4L19 7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
               />
             </svg>
             Đã ứng tuyển
@@ -251,7 +260,6 @@ export default function JobDetailPage({
             <div className="flex items-center gap-2 mb-4">
               <Badge variant={"secondary"}>{job?.category}</Badge>
             </div>
-
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               {job?.title}
               {isApplied}
