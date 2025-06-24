@@ -31,7 +31,6 @@ import {
   FileText,
   MessageSquare,
   Lightbulb,
-  Loader,
 } from "lucide-react";
 
 export default function CareerAdviceSite() {
