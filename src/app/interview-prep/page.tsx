@@ -225,7 +225,7 @@ export default function InterviewPrep() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 rounded-lg">
-              <Target className="h-6 w-6 text-blue-600" />
+              <Target className="h-6 w-6 text-green-600" />
             </div>
             <div>
               <h1 className="text-3xl font-bold">
@@ -241,7 +241,7 @@ export default function InterviewPrep() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 p-6 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg text-white">
+        <div className="mb-8 p-6 bg-gradient-to-r from-green-600 to-teal-500 rounded-lg text-white">
           <h2 className="text-xl font-semibold mb-2">
             🎯 Tips thành công nhanh{" "}
           </h2>
@@ -437,7 +437,7 @@ export default function InterviewPrep() {
               {commonQuestions.map((category, categoryIndex) => (
                 <Card key={categoryIndex}>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 text-green-600">
                       <MessageSquare className="h-5 w-5" />
                       {category.category}
                     </CardTitle>

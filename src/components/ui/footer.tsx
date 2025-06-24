@@ -71,15 +71,7 @@ export default function Footer() {
                   <span>Tư vấn nghề nghiệp</span>
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/salary-guide"
-                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
-                >
-                  <Briefcase className="h-4 w-4" />
-                  <span>Hướng dẫn lương</span>
-                </Link>
-              </li>
+              
             </ul>
           </div>
 
@@ -88,7 +80,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/jobs"
+                  href="/job"
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400"
                 >
                   Tìm việc
