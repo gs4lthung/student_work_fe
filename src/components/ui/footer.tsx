@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import {
-  Briefcase,
   FileText,
   Users,
   BookOpen,
@@ -40,7 +39,7 @@ export default function Footer() {
     <footer className="bg-slate-50 dark:bg-slate-900 border-t w-full py-8 mt-auto">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Job Resources */}
+         
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Job Resources</h3>
             <ul className="space-y-2">
@@ -50,7 +49,7 @@ export default function Footer() {
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <FileText className="h-4 w-4" />
-                  <span>Resume Tips</span>
+                  <span>Mẹo viết CV</span>
                 </Link>
               </li>
               <li>
@@ -59,7 +58,7 @@ export default function Footer() {
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <Users className="h-4 w-4" />
-                  <span>Interview Preparation</span>
+                  <span>Trang bị phỏng vấn</span>
                 </Link>
               </li>
               <li>
@@ -68,28 +67,19 @@ export default function Footer() {
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
                 >
                   <BookOpen className="h-4 w-4" />
-                  <span>Career Advice</span>
+                  <span>Tư vấn nghề nghiệp</span>
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/salary-guide"
-                  className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400 flex items-center gap-2"
-                >
-                  <Briefcase className="h-4 w-4" />
-                  <span>Salary Guide</span>
-                </Link>
-              </li>
+              
             </ul>
           </div>
 
-          {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Nổi bật</h3>
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/jobs"
+                  href="/job"
                   className="text-slate-600 hover:text-slate-900 dark:text-slate-50 dark:hover:text-slate-400"
                 >
                   Tìm việc
@@ -130,7 +120,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+      
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Liên hệ</h3>
             <ul className="space-y-2">
@@ -160,10 +150,17 @@ export default function Footer() {
                   <span>Gửi phản hồi</span>
                 </Link>
               </li>
+               <li className="text-slate-600 dark:text-slate-50">
+                <Link
+                  href="/about-us"
+                  className="hover:text-slate-900 dark:hover:text-slate-400"
+                >
+                  <span>Về chúng tôi</span>
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Social & Newsletter */}
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Kết nối với chúng tôi</h3>
             <div className="flex space-x-4">
