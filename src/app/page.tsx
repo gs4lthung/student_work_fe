@@ -1,22 +1,22 @@
 import CheckRoles from "@/components/check/check-roles";
 import CheckWallet from "@/components/check/check-wallet";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
+// import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { Badge } from "@/components/ui/badge";
 import { Banner } from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+// import {
+//   Card,
+//   CardContent,
+//   CardFooter,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
 import { InfiniteMovingCards } from "@/components/ui/cards-infinite-moving";
 
 import HowToUseLoader from "@/components/ui/how-to-use-loader";
 import { Input } from "@/components/ui/input";
 import { OrbitingCircles } from "@/components/ui/orbiting-circles";
-import { ColourfulText } from "@/components/ui/text-colorful";
+// import { ColourfulText } from "@/components/ui/text-colorful";
 import { TypographyH2 } from "@/components/ui/typography";
 import {
   Briefcase,
@@ -26,100 +26,100 @@ import {
   Sparkles,
   TrendingUp,
   Users,
-  X,
+  // X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const specialJob = {
-  title: "Senior Software Engineer",
-  url: "/special-job",
-  company: "Meta",
-  companyLogo:
-    "https://i0.wp.com/siliconvalleyjournals.com/wp-content/uploads/2023/02/meta_PNG12.png?fit=4000%2C4000&ssl=1",
-  companyUrl: "https://www.facebook.com/careers/jobs/1234567890",
-  location: "Hà Nội, Vietnam",
-  salary: "30-50 triệu VNĐ/tháng",
-  experience: "3+ năm",
-};
+// const specialJob = {
+//   title: "Senior Software Engineer",
+//   url: "/special-job",
+//   company: "Meta",
+//   companyLogo:
+//     "https://i0.wp.com/siliconvalleyjournals.com/wp-content/uploads/2023/02/meta_PNG12.png?fit=4000%2C4000&ssl=1",
+//   companyUrl: "https://www.facebook.com/careers/jobs/1234567890",
+//   location: "Hà Nội, Vietnam",
+//   salary: "30-50 triệu VNĐ/tháng",
+//   experience: "3+ năm",
+// };
 
-type SpecialJob = {
-  title: string;
-  url: string;
-  company: string;
-  companyLogo: string;
-  companyUrl: string;
-  location: string;
-  salary: string;
-  experience: string;
-};
+// type SpecialJob = {
+//   title: string;
+//   url: string;
+//   company: string;
+//   companyLogo: string;
+//   companyUrl: string;
+//   location: string;
+//   salary: string;
+//   experience: string;
+// };
 
-const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
-  return (
-    <div className="fixed bottom-4 right-4 z-100 hidden lg:block">
-      <BackgroundGradient className="rounded-[22px] w-[400px] lg:w-[400px] md:w-[350px] max-w-sm bg-white dark:bg-zinc-900">
-        <Card
-          className="bg-transparent border-none"
-          style={{
-            animation: "slideUpFadeIn 0.5s ease-out",
-          }}
-        >
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles
-                  className="animate-pulse"
-                  fill="yellow"
-                  stroke="none"
-                />
-                <span className="font-medium">
-                  Đừng bỏ lỡ cơ hội việc làm đặc biệt
-                </span>
-              </div>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <X size={16} />
-              </Button>
-            </CardTitle>
-          </CardHeader>
+// const SpecialJobCard = ({ specialJob }: { specialJob: SpecialJob }) => {
+//   return (
+//     <div className="fixed bottom-4 right-4 z-100 hidden lg:block">
+//       <BackgroundGradient className="rounded-[22px] w-[400px] lg:w-[400px] md:w-[350px] max-w-sm bg-white dark:bg-zinc-900">
+//         <Card
+//           className="bg-transparent border-none"
+//           style={{
+//             animation: "slideUpFadeIn 0.5s ease-out",
+//           }}
+//         >
+//           <CardHeader>
+//             <CardTitle className="flex items-center justify-between">
+//               <div className="flex items-center gap-2">
+//                 <Sparkles
+//                   className="animate-pulse"
+//                   fill="yellow"
+//                   stroke="none"
+//                 />
+//                 <span className="font-medium">
+//                   Đừng bỏ lỡ cơ hội việc làm đặc biệt
+//                 </span>
+//               </div>
+//               <Button variant="ghost" size="icon" className="rounded-full">
+//                 <X size={16} />
+//               </Button>
+//             </CardTitle>
+//           </CardHeader>
 
-          <CardContent className="flex gap-4 items-center">
-            <div className="flex-shrink-0">
-              <Image
-                src={specialJob.companyLogo || "/placeholder.svg"}
-                alt="Company Logo"
-                width={70}
-                height={70}
-                className="rounded-xl bg-white shadow-md hover:scale-105 transition-transform"
-              />
-            </div>
-            <div className="flex flex-col">
-              <TypographyH2 className="text-lg font-semibold">
-                {specialJob.title}
-              </TypographyH2>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {specialJob.company}
-              </p>
-              <div className="text-xl">
-                <ColourfulText text={specialJob.salary} />
-              </div>
-              <div className="flex gap-2 mt-2 flex-wrap">
-                <Badge variant="secondary">{specialJob.experience}</Badge>
-                <Badge variant="secondary">{specialJob.location}</Badge>
-              </div>
-            </div>
-          </CardContent>
+//           <CardContent className="flex gap-4 items-center">
+//             <div className="flex-shrink-0">
+//               <Image
+//                 src={specialJob.companyLogo || "/placeholder.svg"}
+//                 alt="Company Logo"
+//                 width={70}
+//                 height={70}
+//                 className="rounded-xl bg-white shadow-md hover:scale-105 transition-transform"
+//               />
+//             </div>
+//             <div className="flex flex-col">
+//               <TypographyH2 className="text-lg font-semibold">
+//                 {specialJob.title}
+//               </TypographyH2>
+//               <p className="text-sm text-gray-600 dark:text-gray-300">
+//                 {specialJob.company}
+//               </p>
+//               <div className="text-xl">
+//                 <ColourfulText text={specialJob.salary} />
+//               </div>
+//               <div className="flex gap-2 mt-2 flex-wrap">
+//                 <Badge variant="secondary">{specialJob.experience}</Badge>
+//                 <Badge variant="secondary">{specialJob.location}</Badge>
+//               </div>
+//             </div>
+//           </CardContent>
 
-          <CardFooter className="flex justify-between items-center px-4 pb-4">
-            <Button variant={"default"}>Ứng tuyển ngay</Button>
-            <Button variant="ghost" className=" hover:underline">
-              Xem chi tiết
-            </Button>
-          </CardFooter>
-        </Card>
-      </BackgroundGradient>
-    </div>
-  );
-};
+//           <CardFooter className="flex justify-between items-center px-4 pb-4">
+//             <Button variant={"default"}>Ứng tuyển ngay</Button>
+//             <Button variant="ghost" className=" hover:underline">
+//               Xem chi tiết
+//             </Button>
+//           </CardFooter>
+//         </Card>
+//       </BackgroundGradient>
+//     </div>
+//   );
+// };
 
 const feedbacks = [
   {
@@ -146,7 +146,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-items-center min-h-screen p-4 sm:p-8 pb-20 gap-12 sm:gap-16 lg:gap-24 lg:p-20">
       <CheckRoles />
       <CheckWallet />
-      <SpecialJobCard specialJob={specialJob} />
+      {/* <SpecialJobCard specialJob={specialJob} /> */}
       <HeroSection />
       <HowItWorkSection />
       <ForCustomerSection />

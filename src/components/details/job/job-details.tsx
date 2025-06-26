@@ -30,6 +30,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ColourfulText } from "@/components/ui/text-colorful";
 import { Textarea } from "@/components/ui/textarea";
 import type { ApplicationInterface } from "@/interfaces/application-interface";
 import type { JobInterface } from "@/interfaces/job-interface";
@@ -261,7 +262,7 @@ export default function JobDetailPage({
               <Badge variant={"secondary"}>{job?.category}</Badge>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {job?.title}
+              <ColourfulText text={job?.title || "Công việc"} size="2rem" />
               {isApplied}
             </h1>
 

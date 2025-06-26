@@ -35,6 +35,9 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "./skeleton";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetTrigger } from "./sheet";
+import { getUnreadNotifications } from "@/api/notification-api";
+import { useNotificationStore } from "@/stores/notification-store";
+import CheckNotification from "../check/check-notifications";
 
 const items = [
   {
@@ -130,6 +133,8 @@ export default function Header() {
   const { user } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [unreadNotiCount, setUnreadNotiCount] = useState(0);
+  const { notifications } = useNotificationStore();
 
   const nonDashboardPaths = [
     "/dashboard",
@@ -151,6 +156,19 @@ export default function Header() {
       setIsLoading(false);
       return;
     }
+
+    async function fetchUnreadNotifications() {
+      try {
+        const res = await getUnreadNotifications();
+        setUnreadNotiCount(res.unreadCount);
+      } catch (error) {
+        console.error("Failed to fetch unread notifications", error);
+      } finally {
+        setIsLoading(false); // <-- move this here
+      }
+    }
+
+    fetchUnreadNotifications();
   }, [user]);
 
   if (isDashboard) {
@@ -163,6 +181,7 @@ export default function Header() {
 
   return (
     <>
+      <CheckNotification />
       {/* Promotional Banner */}
       <div className="h-auto min-h-[40px] w-full bg-gradient-to-r from-yellow-100 to-yellow-300 dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-600">
         <div className="flex h-full items-center justify-center gap-4 px-4 py-2">
@@ -259,6 +278,13 @@ export default function Header() {
                       size="sm"
                       className="hidden sm:flex"
                     >
+                      <div className="relative">
+                        {unreadNotiCount > 0 && (
+                          <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 bg-red-600 text-white text-[10px] font-bold rounded-full shadow-sm ring-2 ring-white">
+                            {unreadNotiCount}
+                          </span>
+                        )}
+                      </div>
                       <Bell size={16} />
                     </Button>
                   </DropdownMenuTrigger>
@@ -268,28 +294,28 @@ export default function Header() {
                         Thông báo
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Bạn có {notificationItems.length} thông báo mới
+                        Bạn có {unreadNotiCount} thông báo mới
                       </p>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    {notificationItems.map((item) => (
+                    {notifications.slice(0, 5).map((item) => (
                       <DropdownMenuItem
-                        key={item.title}
+                        key={item.notificationID}
                         className="flex items-center gap-2 p-3"
                       >
                         <div className="flex items-center gap-2 w-full">
                           <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400 flex-shrink-0">
-                            {item.icon}
+                            <BellIcon size={20} />
                           </div>
                           <div className="flex flex-col flex-1 min-w-0">
                             <Link
-                              href={item.url}
+                              href={item.message}
                               className="text-sm font-medium truncate"
                             >
                               {item.title}
                             </Link>
                             <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                              {item.description}
+                              {item.message}
                             </p>
                           </div>
                         </div>
