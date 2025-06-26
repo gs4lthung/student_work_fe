@@ -10,12 +10,15 @@ import { useNotificationStore } from "@/stores/notification-store";
 export default function CheckNotification() {
   const { setNotifications } = useNotificationStore();
   const [connection, setConnection] = useState<HubConnection | null>(null);
-  const accessToken = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("accessToken="))
-    ?.split("=")[1];
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const accessToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("accessToken="))
+      ?.split("=")[1];
     console.log(process.env.NEXT_PUBLIC_API_URL);
     const connect = new HubConnectionBuilder()
       .withUrl(
