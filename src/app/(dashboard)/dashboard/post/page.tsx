@@ -192,7 +192,7 @@ export default function DashboardPost() {
               {jobPosts.map((job) => (
                 <React.Fragment key={job.jobID}>
                   {/* Main Job Row */}
-                  <TableRow className="hover:bg-gray-50">
+                  <TableRow>
                     <TableCell>
                       <Button
                         variant="ghost"
@@ -217,13 +217,13 @@ export default function DashboardPost() {
                     </TableCell>
                     <TableCell>{job.category}</TableCell>
                     <TableCell className="max-w-xs">
-                     <div className="truncate" title={job.description}>
+                      <div className="truncate" title={job.description}>
                         {job.description.split(".").map((des, index) => (
                           <div key={index} className="mb-1">
                             {des.trim()}
                           </div>
                         ))}
-                     </div>
+                      </div>
                     </TableCell>
                     <TableCell className="max-w-xs">
                       <div className="truncate" title={job.requirements}>
@@ -260,7 +260,7 @@ export default function DashboardPost() {
                   {expandedRows.has(String(job.jobID)) && (
                     <TableRow>
                       <TableCell colSpan={8} className="p-0">
-                        <div className="bg-gray-50 border-t">
+                        <div className="border-t">
                           {loadingApplications.has(String(job.jobID)) ? (
                             <div className="flex items-center justify-center py-8">
                               <div className="flex items-center gap-2">
@@ -281,7 +281,7 @@ export default function DashboardPost() {
                                 </h3>
                               </div>
 
-                              <div className="bg-white rounded-lg border overflow-hidden">
+                              <div className="rounded-lg border overflow-hidden">
                                 <Table>
                                   <TableHeader>
                                     <TableRow>
@@ -298,7 +298,7 @@ export default function DashboardPost() {
                                         <TableRow key={app.stt || index}>
                                           <TableCell className="font-medium">
                                             <div className="flex items-center gap-2">
-                                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                              <div className="w-8 h-8 rounded-full flex items-center justify-center">
                                                 <User className="h-4 w-4 text-blue-600" />
                                               </div>
                                               {app.studentName}
@@ -691,7 +691,7 @@ export default function DashboardPost() {
                                               <Button
                                                 variant="outline"
                                                 size="sm"
-                                                >
+                                              >
                                                 Liên hệ
                                               </Button>
                                             </div>
@@ -705,7 +705,7 @@ export default function DashboardPost() {
                             </div>
                           ) : (
                             <div className="text-center py-8">
-                              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <User className="h-8 w-8 text-gray-400" />
                               </div>
                               <p className="text-gray-500 text-lg">
