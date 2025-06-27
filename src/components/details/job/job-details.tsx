@@ -342,7 +342,15 @@ export default function JobDetailPage({
                   </CardHeader>
                   <CardContent>
                     <div className="prose max-w-none">
-                      <p className="leading-relaxed mb-8">{job?.description}</p>
+                      <p className="leading-relaxed mb-8">
+                        <ul className="space-y-2">
+                          {job?.description.split(".").map((des, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="">{des.trim()}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </p>
 
                       <h3 className="text-lg font-semibold mb-4">
                         Yêu cầu công việc
@@ -350,7 +358,7 @@ export default function JobDetailPage({
                       <ul className="space-y-2 mb-8">
                         {job?.requirements.split(".").map((req, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            🟢 <span className="">{req}</span>
+                            <span className="">{req}</span>
                           </li>
                         ))}
                       </ul>

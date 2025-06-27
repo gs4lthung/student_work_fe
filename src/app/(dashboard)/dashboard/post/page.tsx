@@ -217,9 +217,13 @@ export default function DashboardPost() {
                     </TableCell>
                     <TableCell>{job.category}</TableCell>
                     <TableCell className="max-w-xs">
-                      <div className="truncate" title={job.description}>
-                        {job.description.slice(0, 50)}...
-                      </div>
+                     <div className="truncate" title={job.description}>
+                        {job.description.split(".").map((des, index) => (
+                          <div key={index} className="mb-1">
+                            {des.trim()}
+                          </div>
+                        ))}
+                     </div>
                     </TableCell>
                     <TableCell className="max-w-xs">
                       <div className="truncate" title={job.requirements}>
