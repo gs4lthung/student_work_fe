@@ -436,7 +436,7 @@ export default function Header() {
                           )}
                         </div>
 
-                        {/* Mobile Notifications */}
+                        {/* Mobile Notificatsions */}
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">Thông báo</h4>
                           {notificationItems.map((item) => (
