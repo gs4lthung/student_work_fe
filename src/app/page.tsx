@@ -1,5 +1,3 @@
-import CheckRoles from "@/components/check/check-roles";
-import CheckWallet from "@/components/check/check-wallet";
 // import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { Badge } from "@/components/ui/badge";
 import { Banner } from "@/components/ui/banner";
@@ -144,8 +142,8 @@ const feedbacks = [
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-items-center min-h-screen p-4 sm:p-8 pb-20 gap-12 sm:gap-16 lg:gap-24 lg:p-20">
-      <CheckRoles />
-      <CheckWallet />
+      {/* <CheckRoles />
+      <CheckWallet /> */}
       {/* <SpecialJobCard specialJob={specialJob} /> */}
       <HeroSection />
       <HowItWorkSection />
