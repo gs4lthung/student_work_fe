@@ -28,6 +28,13 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useUserStore } from "@/stores/user-store";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function JobAddPage() {
   const { user } = useUserStore();
@@ -276,9 +283,15 @@ export default function JobAddPage() {
                       <Textarea
                         id="description"
                         name="description"
-                        placeholder="Nhập mô tả công việc"
+                        placeholder="Nhập mô tả công việc (nhập từng mô tả cách nhau bằng dấu chấm)"
                         value={values.description}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const arr = value.split(".");
+                          if (arr[0] === "") arr.shift();
+                          if (arr[arr.length - 1] === "") arr.pop();
+                          setFieldValue("description", arr.join(".").trim());
+                        }}
                         onBlur={handleBlur}
                         className={`${
                           errors.description && touched.description
@@ -292,7 +305,7 @@ export default function JobAddPage() {
                       <Textarea
                         id="requirements"
                         name="requirements"
-                        placeholder="Nhập yêu cầu công việc (nhập từng yêu cầu cách nhau bằng dấu phẩy)"
+                        placeholder="Nhập yêu cầu công việc (nhập từng yêu cầu cách nhau bằng dấu chấm)"
                         value={values.requirements}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -339,20 +352,41 @@ export default function JobAddPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="workingHours">Giờ làm việc</Label>
-                        <Input
-                          id="workingHours"
-                          name="workingHours"
-                          type="text"
-                          placeholder="Nhập giờ làm việc (ví dụ: 9:00 - 17:00)"
+                        <Select
                           value={values.workingHours}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={`${
-                            errors.workingHours && touched.workingHours
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
+                          onValueChange={(value) =>
+                            setFieldValue("workingHours", value)
+                          }
+                        >
+                          <SelectTrigger
+                            className={`${
+                              errors.workingHours && touched.workingHours
+                                ? "border-red-500"
+                                : ""
+                            }`}
+                            aria-label="Chọn giờ làm việc"
+                          >
+                            <SelectValue placeholder="Chọn giờ làm việc" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="8:00 - 17:00">
+                              8:00 - 17:00
+                            </SelectItem>
+                            <SelectItem value="9:00 - 18:00">
+                              9:00 - 18:00
+                            </SelectItem>
+                            <SelectItem value="10:00 - 19:00">
+                              10:00 - 19:00
+                            </SelectItem>
+                            <SelectItem value="12:00 - 21:00">
+                              12:00 - 21:00
+                            </SelectItem>
+                            <SelectItem value="Ca đêm">Ca đêm</SelectItem>
+                            <SelectItem value="Ca xoay">Ca xoay</SelectItem>
+                            <SelectItem value="Linh hoạt">Linh hoạt</SelectItem>
+                            <SelectItem value="Khác">Khác</SelectItem>
+                          </SelectContent>
+                        </Select>
                         {errors.workingHours && touched.workingHours && (
                           <p className="text-red-500 text-sm mt-1">
                             {errors.workingHours}
@@ -365,18 +399,15 @@ export default function JobAddPage() {
                         <Label htmlFor="salary">Mức lương</Label>
                         <div className="flex items-center gap-2">
                           <p className="text-gray-600">
-                            {VietnameseNumberReader.toVietnamese(
-                              values.salary || 0
-                            )}{" "}
-                            đồng
+                            {VietnameseNumberReader.toVietnamese(values.salary || 0)} đồng
                           </p>
                           <Input
                             id="salary"
                             name="salary"
                             type="number"
-                            step={100000}
+                            step={500000}
                             min={0}
-                            max={100000000}
+                            max={50000000}
                             placeholder="Nhập mức lương (VND)"
                             value={values.salary}
                             onChange={handleChange}
@@ -393,8 +424,8 @@ export default function JobAddPage() {
                         id="salary"
                         name="salary"
                         min={0}
-                        max={100000000}
-                        step={100000}
+                        max={50000000}
+                        step={500000}
                         value={[values.salary]}
                         onValueChange={(value) => {
                           handleChange({
@@ -446,7 +477,7 @@ export default function JobAddPage() {
                             : "Có lỗi với ngày bắt đầu"}
                         </p>
                       )}
-                      <Label htmlFor="imageUrl">Ảnh (URL)</Label>
+                      <Label htmlFor="imageUrl">Ảnh (File từ máy tính)</Label>
                       <Input
                         id="imageUrl"
                         name="imageUrl"

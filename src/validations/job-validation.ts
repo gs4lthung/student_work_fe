@@ -19,7 +19,8 @@ export const JobValidationSchema: Yup.ObjectSchema<JobInterface> = Yup.object({
     .max(100, "Địa điểm làm việc không được quá 100 ký tự"),
   salary: Yup.number()
     .required("Mức lương không được để trống")
-    .min(0, "Mức lương phải lớn hơn hoặc bằng 0"),
+    .min(0, "Mức lương phải lớn hơn hoặc bằng 0")
+    .max(50000000, "Mức lương không được quá 50.000.000 VND"),
   status: Yup.mixed<"ACTIVE" | "INACTIVE">()
     .oneOf(["ACTIVE", "INACTIVE"], "Trạng thái không hợp lệ")
     .required("Trạng thái không được để trống"),
