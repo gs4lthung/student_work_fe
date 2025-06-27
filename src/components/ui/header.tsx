@@ -311,6 +311,7 @@ export default function Header() {
                             <Link
                               href={item.message}
                               className="text-sm font-medium truncate"
+                              prefetch={false}
                             >
                               {item.title}
                             </Link>
@@ -378,6 +379,7 @@ export default function Header() {
                             toast.success("Đăng xuất thành công!");
                           }
                         }}
+                        prefetch={false}
                       >
                         <DropdownMenuItem className="p-2">
                           <span className="flex-1">{item.title}</span>
@@ -445,6 +447,7 @@ export default function Header() {
                               href={item.url}
                               className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
                               onClick={() => setIsMobileMenuOpen(false)}
+                              prefetch={false}
                             >
                               <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400">
                                 {item.icon}
