@@ -294,7 +294,13 @@ export default function JobAddPage() {
                         name="requirements"
                         placeholder="Nhập yêu cầu công việc (nhập từng yêu cầu cách nhau bằng dấu phẩy)"
                         value={values.requirements}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const arr = value.split(".");
+                          if (arr[0] === "") arr.shift();
+                          if (arr[arr.length - 1] === "") arr.pop();
+                          setFieldValue("requirements", arr.join(".").trim());
+                        }}
                         onBlur={handleBlur}
                         className={`${
                           errors.requirements && touched.requirements

@@ -437,6 +437,7 @@ export default function JobPage() {
                         </div>
                         <div className="flex items-center space-x-2">
                           <Clock />
+                          {job.createdAt?.toString()}
                           <span>
                             {job.createdAt
                               ? new Date(job.createdAt).toLocaleDateString("vi-VN")
@@ -494,7 +495,11 @@ export default function JobPage() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Clock />
-                        <span>{new Date(job.startDate).toLocaleDateString("vi-VN")}</span>
+                        <span>
+                          {job.createdAt
+                            ? new Date(job.createdAt).toLocaleDateString("vi-VN")
+                            : "N/A"}
+                        </span>
                       </div>
                       <Button asChild variant={"outline"}>
                         <Link href={`/job/${job.jobID}`}>Xem chi tiết</Link>
