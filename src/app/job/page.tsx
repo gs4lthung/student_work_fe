@@ -532,14 +532,14 @@ export default function JobPage() {
                       <ul className="list-disc pl-5">
                         {job.description.split(".").map((des, index) => (
                           <li key={index} className="flex items-center">
-                            🟢<p>{des.trim()}</p>
+                            <p>{des.trim()}</p>
                           </li>
                         ))}
                       </ul>
                       {/* <ul className="space-y-2">
                         {job.requirements.split(".").map((des, index) => (
                           <li key={index} className="flex items-center">
-                            🟢<p>{des.trim()}</p>
+                            <p>{des.trim()}</p>
                           </li>
                         ))}
                       </ul> */}
