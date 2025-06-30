@@ -7,5 +7,6 @@ export const getSubscriptions = async () => {
   if (response.status === 200) {
     console.log("Subscriptions fetched successfully:", response.data);
     useSubscriptionStore.getState().setSubscriptions(response.data);
+    return response.data;
   }
 };

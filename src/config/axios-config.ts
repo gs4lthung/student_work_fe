@@ -121,7 +121,7 @@ api.interceptors.response.use(
       if (status === 400) {
         console.log("Yêu cầu không hợp lệ:", error.response.data);
         throw new AxiosError(
-            error?.response?.data.errorMessages[0] ||
+          error.response.data || error?.response?.data.errorMessages[0] ||
             "Yêu cầu không hợp lệ."
         );
       } else if (status === 401) {
