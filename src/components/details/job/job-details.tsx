@@ -342,7 +342,6 @@ export default function JobDetailPage({
                   </CardHeader>
                   <CardContent>
                     <div className="prose max-w-none">
-                      <p className="leading-relaxed mb-8">
                         <ul className="space-y-2">
                           {job?.description.split(".").map((des, index) => (
                             <li key={index} className="flex items-start gap-2">
@@ -350,7 +349,6 @@ export default function JobDetailPage({
                             </li>
                           ))}
                         </ul>
-                      </p>
 
                       <h3 className="text-lg font-semibold mb-4">
                         Yêu cầu công việc
