@@ -33,6 +33,14 @@ import { Form, Formik } from "formik";
 import Image from "next/image";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import * as Yup from "yup";
+
+const AccountValidationSchema = Yup.object().shape({
+  email: Yup.string().email("Email không hợp lệ").required("Bắt buộc"),
+  name: Yup.string().required("Bắt buộc"),
+  phoneNumber: Yup.string().required("Bắt buộc"),
+  address: Yup.string().required("Bắt buộc"),
+});
 
 const AccountTab = ({
   user,
@@ -43,77 +51,130 @@ const AccountTab = ({
   isUpdate: boolean;
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const initialValues = {
+    email: user?.email || "",
+    name: `${user?.firstName || ""} ${user?.lastName || ""}`,
+    phoneNumber: user?.phoneNumber || "",
+  };
+
   return (
-    <div className="grid grid-cols-8 gap-8">
-      <div className="col-span-5">
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Thông tin đăng nhập
-        </h2>
-        <div className="flex flex-col gap-4">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="Email"
-            value={user?.email || "user@gmail.com"}
-            disabled={isUpdate}
-          />
-          <Label htmlFor="password">Mật khẩu</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Mật khẩu"
-            value={"password"}
-            disabled
-          />
-          <Button variant={"outline"} className="w-1/3">
-            Thay đổi mật khẩu
-          </Button>
-        </div>
-        <Separator className="my-4" />
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Thông tin liên hệ
-        </h2>
-        <div className="flex flex-col gap-4">
-          <Label htmlFor="name">Họ và tên</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Họ và tên"
-            value={"Lam Tien Hung"}
-            readOnly={isUpdate}
-          />
-          <Label htmlFor="phone">Số điện thoại</Label>
-          <Input
-            id="phone"
-            type="text"
-            placeholder="Số điện thoại"
-            value={user?.phoneNumber || "0123456789"}
-            readOnly={isUpdate}
-          />
-          <Label htmlFor="address">Địa chỉ</Label>
-          <Input
-            id="address"
-            type="text"
-            placeholder="Địa chỉ"
-            value={"TP. Hồ Chí Minh"}
-            readOnly={isUpdate}
-          />
-          <Button className="w-1/3" onClick={() => setIsUpdate(!isUpdate)}>
-            Chỉnh sửa thông tin
-          </Button>
-        </div>
-      </div>
-      <div className="col-span-3 flex flex-col gap-2 items-center">
-        <h2 className="text-lg font-semibold mb-4 text-gray-600">
-          Ảnh đại diện
-        </h2>
-        <Avatar className="w-40 h-40">
-          <AvatarFallback>👤</AvatarFallback>
-        </Avatar>
-        <FileUpload />
-      </div>
-    </div>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={AccountValidationSchema}
+      enableReinitialize
+      onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(false);
+        setIsUpdate(false);
+      }}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting,
+      }) => (
+        <Form onSubmit={handleSubmit} className="grid grid-cols-8 gap-8">
+          <div className="col-span-5">
+            <h2 className="text-lg font-semibold mb-4 text-gray-600">
+              Thông tin đăng nhập
+            </h2>
+            <div className="flex flex-col gap-4">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={!isUpdate}
+              />
+              {errors.email && touched.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+              <Label htmlFor="password">Mật khẩu</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Mật khẩu"
+                value={"password"}
+                disabled
+              />
+              <Button variant={"outline"} className="w-1/3" type="button">
+                Thay đổi mật khẩu
+              </Button>
+            </div>
+            <Separator className="my-4" />
+            <h2 className="text-lg font-semibold mb-4 text-gray-600">
+              Thông tin liên hệ
+            </h2>
+            <div className="flex flex-col gap-4">
+              <Label htmlFor="name">Họ và tên</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Họ và tên"
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                readOnly={!isUpdate}
+              />
+              {errors.name && touched.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
+              <Label htmlFor="phoneNumber">Số điện thoại</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="text"
+                placeholder="Số điện thoại"
+                value={values.phoneNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                readOnly={!isUpdate}
+              />
+              {errors.phoneNumber && touched.phoneNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
+              )}
+              <div className="flex gap-2">
+                <Button
+                  className="w-1/3"
+                  type={isUpdate ? "button" : "button"}
+                  onClick={() => setIsUpdate(!isUpdate)}
+                  variant={isUpdate ? "secondary" : "outline"}
+                  disabled={isSubmitting}
+                >
+                  {isUpdate ? "Hủy bỏ" : "Chỉnh sửa thông tin"}
+                </Button>
+                {isUpdate && (
+                  <Button
+                    className="w-1/3"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? <LoadingSpinner /> : "Lưu thay đổi"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="col-span-3 flex flex-col gap-2 items-center">
+            <h2 className="text-lg font-semibold mb-4 text-gray-600">
+              Ảnh đại diện
+            </h2>
+            <Avatar className="w-40 h-40">
+              <AvatarFallback>👤</AvatarFallback>
+            </Avatar>
+            <FileUpload />
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
@@ -547,7 +608,7 @@ export default function DashBoardProfilePage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
-        <TypographyH2 className="">Lam Tien Hung</TypographyH2>
+        <TypographyH2 className="">{user?.firstName+" "+user?.lastName}</TypographyH2>
         <Badge className="bg-green-500 dark:bg-green-300 text-white">
           {user?.role === "Student" ? "Sinh viên" : "HR"}
         </Badge>

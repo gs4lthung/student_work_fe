@@ -8,3 +8,16 @@ export const getUnreadNotifications = async () => {
 
   return response.data;
 };
+
+export const markAllNotificationsAsRead = async () => {
+  const url = `/api/Notification/mark-all-as-read`;
+  const response = await api.post(
+    url,
+    {},
+    {
+      requiresAuth: true,
+    }
+  );
+
+  return response.data;
+};

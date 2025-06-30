@@ -35,7 +35,10 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "./skeleton";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetTrigger } from "./sheet";
-import { getUnreadNotifications } from "@/api/notification-api";
+import {
+  getUnreadNotifications,
+  markAllNotificationsAsRead,
+} from "@/api/notification-api";
 import { useNotificationStore } from "@/stores/notification-store";
 import CheckNotification from "../check/check-notifications";
 import CheckRoles from "../check/check-roles";
@@ -161,6 +164,10 @@ export default function Header() {
 
     async function fetchUnreadNotifications() {
       try {
+        if(isDashboard||!user) {
+          setIsLoading(false);
+          return;
+        }
         const res = await getUnreadNotifications();
         setUnreadNotiCount(res.unreadCount);
       } catch (error) {
@@ -331,7 +338,22 @@ export default function Header() {
                       <Button variant="outline" size="sm" className="w-full">
                         Xem tất cả thông báo
                       </Button>
-                      <Button size="sm" className="w-full">
+                      <Button
+                        size="sm"
+                        className="w-full"
+                        onClick={async () => {
+                          if (unreadNotiCount === 0) {
+                            toast.info("Không có thông báo chưa đọc");
+                            return;
+                          }          
+                          const res = await markAllNotificationsAsRead();
+                          if (res)
+                            toast.success(
+                              "Đã đánh dấu tất cả thông báo là đã đọc"
+                            );
+                            window.location.reload();
+                        }}
+                      >
                         Đánh dấu tất cả đã đọc
                       </Button>
                     </div>

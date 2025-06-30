@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { useUserStore } from "@/stores/user-store";
 import axios, { AxiosError } from "axios";
 
 // Extend Axios request config to include requiresAuth
@@ -39,7 +40,10 @@ export async function getAuthToken() {
   };
 }
 
-export function logout() {}
+export function logout() {
+  console.log("Logging out user...");
+  localStorage.removeItem("user-storage");
+}
 
 api.interceptors.request.use(
   (config) => {
@@ -121,7 +125,8 @@ api.interceptors.response.use(
       if (status === 400) {
         console.log("Yêu cầu không hợp lệ:", error.response.data);
         throw new AxiosError(
-          error.response.data || error?.response?.data.errorMessages[0] ||
+          error.response.data ||
+            error?.response?.data.errorMessages[0] ||
             "Yêu cầu không hợp lệ."
         );
       } else if (status === 401) {
@@ -129,6 +134,9 @@ api.interceptors.response.use(
           "Phiên đăng nhập đã hết hạn hoặc không hợp lệ:",
           error.response
         );
+        useUserStore.getState().clearUser();
+        window.location.href = "/logout";
+
         throw new AxiosError(
           "Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại."
         );

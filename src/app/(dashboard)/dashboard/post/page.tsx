@@ -45,6 +45,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -56,6 +57,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createInterview } from "@/api/interview-api";
+import { ColourfulText } from "@/components/ui/text-colorful";
+import Image from "next/image";
 
 export default function DashboardPost() {
   const [isLoading, setIsLoading] = useState(true);
@@ -191,6 +194,7 @@ export default function DashboardPost() {
                 <TableHead>Lương</TableHead>
                 <TableHead>Ngày bắt đầu</TableHead>
                 <TableHead>Trạng thái</TableHead>
+                <TableHead>Chi tiết</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -225,7 +229,7 @@ export default function DashboardPost() {
                       <div className="truncate" title={job.description}>
                         {job.description.split(".").map((des, index) => (
                           <div key={index} className="mb-1">
-                            {des.trim()}
+                            {des.trim().slice(0, 30)}...
                           </div>
                         ))}
                       </div>
@@ -234,7 +238,7 @@ export default function DashboardPost() {
                       <div className="truncate" title={job.requirements}>
                         {job.requirements.split(".").map((req, index) => (
                           <div key={index} className="mb-1">
-                            {req.trim()}
+                            {req.trim().slice(0, 30)}...
                           </div>
                         ))}
                       </div>
@@ -258,6 +262,9 @@ export default function DashboardPost() {
                           Ngừng hoạt động
                         </Badge>
                       )}
+                    </TableCell>
+                    <TableCell>
+                      <JobDetails job={job} />
                     </TableCell>
                   </TableRow>
 
@@ -335,9 +342,9 @@ export default function DashboardPost() {
                                                 </div>
                                               </div>
                                             ) : (
-                                              <span className="text-gray-400">
+                                              <p className="text-gray-400">
                                                 Không có
-                                              </span>
+                                              </p>
                                             )}
                                           </TableCell>
                                           <TableCell>
@@ -359,36 +366,9 @@ export default function DashboardPost() {
                                                   app={app}
                                                 />
                                               ) : app.status === "INVITED" ? (
-                                                <AlertDialog>
-                                                  <AlertDialogTrigger asChild>
-                                                    <Button size="sm">
-                                                      Chấp nhận cho công việc
-                                                    </Button>
-                                                  </AlertDialogTrigger>
-                                                  <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                      <AlertDialogTitle>
-                                                        Bạn có chắc chắn muốn
-                                                        chấp nhận ứng viên cho
-                                                        công việc này ?
-                                                      </AlertDialogTitle>
-                                                      <AlertDialogDescription>
-                                                        Việc này sẽ không thể
-                                                        hoàn tác. Ứng viên sẽ
-                                                        được xem xét cho công
-                                                        việc này.
-                                                      </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                      <AlertDialogCancel>
-                                                        Đóng
-                                                      </AlertDialogCancel>
-                                                      <AlertDialogAction>
-                                                        Chấp nhận
-                                                      </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                  </AlertDialogContent>
-                                                </AlertDialog>
+                                                <AcceptForWorkingAlertDialog
+                                                  app={app}
+                                                />
                                               ) : (
                                                 <></>
                                               )}
@@ -434,6 +414,74 @@ export default function DashboardPost() {
     </div>
   );
 }
+
+const JobDetails = ({ job }: { job: JobInterface }) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size={"sm"}>
+          Xem
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="min-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Chi tiết công việc</DialogTitle>
+          <DialogDescription>
+            Thông tin chi tiết về công việc này.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4">
+          <div>
+            <Label className="font-semibold">Tiêu đề</Label>
+            <ColourfulText text={job.title} />
+          </div>
+          <div>
+            <Label className="font-semibold">Loại công việc</Label>
+            <p className="text-gray-700">{job.category}</p>
+          </div>
+          <div>
+            <Label className="font-semibold">Lương</Label>
+            <p className="text-gray-700">
+              {job.salary.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
+          </div>
+
+          <Image
+            src={job.imageUrl || "/default-job-image.png"}
+            alt="Job Image"
+            width={500}
+            height={300}
+            className="rounded-lg object-cover w-full h-64 mb-4"
+          />
+          <div>
+            <Label className="font-semibold">Mô tả</Label>
+            <ul className="list-disc pl-5">
+              {job.description.split(".").map((des, index) => (
+                <li key={index} className="mb-1">
+                  {des.trim()}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <Label className="font-semibold">Yêu cầu</Label>
+            <ul className="list-disc pl-5">
+              {job.requirements.split(".").map((req, index) => (
+                <li key={index} className="mb-1">
+                  {req.trim()}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <DialogFooter></DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 const AcceptApplicationButton = ({ app }: { app: ApplicationInterface }) => {
   return (
@@ -672,6 +720,53 @@ const InviteInterviewDialog = ({
         </Formik>
       </DialogContent>
     </Dialog>
+  );
+};
+
+const AcceptForWorkingAlertDialog = ({
+  app,
+}: {
+  app: ApplicationInterface;
+}) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm">Chấp nhận cho công việc</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Bạn có chắc chắn muốn chấp nhận ứng viên cho công việc này ?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Việc này sẽ không thể hoàn tác. Ứng viên sẽ được xem xét cho công
+            việc này.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Đóng</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={async () => {
+              console.log("Accepting application:", app);
+              if (app.stt !== undefined) {
+                const res = await updateApplicationStatus(
+                  Number(app.stt),
+                  "WORKING"
+                );
+                if (res) {
+                  toast.success(
+                    "Đã chấp nhận ứng viên cho công việc thành công"
+                  );
+                  window.location.reload();
+                }
+              }
+            }}
+          >
+            Xác nhận
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
