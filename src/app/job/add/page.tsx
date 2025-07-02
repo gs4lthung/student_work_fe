@@ -285,19 +285,15 @@ export default function JobAddPage() {
                         name="description"
                         placeholder="Nhập mô tả công việc (nhập từng mô tả cách nhau bằng dấu chấm)"
                         value={values.description}
-                        onChange={(e) => {
+                        onChange={handleChange}
+                        onBlur={(e) => {
                           const value = e.target.value;
                           const arr = value.split(".");
                           if (arr[0] === "") arr.shift();
                           if (arr[arr.length - 1] === "") arr.pop();
                           setFieldValue("description", arr.join(".").trim());
+                          handleBlur(e);
                         }}
-                        onBlur={handleBlur}
-                        className={`${
-                          errors.description && touched.description
-                            ? "border-red-500"
-                            : ""
-                        }`}
                       />
                     </div>
                     <div className="grid gap-2">
@@ -307,14 +303,15 @@ export default function JobAddPage() {
                         name="requirements"
                         placeholder="Nhập yêu cầu công việc (nhập từng yêu cầu cách nhau bằng dấu chấm)"
                         value={values.requirements}
-                        onChange={(e) => {
+                        onChange={handleChange}
+                        onBlur={(e) => {
                           const value = e.target.value;
                           const arr = value.split(".");
                           if (arr[0] === "") arr.shift();
                           if (arr[arr.length - 1] === "") arr.pop();
                           setFieldValue("requirements", arr.join(".").trim());
+                          handleBlur(e);
                         }}
-                        onBlur={handleBlur}
                         className={`${
                           errors.requirements && touched.requirements
                             ? "border-red-500"
@@ -399,7 +396,10 @@ export default function JobAddPage() {
                         <Label htmlFor="salary">Mức lương</Label>
                         <div className="flex items-center gap-2">
                           <p className="text-gray-600">
-                            {VietnameseNumberReader.toVietnamese(values.salary || 0)} đồng
+                            {VietnameseNumberReader.toVietnamese(
+                              values.salary || 0
+                            )}{" "}
+                            đồng
                           </p>
                           <Input
                             id="salary"
