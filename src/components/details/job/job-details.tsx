@@ -5,6 +5,7 @@ import {
   getApplicationsByStudent,
 } from "@/api/application-api";
 import { getJobById } from "@/api/job-api";
+import { savedJob } from "@/api/jobbookmark-api";
 import { searchResumes } from "@/api/resume-api";
 import { getEmployerInfoByID } from "@/api/user-api";
 import { Badge } from "@/components/ui/badge";
@@ -128,6 +129,7 @@ export default function JobDetailPage({
   const [hoveredRating, setHoveredRating] = useState(0);
   const [activeTab, setActiveTab] = useState("details");
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
 
   const fetchResumes = useCallback(async () => {
     if (!user?.studentID) return;
@@ -195,6 +197,26 @@ export default function JobDetailPage({
     setComments([newCommentObj, ...comments]);
     setNewComment("");
     setUserRating(0);
+  };
+  const handleSavedJob = async () => {
+    console.log("job:", job);
+  console.log("user:", user)
+    if (!user?.studentID || !job?.jobID) {
+      alert("Thiếu thông tin sinh viên hoặc công việc");
+      return;
+    }
+
+    try {
+      const result = await savedJob(Number(user.studentID), Number(job.jobID));
+       if (result) {
+      setIsSaved(true); 
+      console.log("Đã lưu công việc:", result);
+      toast.success("Đã lưu công việc!");
+    }
+    } catch (err) {
+      console.error("Lỗi khi lưu công việc:", err);
+      alert("Không thể lưu công việc!");
+    };
   };
 
   const averageRating =
@@ -334,10 +356,11 @@ export default function JobDetailPage({
                     <Button
                       variant="outline"
                       className=""
-                      onClick={() => alert("Chia sẻ công việc")}
+                      onClick={handleSavedJob}
+                      disabled={isSaved}
                     >
                       <Save />
-                      Lưu công việc
+                      {isSaved ? "Đã lưu" : "Lưu công việc"}
                     </Button>
                   </CardHeader>
                   <CardContent>
