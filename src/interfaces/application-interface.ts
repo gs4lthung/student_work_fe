@@ -10,7 +10,8 @@ export interface ApplicationInterface {
     | "WORKING"
     | "REJECTED"
     | "FINISHED"
-    | "DELETE";
+    | "DELETE"
+    | "INVITED";
   appliedAt?: Date;
   updateAt?: Date;
   studentName?: string;

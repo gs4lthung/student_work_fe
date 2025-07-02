@@ -45,6 +45,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -56,6 +57,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createInterview } from "@/api/interview-api";
+import { ColourfulText } from "@/components/ui/text-colorful";
+import Image from "next/image";
 
 export default function DashboardPost() {
   const [isLoading, setIsLoading] = useState(true);
@@ -145,6 +148,11 @@ export default function DashboardPost() {
         className: "text-red-600",
         text: "Từ chối",
       },
+      INVITED: {
+        variant: "outline" as const,
+        className: "text-purple-600",
+        text: "Đã mời phỏng vấn",
+      },
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || {
@@ -186,13 +194,14 @@ export default function DashboardPost() {
                 <TableHead>Lương</TableHead>
                 <TableHead>Ngày bắt đầu</TableHead>
                 <TableHead>Trạng thái</TableHead>
+                <TableHead>Chi tiết</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {jobPosts.map((job) => (
                 <React.Fragment key={job.jobID}>
                   {/* Main Job Row */}
-                  <TableRow className="hover:bg-gray-50">
+                  <TableRow>
                     <TableCell>
                       <Button
                         variant="ghost"
@@ -218,14 +227,18 @@ export default function DashboardPost() {
                     <TableCell>{job.category}</TableCell>
                     <TableCell className="max-w-xs">
                       <div className="truncate" title={job.description}>
-                        {job.description.slice(0, 50)}...
+                        {job.description.split(".").map((des, index) => (
+                          <div key={index} className="mb-1">
+                            {des.trim().slice(0, 30)}...
+                          </div>
+                        ))}
                       </div>
                     </TableCell>
                     <TableCell className="max-w-xs">
                       <div className="truncate" title={job.requirements}>
                         {job.requirements.split(".").map((req, index) => (
                           <div key={index} className="mb-1">
-                            {req.trim()}
+                            {req.trim().slice(0, 30)}...
                           </div>
                         ))}
                       </div>
@@ -250,13 +263,16 @@ export default function DashboardPost() {
                         </Badge>
                       )}
                     </TableCell>
+                    <TableCell>
+                      <JobDetails job={job} />
+                    </TableCell>
                   </TableRow>
 
                   {/* Expanded Applications Row */}
                   {expandedRows.has(String(job.jobID)) && (
                     <TableRow>
                       <TableCell colSpan={8} className="p-0">
-                        <div className="bg-gray-50 border-t">
+                        <div className="border-t">
                           {loadingApplications.has(String(job.jobID)) ? (
                             <div className="flex items-center justify-center py-8">
                               <div className="flex items-center gap-2">
@@ -277,7 +293,7 @@ export default function DashboardPost() {
                                 </h3>
                               </div>
 
-                              <div className="bg-white rounded-lg border overflow-hidden">
+                              <div className="rounded-lg border overflow-hidden">
                                 <Table>
                                   <TableHeader>
                                     <TableRow>
@@ -294,7 +310,7 @@ export default function DashboardPost() {
                                         <TableRow key={app.stt || index}>
                                           <TableCell className="font-medium">
                                             <div className="flex items-center gap-2">
-                                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                              <div className="w-8 h-8 rounded-full flex items-center justify-center">
                                                 <User className="h-4 w-4 text-blue-600" />
                                               </div>
                                               {app.studentName}
@@ -326,370 +342,37 @@ export default function DashboardPost() {
                                                 </div>
                                               </div>
                                             ) : (
-                                              <span className="text-gray-400">
+                                              <p className="text-gray-400">
                                                 Không có
-                                              </span>
+                                              </p>
                                             )}
                                           </TableCell>
                                           <TableCell>
                                             <div className="flex gap-2">
                                               {app.status === "PENDING" ? (
                                                 <>
-                                                  <Button
-                                                    size={"sm"}
-                                                    onClick={async () => {
-                                                      if (
-                                                        app.stt !== undefined
-                                                      ) {
-                                                        const res =
-                                                          await updateApplicationStatus(
-                                                            Number(app.stt),
-                                                            "APPROVED"
-                                                          );
-                                                        if (res) {
-                                                          toast.success(
-                                                            "Đã duyệt ứng viên thành công"
-                                                          );
-                                                          window.location.reload();
-                                                        }
-                                                      }
-                                                    }}
-                                                  >
-                                                    Duyệt
-                                                  </Button>
-                                                  <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                      <Button
-                                                        variant={"destructive"}
-                                                        size="sm"
-                                                      >
-                                                        Từ chối
-                                                      </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                      <AlertDialogHeader>
-                                                        <AlertDialogTitle>
-                                                          Bạn có chắc chắn muốn
-                                                          từ chối ứng viên này?
-                                                        </AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                          Việc này sẽ không thể
-                                                          hoàn tác. Ứng viên sẽ
-                                                          không được xem xét cho
-                                                          công việc này nữa.
-                                                        </AlertDialogDescription>
-                                                      </AlertDialogHeader>
-                                                      <AlertDialogFooter>
-                                                        <AlertDialogCancel>
-                                                          Hủy
-                                                        </AlertDialogCancel>
-                                                        <AlertDialogAction
-                                                          onClick={async () => {
-                                                            if (
-                                                              app.stt !==
-                                                              undefined
-                                                            ) {
-                                                              await updateApplicationStatus(
-                                                                Number(app.stt),
-                                                                "REJECTED"
-                                                              )
-                                                                .then((res) => {
-                                                                  if (res) {
-                                                                    toast.success(
-                                                                      "Đã từ chối ứng viên thành công"
-                                                                    );
-                                                                    window.location.reload();
-                                                                  }
-                                                                })
-                                                                .catch(
-                                                                  (error) => {
-                                                                    console.error(
-                                                                      "Error rejecting application:",
-                                                                      error
-                                                                    );
-                                                                    toast.error(
-                                                                      "Lỗi khi từ chối ứng viên"
-                                                                    );
-                                                                  }
-                                                                );
-                                                            }
-                                                          }}
-                                                        >
-                                                          Xác nhận
-                                                        </AlertDialogAction>
-                                                      </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                  </AlertDialog>
+                                                  <AcceptApplicationButton
+                                                    app={app}
+                                                  />
+                                                  <RejectApplicationAlertDialog
+                                                    app={app}
+                                                  />
                                                 </>
                                               ) : app.status === "APPROVED" ? (
-                                                <Dialog>
-                                                  <DialogTrigger asChild>
-                                                    <Button size={"sm"}>
-                                                      Mời phỏng vấn
-                                                    </Button>
-                                                  </DialogTrigger>
-                                                  <DialogContent>
-                                                    <DialogHeader>
-                                                      <DialogTitle>
-                                                        Mời phỏng vấn ứng viên
-                                                      </DialogTitle>
-                                                      <DialogDescription>
-                                                        Bạn có thể gửi lời mời
-                                                        phỏng vấn đến ứng viên
-                                                        này qua email hoặc liên
-                                                        hệ trực tiếp.
-                                                      </DialogDescription>
-                                                    </DialogHeader>
-                                                    <Formik
-                                                      initialValues={
-                                                        createInterviewInvitationData
-                                                      }
-                                                      validationSchema={
-                                                        CreateInterviewSchema
-                                                      }
-                                                      onSubmit={async (
-                                                        values,
-                                                        { setSubmitting }
-                                                      ) => {
-                                                        values.scheduledTime =
-                                                          new Date(
-                                                            values.scheduledTime
-                                                          );
-                                                        setSubmitting(false);
-                                                        const res =
-                                                          await createInterview(
-                                                            values
-                                                          );
-                                                        if (res) {
-                                                          toast.success(
-                                                            "Đã gửi lời mời phỏng vấn thành công"
-                                                          );
-                                                          window.location.reload();
-                                                        }
-                                                        setSubmitting(true);
-                                                      }}
-                                                    >
-                                                      {({
-                                                        errors,
-                                                        touched,
-                                                        isSubmitting,
-                                                        handleChange,
-                                                        handleBlur,
-                                                        handleSubmit,
-                                                        values,
-                                                      }) => (
-                                                        <Form
-                                                          onSubmit={
-                                                            handleSubmit
-                                                          }
-                                                          className="flex flex-col gap-4"
-                                                        >
-                                                          <div className="hidden">
-                                                            {
-                                                              (values.applicationID =
-                                                                app.stt || "")
-                                                            }
-                                                          </div>
-                                                          <Label htmlFor="scheduledTime">
-                                                            Ngày phỏng vấn
-                                                          </Label>
-                                                          <Input
-                                                            type="datetime-local"
-                                                            id="scheduledTime"
-                                                            name="scheduledTime"
-                                                            value={
-                                                              values.scheduledTime
-                                                                ? typeof values.scheduledTime ===
-                                                                  "string"
-                                                                  ? values.scheduledTime
-                                                                  : new Date(
-                                                                      values.scheduledTime
-                                                                    )
-                                                                      .toISOString()
-                                                                      .slice(
-                                                                        0,
-                                                                        16
-                                                                      )
-                                                                : ""
-                                                            }
-                                                            onChange={
-                                                              handleChange
-                                                            }
-                                                            onBlur={handleBlur}
-                                                            className={`${
-                                                              errors.scheduledTime &&
-                                                              touched.scheduledTime
-                                                                ? "border-red-500"
-                                                                : ""
-                                                            }`}
-                                                          />
-                                                          {errors.scheduledTime &&
-                                                            touched.scheduledTime && (
-                                                              <div className="text-red-500 text-sm">
-                                                                {typeof errors.scheduledTime ===
-                                                                "string"
-                                                                  ? errors.scheduledTime
-                                                                  : ""}
-                                                              </div>
-                                                            )}
-                                                          <Label htmlFor="duration_minutes">
-                                                            Thời gian phỏng vấn
-                                                            (phút)
-                                                          </Label>
-                                                          <Input
-                                                            type="number"
-                                                            id="duration_minutes"
-                                                            name="duration_minutes"
-                                                            value={
-                                                              values.duration_minutes
-                                                            }
-                                                            step={5}
-                                                            onChange={
-                                                              handleChange
-                                                            }
-                                                            onBlur={handleBlur}
-                                                            className={`${
-                                                              errors.duration_minutes &&
-                                                              touched.duration_minutes
-                                                                ? "border-red-500"
-                                                                : ""
-                                                            }`}
-                                                          />
-                                                          {errors.duration_minutes &&
-                                                            touched.duration_minutes && (
-                                                              <div className="text-red-500 text-sm">
-                                                                {typeof errors.duration_minutes ===
-                                                                "string"
-                                                                  ? errors.duration_minutes
-                                                                  : ""}
-                                                              </div>
-                                                            )}
-                                                          <Label htmlFor="location">
-                                                            Địa điểm phỏng vấn
-                                                          </Label>
-                                                          <Input
-                                                            type="text"
-                                                            id="location"
-                                                            name="location"
-                                                            value={
-                                                              values.location
-                                                            }
-                                                            onChange={
-                                                              handleChange
-                                                            }
-                                                            onBlur={handleBlur}
-                                                            className={`${
-                                                              errors.location &&
-                                                              touched.location
-                                                                ? "border-red-500"
-                                                                : ""
-                                                            }`}
-                                                          />
-                                                          {errors.location &&
-                                                            touched.location && (
-                                                              <div className="text-red-500 text-sm">
-                                                                {typeof errors.location ===
-                                                                "string"
-                                                                  ? errors.location
-                                                                  : ""}
-                                                              </div>
-                                                            )}
-                                                          <Label htmlFor="meetingLink">
-                                                            Link họp trực tuyến
-                                                          </Label>
-                                                          <Input
-                                                            type="text"
-                                                            id="meetingLink"
-                                                            name="meetingLink"
-                                                            value={
-                                                              values.meetingLink
-                                                            }
-                                                            onChange={
-                                                              handleChange
-                                                            }
-                                                            onBlur={handleBlur}
-                                                            className={`${
-                                                              errors.meetingLink &&
-                                                              touched.meetingLink
-                                                                ? "border-red-500"
-                                                                : ""
-                                                            }`}
-                                                          />
-                                                          {errors.meetingLink &&
-                                                            touched.meetingLink && (
-                                                              <div className="text-red-500 text-sm">
-                                                                {typeof errors.meetingLink ===
-                                                                "string"
-                                                                  ? errors.meetingLink
-                                                                  : ""}
-                                                              </div>
-                                                            )}
-                                                          <Label htmlFor="notes">
-                                                            Ghi chú
-                                                          </Label>
-                                                          <Textarea
-                                                            id="note"
-                                                            name="note"
-                                                            value={values.note}
-                                                            onChange={
-                                                              handleChange
-                                                            }
-                                                            onBlur={handleBlur}
-                                                            className={`${
-                                                              errors.note &&
-                                                              touched.note
-                                                                ? "border-red-500"
-                                                                : ""
-                                                            }`}
-                                                          />
-                                                          {errors.note &&
-                                                            touched.note && (
-                                                              <div className="text-red-500 text-sm">
-                                                                {typeof errors.note ===
-                                                                "string"
-                                                                  ? errors.note
-                                                                  : ""}
-                                                              </div>
-                                                            )}
-                                                          <Button
-                                                            type="submit"
-                                                            disabled={
-                                                              isSubmitting ||
-                                                              !values.applicationID
-                                                            }
-                                                            className="mt-4"
-                                                          >
-                                                            {isSubmitting ? (
-                                                              <LoadingSpinner />
-                                                            ) : (
-                                                              "Gửi lời mời phỏng vấn"
-                                                            )}
-                                                          </Button>
-                                                        </Form>
-                                                      )}
-                                                    </Formik>
-                                                  </DialogContent>
-                                                </Dialog>
+                                                <InviteInterviewDialog
+                                                  data={
+                                                    createInterviewInvitationData
+                                                  }
+                                                  app={app}
+                                                />
+                                              ) : app.status === "INVITED" ? (
+                                                <AcceptForWorkingAlertDialog
+                                                  app={app}
+                                                />
                                               ) : (
                                                 <></>
                                               )}
-                                              <Link
-                                                href={`/cv/${app.resumeID}`}
-                                                target="_blank"
-                                              >
-                                                <Button
-                                                  variant="outline"
-                                                  size="sm"
-                                                >
-                                                  Xem CV
-                                                </Button>
-                                              </Link>
-                                              <Button
-                                                variant="outline"
-                                                size="sm"
-                                                >
-                                                Liên hệ
-                                              </Button>
+                                              <ContactInfo app={app} />
                                             </div>
                                           </TableCell>
                                         </TableRow>
@@ -701,7 +384,7 @@ export default function DashboardPost() {
                             </div>
                           ) : (
                             <div className="text-center py-8">
-                              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <User className="h-8 w-8 text-gray-400" />
                               </div>
                               <p className="text-gray-500 text-lg">
@@ -731,3 +414,373 @@ export default function DashboardPost() {
     </div>
   );
 }
+
+const JobDetails = ({ job }: { job: JobInterface }) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size={"sm"}>
+          Xem
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="min-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Chi tiết công việc</DialogTitle>
+          <DialogDescription>
+            Thông tin chi tiết về công việc này.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4">
+          <div>
+            <Label className="font-semibold">Tiêu đề</Label>
+            <ColourfulText text={job.title} />
+          </div>
+          <div>
+            <Label className="font-semibold">Loại công việc</Label>
+            <p className="text-gray-700">{job.category}</p>
+          </div>
+          <div>
+            <Label className="font-semibold">Lương</Label>
+            <p className="text-gray-700">
+              {job.salary.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
+          </div>
+
+          <Image
+            src={job.imageUrl || "/default-job-image.png"}
+            alt="Job Image"
+            width={500}
+            height={300}
+            className="rounded-lg object-cover w-full h-64 mb-4"
+          />
+          <div>
+            <Label className="font-semibold">Mô tả</Label>
+            <ul className="list-disc pl-5">
+              {job.description.split(".").map((des, index) => (
+                <li key={index} className="mb-1">
+                  {des.trim()}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <Label className="font-semibold">Yêu cầu</Label>
+            <ul className="list-disc pl-5">
+              {job.requirements.split(".").map((req, index) => (
+                <li key={index} className="mb-1">
+                  {req.trim()}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <DialogFooter></DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const AcceptApplicationButton = ({ app }: { app: ApplicationInterface }) => {
+  return (
+    <Button
+      size={"sm"}
+      onClick={async () => {
+        if (app.stt !== undefined) {
+          const res = await updateApplicationStatus(
+            Number(app.stt),
+            "APPROVED"
+          );
+          if (res) {
+            toast.success("Đã duyệt ứng viên thành công");
+            window.location.reload();
+          }
+        }
+      }}
+    >
+      Duyệt
+    </Button>
+  );
+};
+
+const RejectApplicationAlertDialog = ({
+  app,
+}: {
+  app: ApplicationInterface;
+}) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant={"destructive"} size="sm">
+          Từ chối
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Bạn có chắc chắn muốn từ chối ứng viên này?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Việc này sẽ không thể hoàn tác. Ứng viên sẽ không được xem xét cho
+            công việc này nữa.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Hủy</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={async () => {
+              if (app.stt !== undefined) {
+                await updateApplicationStatus(Number(app.stt), "REJECTED")
+                  .then((res) => {
+                    if (res) {
+                      toast.success("Đã từ chối ứng viên thành công");
+                      window.location.reload();
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error rejecting application:", error);
+                    toast.error("Lỗi khi từ chối ứng viên");
+                  });
+              }
+            }}
+          >
+            Xác nhận
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const InviteInterviewDialog = ({
+  data,
+  app,
+}: {
+  data: InterviewInterface;
+  app: ApplicationInterface;
+}) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size={"sm"}>Mời phỏng vấn</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Mời phỏng vấn ứng viên</DialogTitle>
+          <DialogDescription>
+            Bạn có thể gửi lời mời phỏng vấn đến ứng viên này qua email hoặc
+            liên hệ trực tiếp.
+          </DialogDescription>
+        </DialogHeader>
+        <Formik
+          initialValues={data}
+          validationSchema={CreateInterviewSchema}
+          onSubmit={async (values, { setSubmitting }) => {
+            values.scheduledTime = new Date(values.scheduledTime);
+            setSubmitting(false);
+            const res = await createInterview(values);
+            if (res) {
+              toast.success("Đã gửi lời mời phỏng vấn thành công");
+              window.location.reload();
+            }
+            setSubmitting(true);
+          }}
+        >
+          {({
+            errors,
+            touched,
+            isSubmitting,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+          }) => (
+            <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="hidden">
+                {(values.applicationID = app.stt || "")}
+              </div>
+              <Label htmlFor="scheduledTime">Ngày phỏng vấn</Label>
+              <Input
+                type="datetime-local"
+                id="scheduledTime"
+                name="scheduledTime"
+                value={
+                  values.scheduledTime
+                    ? typeof values.scheduledTime === "string"
+                      ? values.scheduledTime
+                      : new Date(values.scheduledTime)
+                          .toISOString()
+                          .slice(0, 16)
+                    : ""
+                }
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.scheduledTime && touched.scheduledTime
+                    ? "border-red-500"
+                    : ""
+                }`}
+              />
+              {errors.scheduledTime && touched.scheduledTime && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.scheduledTime === "string"
+                    ? errors.scheduledTime
+                    : ""}
+                </div>
+              )}
+              <Label htmlFor="duration_minutes">
+                Thời gian phỏng vấn (phút)
+              </Label>
+              <Input
+                type="number"
+                id="duration_minutes"
+                name="duration_minutes"
+                value={values.duration_minutes}
+                step={5}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.duration_minutes && touched.duration_minutes
+                    ? "border-red-500"
+                    : ""
+                }`}
+              />
+              {errors.duration_minutes && touched.duration_minutes && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.duration_minutes === "string"
+                    ? errors.duration_minutes
+                    : ""}
+                </div>
+              )}
+              <Label htmlFor="location">Địa điểm phỏng vấn</Label>
+              <Input
+                type="text"
+                id="location"
+                name="location"
+                value={values.location}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.location && touched.location ? "border-red-500" : ""
+                }`}
+              />
+              {errors.location && touched.location && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.location === "string" ? errors.location : ""}
+                </div>
+              )}
+              <Label htmlFor="meetingLink">Link họp trực tuyến</Label>
+              <Input
+                type="text"
+                id="meetingLink"
+                name="meetingLink"
+                value={values.meetingLink}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.meetingLink && touched.meetingLink
+                    ? "border-red-500"
+                    : ""
+                }`}
+              />
+              {errors.meetingLink && touched.meetingLink && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.meetingLink === "string"
+                    ? errors.meetingLink
+                    : ""}
+                </div>
+              )}
+              <Label htmlFor="notes">Ghi chú</Label>
+              <Textarea
+                id="note"
+                name="note"
+                value={values.note}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.note && touched.note ? "border-red-500" : ""
+                }`}
+              />
+              {errors.note && touched.note && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.note === "string" ? errors.note : ""}
+                </div>
+              )}
+              <Button
+                type="submit"
+                disabled={isSubmitting || !values.applicationID}
+                className="mt-4"
+              >
+                {isSubmitting ? <LoadingSpinner /> : "Gửi lời mời phỏng vấn"}
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const AcceptForWorkingAlertDialog = ({
+  app,
+}: {
+  app: ApplicationInterface;
+}) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm">Chấp nhận cho công việc</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Bạn có chắc chắn muốn chấp nhận ứng viên cho công việc này ?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Việc này sẽ không thể hoàn tác. Ứng viên sẽ được xem xét cho công
+            việc này.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Đóng</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={async () => {
+              console.log("Accepting application:", app);
+              if (app.stt !== undefined) {
+                const res = await updateApplicationStatus(
+                  Number(app.stt),
+                  "WORKING"
+                );
+                if (res) {
+                  toast.success(
+                    "Đã chấp nhận ứng viên cho công việc thành công"
+                  );
+                  window.location.reload();
+                }
+              }
+            }}
+          >
+            Xác nhận
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const ContactInfo = ({ app }: { app: { resumeID: string } }) => {
+  return (
+    <>
+      <Link href={`/cv/${app.resumeID}`} target="_blank">
+        <Button variant="outline" size="sm">
+          Xem CV
+        </Button>
+      </Link>
+      <Button variant="outline" size="sm">
+        Liên hệ
+      </Button>
+    </>
+  );
+};

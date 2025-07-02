@@ -35,9 +35,14 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "./skeleton";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetTrigger } from "./sheet";
-import { getUnreadNotifications } from "@/api/notification-api";
+import {
+  getUnreadNotifications,
+  markAllNotificationsAsRead,
+} from "@/api/notification-api";
 import { useNotificationStore } from "@/stores/notification-store";
 import CheckNotification from "../check/check-notifications";
+import CheckRoles from "../check/check-roles";
+import CheckWallet from "../check/check-wallet";
 
 const items = [
   {
@@ -159,6 +164,10 @@ export default function Header() {
 
     async function fetchUnreadNotifications() {
       try {
+        if(isDashboard||!user) {
+          setIsLoading(false);
+          return;
+        }
         const res = await getUnreadNotifications();
         setUnreadNotiCount(res.unreadCount);
       } catch (error) {
@@ -182,6 +191,8 @@ export default function Header() {
   return (
     <>
       <CheckNotification />
+      <CheckRoles />
+      <CheckWallet />
       {/* Promotional Banner */}
       <div className="h-auto min-h-[40px] w-full bg-gradient-to-r from-yellow-100 to-yellow-300 dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-600">
         <div className="flex h-full items-center justify-center gap-4 px-4 py-2">
@@ -311,6 +322,7 @@ export default function Header() {
                             <Link
                               href={item.message}
                               className="text-sm font-medium truncate"
+                              prefetch={false}
                             >
                               {item.title}
                             </Link>
@@ -326,7 +338,22 @@ export default function Header() {
                       <Button variant="outline" size="sm" className="w-full">
                         Xem tất cả thông báo
                       </Button>
-                      <Button size="sm" className="w-full">
+                      <Button
+                        size="sm"
+                        className="w-full"
+                        onClick={async () => {
+                          if (unreadNotiCount === 0) {
+                            toast.info("Không có thông báo chưa đọc");
+                            return;
+                          }          
+                          const res = await markAllNotificationsAsRead();
+                          if (res)
+                            toast.success(
+                              "Đã đánh dấu tất cả thông báo là đã đọc"
+                            );
+                            window.location.reload();
+                        }}
+                      >
                         Đánh dấu tất cả đã đọc
                       </Button>
                     </div>
@@ -378,6 +405,7 @@ export default function Header() {
                             toast.success("Đăng xuất thành công!");
                           }
                         }}
+                        prefetch={false}
                       >
                         <DropdownMenuItem className="p-2">
                           <span className="flex-1">{item.title}</span>
@@ -436,7 +464,7 @@ export default function Header() {
                           )}
                         </div>
 
-                        {/* Mobile Notifications */}
+                        {/* Mobile Notificatsions */}
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">Thông báo</h4>
                           {notificationItems.map((item) => (
@@ -445,6 +473,7 @@ export default function Header() {
                               href={item.url}
                               className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
                               onClick={() => setIsMobileMenuOpen(false)}
+                              prefetch={false}
                             >
                               <div className="flex items-center justify-center rounded-full bg-green-100 p-2 text-green-500 dark:bg-green-900 dark:text-green-400">
                                 {item.icon}

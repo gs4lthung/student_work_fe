@@ -15,10 +15,24 @@ export const ApplicationValidationSchema: Yup.ObjectSchema<ApplicationInterface>
       .required("Thư xin việc không được để trống")
       .max(1000, "Thư xin việc không được quá 1000 ký tự"),
     status: Yup.mixed<
-      "PENDING" | "APPROVED" | "WORKING" | "REJECTED" | "FINISHED" | "DELETE"
+      | "PENDING"
+      | "APPROVED"
+      | "WORKING"
+      | "REJECTED"
+      | "FINISHED"
+      | "DELETE"
+      | "INVITED"
     >()
       .oneOf(
-        ["PENDING", "APPROVED", "REJECTED", "WORKING", "FINISHED", "DELETE"],
+        [
+          "PENDING",
+          "APPROVED",
+          "REJECTED",
+          "WORKING",
+          "FINISHED",
+          "DELETE",
+          "INVITED",
+        ],
         "Trạng thái không hợp lệ"
       )
       .required("Trạng thái không được để trống"),
