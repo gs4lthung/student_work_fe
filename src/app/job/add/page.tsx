@@ -35,10 +35,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SubscriptionInterface } from "@/interfaces/subscription-interface";
+import { createPayment } from "@/api/payment-api";
 
 export default function JobAddPage() {
   const { user } = useUserStore();
   const { subscriptions } = useSubscriptionStore();
+  const [selectedSubscription, setSelectedSubscription] =
+    useState<SubscriptionInterface | null>(null);
 
   const { data, setData } = useDraftJobPostStore();
 
@@ -119,9 +123,21 @@ export default function JobAddPage() {
               user.walletBalance < selectedSubscription.price) ||
             !user?.walletBalance
           ) {
-            toast.error(
-              "Số dư ví của bạn không đủ để đăng bài tuyển dụng này."
+            toast.warning(
+              "Số dư ví của bạn không đủ để đăng bài tuyển dụng này. Đang chuyển hướng đến trang nạp tiền..."
             );
+            console.log(user?.walletID, selectedSubscription?.price);
+            const res = await createPayment({
+              amount: selectedSubscription?.price || 0,
+              description: `Nạp tiền để đăng bài tuyển dụng "${values.title}"`,
+              buyerName: user?.firstName + " " + user?.lastName || "Người dùng",
+              subscriptionName: selectedSubscription?.subscriptionName || "",
+              transactionType: "PAYMENT_JOB_POST",
+              walletID: user?.walletID || 0,
+            });
+            setTimeout(() => {
+              window.location.href = res.data;
+            }, 2000);
             setSubmitting(false);
             return;
           }
@@ -236,7 +252,17 @@ export default function JobAddPage() {
                         id="subscriptionID"
                         name="subscriptionID"
                         value={values.subscriptionID}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFieldValue(
+                            "subscriptionID",
+                            value ? Number(value) : 0
+                          );
+                          const selectedSub = subscriptions?.find(
+                            (sub) => String(sub.subscriptionID) === value
+                          );
+                          setSelectedSubscription(selectedSub || null);
+                        }}
                         onBlur={handleBlur}
                         className={`${
                           errors.subscriptionID && touched.subscriptionID

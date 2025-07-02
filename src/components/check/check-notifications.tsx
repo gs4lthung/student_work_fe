@@ -19,6 +19,9 @@ export default function CheckNotification() {
       .split("; ")
       .find((row) => row.startsWith("accessToken="))
       ?.split("=")[1];
+    if (!accessToken) {
+      return;
+    }
     console.log(process.env.NEXT_PUBLIC_API_URL);
     const connect = new HubConnectionBuilder()
       .withUrl(

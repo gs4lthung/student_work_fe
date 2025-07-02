@@ -10,11 +10,9 @@ export default function CheckWallet() {
   useEffect(() => {
     async function fetchWallet() {
       if (!user || isChecked || user.role === "Student") return;
-      if (user.walletID !== undefined) {
-        setIsChecked(true);
-        return;
-      }
+      
       try {
+        console.log("check wallet")
         const wallet = await getWalletByUserId(user.userId!);
         if (wallet) {
           useUserStore.getState().setUser({
