@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import type { JobInterface } from "@/interfaces/job-interface";
 import type { ApplicationInterface } from "@/interfaces/application-interface";
-import { getJobByEmployerId } from "@/api/job-api";
+import { getJobByEmployerId, updateJob } from "@/api/job-api";
 import {
   getApplicationsByJob,
   updateApplicationStatus,
@@ -59,6 +59,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { createInterview } from "@/api/interview-api";
 import { ColourfulText } from "@/components/ui/text-colorful";
 import Image from "next/image";
+import { JobValidationSchema } from "@/validations/job-validation";
+import { AxiosError } from "axios";
 
 export default function DashboardPost() {
   const [isLoading, setIsLoading] = useState(true);
@@ -430,7 +432,191 @@ const JobDetails = ({ job }: { job: JobInterface }) => {
             Thông tin chi tiết về công việc này.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
+        <Formik
+          initialValues={job}
+          onSubmit={async (values, { setSubmitting }) => {
+            setSubmitting(true);
+            try {
+              const res = await updateJob(values);
+              if (res) {
+                toast.success("Cập nhật công việc thành công");
+                window.location.reload();
+              } else {
+                toast.error("Cập nhật công việc thất bại");
+              }
+            } catch (error) {
+              console.error("Error updating job:", error);
+              if (error instanceof AxiosError)
+                toast.error(
+                  error.response?.data?.message || "Lỗi cập nhật công việc"
+                );
+              else toast.error("Lỗi không xác định khi cập nhật công việc");
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+          enableReinitialize
+          validationSchema={JobValidationSchema}
+        >
+          {({
+            errors,
+            touched,
+            isSubmitting,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+          }) => (
+            <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="hidden">
+                {(values.jobID = job.jobID || "")}
+                {(values.employerID = job.employerID || "")}
+                {(values.subscriptionID = job.subscriptionID || 0)}
+              </div>
+              <Label htmlFor="title">Tiêu đề</Label>
+              <Input
+                type="text"
+                id="title"
+                name="title"
+                value={values.title}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.title && touched.title ? "border-red-500" : ""
+                }`}
+              />
+              {errors.title && touched.title && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.title === "string" ? errors.title : ""}
+                </div>
+              )}
+              <Label htmlFor="category">Loại công việc</Label>
+              <Input
+                type="text"
+                id="category"
+                name="category"
+                value={values.category}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.category && touched.category ? "border-red-500" : ""
+                }`}
+              />
+              {errors.category && touched.category && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.category === "string" ? errors.category : ""}
+                </div>
+              )}
+              <Label htmlFor="description">Mô tả công việc</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.description && touched.description
+                    ? "border-red-500"
+                    : ""
+                }`}
+              />
+              {errors.description && touched.description && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.description === "string"
+                    ? errors.description
+                    : ""}
+                </div>
+              )}
+              <Label htmlFor="requirements">Yêu cầu công việc</Label>
+              <Textarea
+                id="requirements"
+                name="requirements"
+                value={values.requirements}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`$
+                  errors.requirements && touched.requirements
+                    ? "border-red-500"
+                    : ""
+                }`}
+              />
+
+              {errors.requirements && touched.requirements && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.requirements === "string"
+                    ? errors.requirements
+                    : ""}
+                </div>
+              )}
+              <Label htmlFor="location">Địa điểm làm việc</Label>
+              <Input
+                type="text"
+                id="location"
+                name="location"
+                value={values.location}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.location && touched.location ? "border-red-500" : ""
+                }`}
+              />
+              {errors.location && touched.location && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.location === "string" ? errors.location : ""}
+                </div>
+              )}
+              <Label htmlFor="salary">Mức lương (VND)</Label>
+              <Input
+                type="number"
+                id="salary"
+                name="salary"
+                value={values.salary}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.salary && touched.salary ? "border-red-500" : ""
+                }`}
+              />
+              {errors.salary && touched.salary && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.salary === "string" ? errors.salary : ""}
+                </div>
+              )}
+              <Label htmlFor="workingHours">Giờ làm việc</Label>
+              <Input
+                type="text"
+                id="workingHours"
+                name="workingHours"
+                value={values.workingHours}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`${
+                  errors.workingHours && touched.workingHours
+                    ? "border-red-500"
+                    : ""
+                }`}
+              />
+              {errors.workingHours && touched.workingHours && (
+                <div className="text-red-500 text-sm">
+                  {typeof errors.workingHours === "string"
+                    ? errors.workingHours
+                    : ""}
+                </div>
+              )}
+              <Image
+                src={values.imageUrl || "/default-job-image.png"}
+                alt="Job Image"
+                width={500}
+                height={300}
+                className="rounded-lg object-cover w-full h-64 mb-4"
+              />
+              <Button type="submit" disabled={isSubmitting} className="mt-4">
+                {isSubmitting ? <LoadingSpinner /> : "Cập nhật công việc"}
+              </Button>
+            </Form>
+          )}
+        </Formik>
+        {/* <div className="flex flex-col gap-4">
           <div>
             <Label className="font-semibold">Tiêu đề</Label>
             <ColourfulText text={job.title} />
@@ -476,7 +662,7 @@ const JobDetails = ({ job }: { job: JobInterface }) => {
               ))}
             </ul>
           </div>
-        </div>
+        </div> */}
         <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>

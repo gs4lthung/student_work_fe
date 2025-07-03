@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { useBeforeUnload } from "@/hooks/use-before-unload";
 import { useDraftJobPostStore } from "@/stores/job-store";
 import { PersistStoreBridge } from "@/bridges/bridge-persist-store";
 import Link from "next/link";
@@ -28,21 +27,12 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useUserStore } from "@/stores/user-store";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { SubscriptionInterface } from "@/interfaces/subscription-interface";
 import { createPayment } from "@/api/payment-api";
+import UseBeforeUnloadBridge from "@/bridges/bridge-use-before-unload";
 
 export default function JobAddPage() {
   const { user } = useUserStore();
   const { subscriptions } = useSubscriptionStore();
-  const [selectedSubscription, setSelectedSubscription] =
-    useState<SubscriptionInterface | null>(null);
 
   const { data, setData } = useDraftJobPostStore();
 
@@ -93,16 +83,10 @@ export default function JobAddPage() {
     });
   }, [data]);
 
-  useBeforeUnload((event) => {
-    if (
-      Object.values(initialValues).some(
-        (value) => value !== "" && value !== 0 && value !== new Date()
-      )
-    ) {
-      event.preventDefault();
-      return "Bạn có chắc chắn muốn rời khỏi trang này? Thông tin sẽ không được lưu.";
-    }
-  }, true);
+  // useBeforeUnload((event) => {
+  //   event.preventDefault();
+  //   return "Bạn có chắc chắn muốn rời khỏi trang này? Thông tin sẽ không được lưu.";
+  // }, true);
 
   return (
     <Formik
@@ -176,6 +160,8 @@ export default function JobAddPage() {
               saveDraft={setData}
               avoidRefs={[submitBtnRef as React.RefObject<HTMLButtonElement>]}
             />
+            <UseBeforeUnloadBridge data={values} setData={setData} />
+
             <div className="flex justify-center  min-h-screen bg-gray-100 dark:bg-gray-950 p-4">
               <Card className="w-full max-w-2xl">
                 <CardHeader>
@@ -258,10 +244,6 @@ export default function JobAddPage() {
                             "subscriptionID",
                             value ? Number(value) : 0
                           );
-                          const selectedSub = subscriptions?.find(
-                            (sub) => String(sub.subscriptionID) === value
-                          );
-                          setSelectedSubscription(selectedSub || null);
                         }}
                         onBlur={handleBlur}
                         className={`${
@@ -375,41 +357,34 @@ export default function JobAddPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="workingHours">Giờ làm việc</Label>
-                        <Select
+                        <select
+                          id="workingHours"
+                          name="workingHours"
                           value={values.workingHours}
-                          onValueChange={(value) =>
-                            setFieldValue("workingHours", value)
-                          }
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`${
+                            errors.workingHours && touched.workingHours
+                              ? "border-red-500"
+                              : ""
+                          } block w-full p-2 border rounded-md`}
                         >
-                          <SelectTrigger
-                            className={`${
-                              errors.workingHours && touched.workingHours
-                                ? "border-red-500"
-                                : ""
-                            }`}
-                            aria-label="Chọn giờ làm việc"
-                          >
-                            <SelectValue placeholder="Chọn giờ làm việc" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="8:00 - 17:00">
-                              8:00 - 17:00
-                            </SelectItem>
-                            <SelectItem value="9:00 - 18:00">
-                              9:00 - 18:00
-                            </SelectItem>
-                            <SelectItem value="10:00 - 19:00">
-                              10:00 - 19:00
-                            </SelectItem>
-                            <SelectItem value="12:00 - 21:00">
-                              12:00 - 21:00
-                            </SelectItem>
-                            <SelectItem value="Ca đêm">Ca đêm</SelectItem>
-                            <SelectItem value="Ca xoay">Ca xoay</SelectItem>
-                            <SelectItem value="Linh hoạt">Linh hoạt</SelectItem>
-                            <SelectItem value="Khác">Khác</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          <option value="">Chọn giờ làm việc</option>
+                          {jobConst.workingHours.map((wh) => (
+                            <option key={wh.id} value={wh.name}>
+                              {wh.name}
+                            </option>
+                          ))}
+                        </select>
+                        {/* {values.workingHours && values.workingHours !== "" && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            {
+                              jobConst.workingHours.find(
+                                (wh) => wh.name === values.workingHours
+                              )?.description
+                            }
+                          </p>
+                        )} */}
                         {errors.workingHours && touched.workingHours && (
                           <p className="text-red-500 text-sm mt-1">
                             {errors.workingHours}
