@@ -57,7 +57,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createInterview } from "@/api/interview-api";
-import { ColourfulText } from "@/components/ui/text-colorful";
 import Image from "next/image";
 import { JobValidationSchema } from "@/validations/job-validation";
 import { AxiosError } from "axios";
