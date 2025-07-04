@@ -161,7 +161,7 @@ const HeroSection = () => {
     <section className="flex flex-col lg:flex-row justify-between items-center gap-8 w-full">
       <div className="flex flex-col items-start gap-4 w-full lg:w-auto">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter lg:text-4xl xl:text-5xl/none">
-          Nền tảng tìm kiếm công việc hàng đầu
+          Nền tảng tìm kiếm công việc cho sinh viên
         </h1>
         <p className="text-gray-500 w-full lg:w-1/2">
           Chúng tôi giúp bạn tìm kiếm các công việc part-time linh hoạt nhất,
