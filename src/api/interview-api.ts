@@ -62,3 +62,17 @@ export const createInterview = async (data: InterviewInterface) => {
 
   return response.data;
 };
+
+export const doneInterview = async (interviewID: number) => {
+  const url = `/api/Interview/${interviewID}/status-before`;
+  const response = await api.put(
+    url,
+    {
+      newStatus: 1,
+    },
+    {
+      requiresAuth: true,
+    }
+  );
+  return response.data;
+};
