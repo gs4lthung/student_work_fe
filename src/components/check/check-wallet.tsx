@@ -7,6 +7,18 @@ import React, { useEffect } from "react";
 export default function CheckWallet() {
   const { user } = useUserStore();
   const [isChecked, setIsChecked] = React.useState(false);
+  const [hasHydrated, setHasHydrated] = React.useState(false);
+
+  useEffect(() => {
+    if (useUserStore.persist.hasHydrated()) {
+      setHasHydrated(true);
+    } else {
+      const unsub = useUserStore.persist.onHydrate?.(() => {
+        setHasHydrated(true);
+      });
+      return unsub;
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchWallet() {
@@ -34,6 +46,6 @@ export default function CheckWallet() {
       }
     }
     fetchWallet();
-  }, [user, isChecked]);
+  }, [user, isChecked, hasHydrated]);
   return null;
 }
