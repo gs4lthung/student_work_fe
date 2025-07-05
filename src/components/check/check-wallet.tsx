@@ -2,14 +2,21 @@
 
 import { getWalletByUserId } from "@/api/wallet-api";
 import { useUserStore } from "@/stores/user-store";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 export default function CheckWallet() {
   const { user } = useUserStore();
+  const [isChecked, setIsChecked] = React.useState(false);
 
   useEffect(() => {
     async function fetchWallet() {
-      if (!window || !user || user.role === "Student") return;
+      if (
+        typeof window === "undefined" ||
+        !user ||
+        isChecked ||
+        user.role === "Student"
+      )
+        return;
 
       try {
         console.log("check wallet");
@@ -20,12 +27,13 @@ export default function CheckWallet() {
             walletID: wallet.walletID,
             walletBalance: wallet.balance,
           });
+          setIsChecked(true);
         }
       } catch (error) {
         console.error("Failed to fetch wallet:", error);
       }
     }
     fetchWallet();
-  }, [user]);
+  }, [user, isChecked]);
   return null;
 }
