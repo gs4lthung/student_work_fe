@@ -11,6 +11,18 @@ import { toast } from "sonner";
 
 export default function CheckRoles() {
   const { user } = useUserStore();
+  const [hasHydrated, setHasHydrated] = React.useState(false);
+
+  useEffect(() => {
+    if (useUserStore.persist.hasHydrated()) {
+      setHasHydrated(true);
+    } else {
+      const unsub = useUserStore.persist.onHydrate?.(() => {
+        setHasHydrated(true);
+      });
+      return unsub;
+    }
+  }, []);
 
   useEffect(() => {
     const isChecked = window.localStorage.getItem("isCheckedRoles") === "true";
@@ -85,6 +97,6 @@ export default function CheckRoles() {
       }
     }
     fetchStudentInfo();
-  }, [user]);
+  }, [user, hasHydrated]);
   return <></>;
 }
