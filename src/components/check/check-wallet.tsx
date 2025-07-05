@@ -16,12 +16,13 @@ export default function CheckWallet() {
         console.log("check wallet");
         const wallet = await getWalletByUserId(user.userId!);
         if (wallet) {
+          console.log("wallet", wallet);
           useUserStore.getState().setUser({
             ...user,
             walletID: wallet.walletID,
             walletBalance: wallet.balance,
           });
-          setIsChecked(true);
+          setIsChecked(true); 
         }
       } catch (error) {
         console.error("Failed to fetch wallet:", error);
