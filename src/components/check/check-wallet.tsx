@@ -9,27 +9,26 @@ export default function CheckWallet() {
   const [isChecked, setIsChecked] = React.useState(false);
 
   useEffect(() => {
-    if (!user?.userId || isChecked || user.role === "Student") return;
+    async function fetchWallet() {
+      if (!user || isChecked || user.role === "Student") return;
 
-    const fetchWallet = async () => {
       try {
+        console.log("check wallet");
         const wallet = await getWalletByUserId(user.userId!);
         if (wallet) {
+          console.log("wallet", wallet);
           useUserStore.getState().setUser({
             ...user,
             walletID: wallet.walletID,
             walletBalance: wallet.balance,
           });
+          setIsChecked(true);
         }
       } catch (error) {
         console.error("Failed to fetch wallet:", error);
-      } finally {
-        setIsChecked(true); // make sure this is always set
       }
-    };
-
+    }
     fetchWallet();
-  }, [user?.userId, isChecked]);
-
+  }, [user, isChecked]);
   return null;
 }
