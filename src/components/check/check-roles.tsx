@@ -25,6 +25,9 @@ export default function CheckRoles() {
   }, []);
 
   useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
     const isChecked = window.localStorage.getItem("isCheckedRoles") === "true";
     console.log("isCheckedRoles:", isChecked);
     if (isChecked) {

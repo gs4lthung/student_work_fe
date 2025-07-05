@@ -26,7 +26,8 @@ export default function CheckWallet() {
         typeof window === "undefined" ||
         !user ||
         isChecked ||
-        user.role === "Student"
+        user.role === "Student" ||
+        !hasHydrated
       )
         return;
 
