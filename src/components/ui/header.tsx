@@ -192,7 +192,7 @@ export default function Header() {
     <>
       <CheckNotification />
       <CheckRoles />
-      <CheckWallet />;{/* Promotional Banner */}
+      <CheckWallet />{/* Promotional Banner */}
       <div className="h-auto min-h-[40px] w-full bg-gradient-to-r from-yellow-100 to-yellow-300 dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-600">
         <div className="flex h-full items-center justify-center gap-4 px-4 py-2">
           <p className="text-xs sm:text-sm font-extrabold text-center leading-relaxed">
