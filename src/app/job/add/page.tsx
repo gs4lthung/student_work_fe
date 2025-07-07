@@ -29,6 +29,7 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useUserStore } from "@/stores/user-store";
 import { createPayment } from "@/api/payment-api";
 import UseBeforeUnloadBridge from "@/bridges/bridge-use-before-unload";
+import CheckWallet from "@/components/check/check-wallet";
 
 export default function JobAddPage() {
   const { user } = useUserStore();
@@ -155,6 +156,7 @@ export default function JobAddPage() {
       }) => {
         return (
           <>
+            <CheckWallet />
             <PersistStoreBridge
               values={values}
               saveDraft={setData}

@@ -56,7 +56,7 @@ const bannerData = [
 ];
 
 export function Banner({
-  width = 500,
+  width = 600,
   height = 200,
 }: React.HTMLAttributes<HTMLDivElement> & { width?: number; height?: number }) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);

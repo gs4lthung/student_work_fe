@@ -1,6 +1,5 @@
 // import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { Badge } from "@/components/ui/badge";
-import { Banner } from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
 // import {
 //   Card,
@@ -9,7 +8,7 @@ import { Button } from "@/components/ui/button";
 //   CardHeader,
 //   CardTitle,
 // } from "@/components/ui/card";
-import { InfiniteMovingCards } from "@/components/ui/cards-infinite-moving";
+// import { InfiniteMovingCards } from "@/components/ui/cards-infinite-moving";
 
 import HowToUseLoader from "@/components/ui/how-to-use-loader";
 import { Input } from "@/components/ui/input";
@@ -119,29 +118,29 @@ import Link from "next/link";
 //   );
 // };
 
-const feedbacks = [
-  {
-    quote:
-      "Tôi đã tìm được công việc mơ ước của mình nhờ vào trang web này. Cảm ơn các bạn rất nhiều!",
-    name: "Nguyễn Văn A",
-    title: "Senior Software Engineer",
-  },
-  {
-    quote:
-      "Trang web này đã giúp tôi tìm được công việc phù hợp với mình. Tôi rất hài lòng với dịch vụ của các bạn.",
-    name: "Nguyễn Văn B",
-    title: "Junior Software Engineer",
-  },
-  {
-    quote: "Cảm ơn các bạn đã giúp tôi tìm được công việc mơ ước của mình.",
-    name: "Nguyễn Văn C",
-    title: "Product Manager",
-  },
-];
+// const feedbacks = [
+//   {
+//     quote:
+//       "Tôi đã tìm được công việc mơ ước của mình nhờ vào trang web này. Cảm ơn các bạn rất nhiều!",
+//     name: "Nguyễn Văn A",
+//     title: "Senior Software Engineer",
+//   },
+//   {
+//     quote:
+//       "Trang web này đã giúp tôi tìm được công việc phù hợp với mình. Tôi rất hài lòng với dịch vụ của các bạn.",
+//     name: "Nguyễn Văn B",
+//     title: "Junior Software Engineer",
+//   },
+//   {
+//     quote: "Cảm ơn các bạn đã giúp tôi tìm được công việc mơ ước của mình.",
+//     name: "Nguyễn Văn C",
+//     title: "Product Manager",
+//   },
+// ];
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-items-center min-h-screen p-4 sm:p-8 pb-20 gap-12 sm:gap-16 lg:gap-24 lg:p-20">
+    <div className="flex flex-col items-center justify-items-center min-h-screen w-full p-4 sm:p-8 pb-20 gap-12 sm:gap-16 lg:gap-24 lg:p-20">
       {/* <CheckRoles />
       <CheckWallet /> */}
       {/* <SpecialJobCard specialJob={specialJob} /> */}
@@ -150,7 +149,7 @@ export default function Home() {
       <ForCustomerSection />
       <StatisticsSection />
       <CompanySection />
-      <ReviewSection />
+      {/* <ReviewSection /> */}
       <RegisterSection />
     </div>
   );
@@ -189,9 +188,16 @@ const HeroSection = () => {
           ))}
         </div>
       </div>
-      <div className="w-full lg:w-auto">
+      {/* <div className="max-w-[400px] w-full h-[300px] sm:h-[400px] lg:h-[500px] relative">
         <Banner />
-      </div>
+      </div> */}
+      <Image
+        src={"https://cdn-blog.novoresume.com/articles/job-hunt/bg.png"}
+        alt="Hero"
+        width={600}
+        height={300}
+        className="object-cover rounded-2xl shadow-lg"
+      />
     </section>
   );
 };
@@ -410,21 +416,21 @@ const CompanySection = () => {
   );
 };
 
-const ReviewSection = () => {
-  return (
-    <section className="flex flex-col items-center justify-center gap-4">
-      <TypographyH2>
-        Chúng tôi đã giúp hàng ngàn người tìm được việc làm mơ ước
-      </TypographyH2>
-      <InfiniteMovingCards
-        className="-z-10"
-        items={feedbacks}
-        direction="right"
-        speed="slow"
-      />
-    </section>
-  );
-};
+// const ReviewSection = () => {
+//   return (
+//     <section className="flex flex-col items-center justify-center gap-4">
+//       <TypographyH2>
+//         Chúng tôi đã giúp hàng ngàn người tìm được việc làm mơ ước
+//       </TypographyH2>
+//       <InfiniteMovingCards
+//         className="-z-10"
+//         items={feedbacks}
+//         direction="right"
+//         speed="slow"
+//       />
+//     </section>
+//   );
+// };
 
 const ForCustomerSection = () => {
   return (
