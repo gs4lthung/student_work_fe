@@ -133,7 +133,7 @@ export default function JobAddPage() {
             // clearSubscriptions();
             clearForm();
             setTimeout(() => {
-              window.location.href = "/job";
+              window.location.href = `/job/${res.data.jobID}`;
             }, 2000);
           }
         } catch (error) {

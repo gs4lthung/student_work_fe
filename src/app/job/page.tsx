@@ -26,6 +26,8 @@ import {
   X,
   Loader2,
   CheckCircle2,
+  User,
+  Calendar,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -511,7 +513,7 @@ export default function JobPage() {
                           </span>
                         </div>
                         <Button asChild variant="outline" size="sm">
-                          <Link href={`/job/${job.jobID}`}>Xem chi tiết</Link>
+                          <Link href={`/job/${job.jobID}`}>Chi tiết</Link>
                         </Button>
                       </CardFooter>
                     </Card>
@@ -574,8 +576,16 @@ export default function JobPage() {
                             : "N/A"}
                         </span>
                       </div>
-                      <Button asChild variant="outline" size="sm">
-                        <Link href={`/job/${job.jobID}`}>Xem chi tiết</Link>
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>{job.workingHours || "N/A"}</span>
+                      </div>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="bg-green-400 hover:bg-green-400 shadow-lg shadow-green-200 dark:bg-green-600 dark:hover:bg-green-700 dark:shadow-green-300"
+                      >
+                        <Link href={`/job/${job.jobID}`}>Chi tiết</Link>
                       </Button>
                     </CardFooter>
                   </Card>
