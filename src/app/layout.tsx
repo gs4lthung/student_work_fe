@@ -22,8 +22,10 @@ const beVietNam = Be_Vietnam_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "Student Work - Nền tảng tuyển dụng dành cho sinh viên Việt Nam",
-  description: "Student Work - Nền tảng tuyển dụng dành cho sinh viên Việt Nam",
+  title:
+    "Spart Work: Nền tảng kết nối sinh viên với các công việc bán thời gian tại Việt Nam",
+  description:
+    "Spart Work - Nền tảng kết nối sinh viên với các công việc bán thời gian tại Việt Nam.",
 };
 
 export default function RootLayout({
