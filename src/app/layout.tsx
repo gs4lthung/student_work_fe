@@ -8,6 +8,7 @@ import Footer from "@/components/ui/footer";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClientWrapper } from "@/components/provider/query-client-provider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const TopProgressBar = dynamic(
   () => import("@/components/ui/top-progress-bar")
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body
         className={`${beVietNam.className} antialiased font-sans bg-white dark:bg-gray-950 text-gray-950 dark:text-zinc-50`}
       >
+        <SpeedInsights />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
