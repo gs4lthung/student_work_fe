@@ -18,7 +18,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import type { JobInterface } from "@/interfaces/job-interface";
 import { useUserStore } from "@/stores/user-store";
-import { Banknote, Clock, MapPin, Search, X, Loader2 } from "lucide-react";
+import {
+  Banknote,
+  Clock,
+  MapPin,
+  Search,
+  X,
+  Loader2,
+  CheckCircle2,
+  User,
+  Calendar,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -121,7 +131,7 @@ export default function JobPage() {
 
   // Lazy loading skeleton component for job cards
   const JobCardSkeleton = () => (
-    <Card className="mb-4 relative">
+    <Card className="mb-4">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Skeleton className="h-6 w-48" />
@@ -137,7 +147,7 @@ export default function JobPage() {
           <Skeleton className="h-4 w-4/5" />
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center">
+      <CardFooter className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <Skeleton className="h-4 w-20" />
         <Skeleton className="h-4 w-24" />
         <Skeleton className="h-4 w-20" />
@@ -147,39 +157,39 @@ export default function JobPage() {
   );
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <div className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-16 px-4 rounded-xl mb-8">
+    <div className="flex flex-col items-center p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+      <div className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 rounded-xl mb-6 sm:mb-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
             Tìm Công Việc <span className="text-yellow-300">Mơ Ước</span> Của
             Bạn
           </h1>
-
-          <p className="text-lg sm:text-xl mb-12 text-green-50 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl mb-8 sm:mb-12 text-green-50 max-w-2xl mx-auto">
             Khám phá hàng nghìn cơ hội việc làm từ các công ty hàng đầu
           </p>
-
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
                 1000+
               </div>
-              <div className="text-sm sm:text-base text-green-100">
+              <div className="text-xs sm:text-sm lg:text-base text-green-100">
                 Công việc
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
                 500+
               </div>
-              <div className="text-sm sm:text-base text-green-100">Công ty</div>
+              <div className="text-xs sm:text-sm lg:text-base text-green-100">
+                Công ty
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
                 50+
               </div>
-              <div className="text-sm sm:text-base text-green-100">
+              <div className="text-xs sm:text-sm lg:text-base text-green-100">
                 Lĩnh vực
               </div>
             </div>
@@ -187,25 +197,28 @@ export default function JobPage() {
         </div>
       </div>
 
-      <div className="flex w-full mt-4 gap-4">
-        <div className="flex flex-col w-1/4">
+      <div className="flex flex-col lg:flex-row w-full mt-4 gap-4 sm:gap-6 lg:gap-8">
+        {/* Sidebar */}
+        <div className="lg:w-1/4 w-full">
           <Card className="sticky top-4">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
                 Tìm kiếm công việc
                 {isSearching && (
                   <Loader2 className="w-4 h-4 animate-spin text-green-500" />
                 )}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-sm">
                 Lọc công việc theo tiêu chí của bạn
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Job Title Search */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Tên công việc</label>
+                <label className="text-xs sm:text-sm font-medium">
+                  Tên công việc
+                </label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
@@ -213,7 +226,7 @@ export default function JobPage() {
                     placeholder="Nhập tên công việc..."
                     value={searchTitle}
                     onChange={(e) => setSearchTitle(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors ${
+                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-sm ${
                       searchTitle !== debouncedSearchTitle
                         ? "border-green-300 bg-green-50"
                         : "border-gray-300"
@@ -229,11 +242,13 @@ export default function JobPage() {
 
               {/* Category Filter */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Danh mục</label>
+                <label className="text-xs sm:text-sm font-medium">
+                  Danh mục
+                </label>
                 <select
                   value={searchCategory}
                   onChange={(e) => setSearchCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
                 >
                   <option value="">Tất cả danh mục</option>
                   <option value="Full-time">Full-time</option>
@@ -246,7 +261,9 @@ export default function JobPage() {
 
               {/* Location Filter */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Địa điểm</label>
+                <label className="text-xs sm:text-sm font-medium">
+                  Địa điểm
+                </label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
@@ -254,7 +271,7 @@ export default function JobPage() {
                     placeholder="Nhập địa điểm..."
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors ${
+                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-sm ${
                       searchLocation !== debouncedSearchLocation
                         ? "border-green-300 bg-green-50"
                         : "border-gray-300"
@@ -270,7 +287,7 @@ export default function JobPage() {
 
               {/* Salary Range Slider */}
               <div className="space-y-3">
-                <label className="text-sm font-medium flex items-center gap-2">
+                <label className="text-xs sm:text-sm font-medium flex items-center gap-2">
                   Mức lương (VNĐ)
                   {(searchMinSalary !== debouncedMinSalary ||
                     searchMaxSalary !== debouncedMaxSalary) && (
@@ -330,7 +347,7 @@ export default function JobPage() {
 
               {/* Quick Salary Filters */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">
+                <label className="text-xs sm:text-sm font-medium">
                   Mức lương phổ biến
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -393,7 +410,7 @@ export default function JobPage() {
                     setSearchMaxSalary(100000000);
                     setPage(1);
                   }}
-                  className="w-full text-gray-600 hover:text-gray-800"
+                  className="w-full text-gray-600 hover:text-gray-800 text-sm"
                 >
                   <X className="w-4 h-4 mr-2" />
                   Xóa bộ lọc
@@ -427,7 +444,7 @@ export default function JobPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="w-2/4">
+        <div className="lg:w-2/4 w-full">
           {isLoading ? (
             <div className="space-y-4">
               {[...Array(5)].map((_, index) => (
@@ -441,7 +458,7 @@ export default function JobPage() {
                 <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-10 flex items-center justify-center rounded-lg">
                   <div className="flex items-center gap-2 text-green-600 bg-white px-4 py-2 rounded-full shadow-md">
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="font-medium">
+                    <span className="font-medium text-sm sm:text-base">
                       Đang cập nhật kết quả...
                     </span>
                   </div>
@@ -458,16 +475,17 @@ export default function JobPage() {
                           <></>
                         )}
                       </div>
-
                       <CardHeader>
-                        <CardTitle className="flex items-center text-xl gap-2 pr-32">
+                        <CardTitle className="flex items-center text-lg sm:text-xl gap-2 pr-16 sm:pr-32">
                           {job.title}
                           <Badge>{job.category}</Badge>
                         </CardTitle>
-                        <CardDescription>{job.description}</CardDescription>
+                        <CardDescription className="text-sm">
+                          {job.description}
+                        </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <ul className="space-y-2">
+                        <ul className="list-disc pl-5 space-y-2 text-sm">
                           {job.requirements.split(".").map((des, index) => (
                             <li key={index} className="flex items-center">
                               <p>{des.trim()}</p>
@@ -475,18 +493,17 @@ export default function JobPage() {
                           ))}
                         </ul>
                       </CardContent>
-                      <CardFooter className="flex justify-between items-center text-sm">
+                      <CardFooter className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm gap-4">
                         <div className="flex items-center space-x-2">
-                          <MapPin />
+                          <MapPin className="w-4 h-4" />
                           <span>{job.location}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Banknote />
+                          <Banknote className="w-4 h-4" />
                           <span>{job.salary.toLocaleString("vi-VN")}₫</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Clock />
-                          {job.createdAt?.toString()}
+                          <Clock className="w-4 h-4" />
                           <span>
                             {job.createdAt
                               ? new Date(job.createdAt).toLocaleDateString(
@@ -495,19 +512,21 @@ export default function JobPage() {
                               : "N/A"}
                           </span>
                         </div>
-                        <Button asChild variant={"outline"}>
-                          <Link href={`/job/${job.jobID}`}>Xem chi tiết</Link>
+                        <Button asChild variant="outline" size="sm">
+                          <Link href={`/job/${job.jobID}`}>Chi tiết</Link>
                         </Button>
                       </CardFooter>
                     </Card>
                   ))
                 ) : (
-                  <div className="text-center py-8">Không có công việc nào</div>
+                  <div className="text-center py-8 text-sm sm:text-base">
+                    Không có công việc nào
+                  </div>
                 )}
               </div>
             </div>
           ) : (
-            <div>
+            <div className="space-y-4">
               {initialData.length > 0 ? (
                 initialData.map((job) => (
                   <Card key={job.jobID} className="mb-4 relative">
@@ -520,41 +539,35 @@ export default function JobPage() {
                         <></>
                       )}
                     </div>
-
                     <CardHeader>
-                      <CardTitle className="flex items-center text-xl gap-2 pr-32">
+                      <CardTitle className="flex items-center text-lg sm:text-xl gap-2 pr-16 sm:pr-32">
                         {job.title}
                         <Badge>{job.category}</Badge>
                       </CardTitle>
-                      <CardDescription></CardDescription>
+                      <CardDescription className="text-sm">
+                        {job.description}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <ul className="list-disc pl-5">
-                        {job.description.split(".").map((des, index) => (
+                      <ul className="list-disc space-y-2 text-sm">
+                        {job.requirements.split(".").map((des, index) => (
                           <li key={index} className="flex items-center">
-                            <p>{des.trim()}</p>
+                            <p>- {des.trim()}</p>
                           </li>
                         ))}
                       </ul>
-                      {/* <ul className="space-y-2">
-                        {job.requirements.split(".").map((des, index) => (
-                          <li key={index} className="flex items-center">
-                            <p>{des.trim()}</p>
-                          </li>
-                        ))}
-                      </ul> */}
                     </CardContent>
-                    <CardFooter className="flex justify-between items-center text-sm">
+                    <CardFooter className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                       <div className="flex items-center space-x-2">
-                        <MapPin />
-                        <span>{job.location}</span>
+                        <MapPin className="w-4 h-4" />
+                        <span>{job.location.slice(0, 20)}...</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Banknote />
+                        <Banknote className="w-4 h-4" />
                         <span>{job.salary.toLocaleString("vi-VN")}₫</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Clock />
+                        <Clock className="w-4 h-4" />
                         <span>
                           {job.createdAt
                             ? new Date(job.createdAt).toLocaleDateString(
@@ -563,24 +576,37 @@ export default function JobPage() {
                             : "N/A"}
                         </span>
                       </div>
-                      <Button asChild variant={"outline"}>
-                        <Link href={`/job/${job.jobID}`}>Xem chi tiết</Link>
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>{job.workingHours || "N/A"}</span>
+                      </div>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="bg-green-400 hover:bg-green-400 shadow-lg shadow-green-200 dark:bg-green-600 dark:hover:bg-green-700 dark:shadow-green-300"
+                      >
+                        <Link href={`/job/${job.jobID}`}>Chi tiết</Link>
                       </Button>
                     </CardFooter>
                   </Card>
                 ))
               ) : (
-                <div className="text-center py-8">Không có công việc nào</div>
+                <div className="text-center py-8 text-sm sm:text-base">
+                  Không có công việc nào
+                </div>
               )}
             </div>
           )}
         </div>
 
-        <div className="flex flex-col items-center w-1/4 gap-4">
+        {/* Right Panel */}
+        <div className="lg:w-1/4 w-full flex flex-col gap-4 sm:gap-6">
           <Card className="w-full">
             <CardHeader>
-              <CardTitle>Nhận email thông báo công việc</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg sm:text-xl">
+                Nhận email thông báo công việc
+              </CardTitle>
+              <CardDescription className="text-sm">
                 Đăng ký nhận thông báo qua email khi có công việc mới phù hợp
               </CardDescription>
             </CardHeader>
@@ -589,10 +615,10 @@ export default function JobPage() {
                 <input
                   type="email"
                   placeholder="Nhập email của bạn"
-                  className="p-2 border rounded"
+                  className="p-2 border rounded text-sm"
                   required
                 />
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full text-sm">
                   Đăng ký
                 </Button>
               </form>
@@ -606,10 +632,12 @@ export default function JobPage() {
           </Card>
           <Card className="w-full">
             <CardHeader>
-              <CardTitle>Tại sao lại chọn chúng tôi ?</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">
+                Tại sao lại chọn chúng tôi?
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="list-disc pl-5 space-y-2">
+              <ul className="list-disc pl-5 space-y-2 text-sm">
                 <li>Đa dạng công việc từ nhiều lĩnh vực</li>
                 <li>Thông tin chi tiết và minh bạch</li>
                 <li>Hỗ trợ tìm kiếm việc làm nhanh chóng</li>
@@ -619,6 +647,7 @@ export default function JobPage() {
           </Card>
         </div>
       </div>
+
       <PaginationFixed
         currentPage={page}
         totalPages={totalPages}

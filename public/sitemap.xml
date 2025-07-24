@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+
+<url>
+  <loc>https://www.swork.website/</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/job</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/resume-tips</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/interview-prep</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/career-advice</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/login?redirect=%2Fdashboard%2Fprofile</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/help</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/about-us</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/register</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.swork.website/login</loc>
+  <lastmod>2025-07-04T01:57:58+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+
+
+</urlset>

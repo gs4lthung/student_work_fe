@@ -42,7 +42,6 @@ import {
 import { useNotificationStore } from "@/stores/notification-store";
 import CheckNotification from "../check/check-notifications";
 import CheckRoles from "../check/check-roles";
-import CheckWallet from "../check/check-wallet";
 
 const items = [
   {
@@ -164,7 +163,7 @@ export default function Header() {
 
     async function fetchUnreadNotifications() {
       try {
-        if(isDashboard||!user) {
+        if (isDashboard || !user) {
           setIsLoading(false);
           return;
         }
@@ -192,8 +191,7 @@ export default function Header() {
     <>
       <CheckNotification />
       <CheckRoles />
-      <CheckWallet />
-      {/* Promotional Banner */}
+      {/* <CheckWallet /> */}
       <div className="h-auto min-h-[40px] w-full bg-gradient-to-r from-yellow-100 to-yellow-300 dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-600">
         <div className="flex h-full items-center justify-center gap-4 px-4 py-2">
           <p className="text-xs sm:text-sm font-extrabold text-center leading-relaxed">
@@ -202,7 +200,6 @@ export default function Header() {
           </p>
         </div>
       </div>
-
       {/* Main Header */}
       <header className="z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 overflow-x-hidden border-b-2 shadow-2xs flex h-16 sm:h-20 w-full shrink-0 items-center px-4 md:px-6">
         {/* Logo */}
@@ -345,13 +342,13 @@ export default function Header() {
                           if (unreadNotiCount === 0) {
                             toast.info("Không có thông báo chưa đọc");
                             return;
-                          }          
+                          }
                           const res = await markAllNotificationsAsRead();
                           if (res)
                             toast.success(
                               "Đã đánh dấu tất cả thông báo là đã đọc"
                             );
-                            window.location.reload();
+                          window.location.reload();
                         }}
                       >
                         Đánh dấu tất cả đã đọc

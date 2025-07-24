@@ -96,6 +96,10 @@ export default function AppliedJobsPage() {
                       <Badge variant={"outline"} className="text-green-500">
                         Đã chấp nhận
                       </Badge>
+                    ) : application.status === "INVITED" ? (
+                      <Badge variant={"outline"} className="text-blue-500">
+                        Đã mời phỏng vấn
+                      </Badge>
                     ) : (
                       <Badge variant={"outline"} className="text-red-500">
                         Đã từ chối

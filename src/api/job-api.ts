@@ -25,6 +25,53 @@ export const createJob = async (data: JobInterface) => {
   }
 };
 
+export const updateJob = async (data: JobInterface) => {
+  console.log("Updating job with data:", data);
+  const form = new FormData();
+  if (data.imageUrl) {
+    console.log("Appending image URL for update:", data.imageUrl);
+    form.append("image", data.imageUrl);
+  }
+  if (data.title) {
+    form.append("title", data.title);
+  }
+  if (data.description) {
+    form.append("description", data.description);
+  }
+  if (data.category) {
+    form.append("category", data.category);
+  }
+  if (data.location) {
+    form.append("location", data.location);
+  }
+  if (data.salary) {
+    form.append("salary", data.salary.toString());
+  }
+  if (data.workingHours) {
+    form.append("workingHours", data.workingHours.toString());
+  }
+  if (data.startDate) {
+    form.append("startDate", data.startDate.toISOString());
+  }
+  if (data.subscriptionID) {
+    form.append("subscriptionID", data.subscriptionID.toString());
+  }
+  if (data.requirements) {
+    form.append("requirements", data.requirements);
+  }
+  if (data.status) {
+    form.append("status", data.status);
+  }
+  if (data.jobID) {
+    form.append("jobID", data.jobID.toString());
+  }
+  const url = `/api/Jobs/update/${data.jobID}`;
+  const response = await api.post(url, form, { requiresAuth: true });
+  if (response) {
+    return response.data;
+  }
+};
+
 export const getJobs = async (
   pageIndex: number,
   pageSize: number,

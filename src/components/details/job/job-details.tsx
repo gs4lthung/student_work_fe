@@ -58,14 +58,14 @@ import { toast } from "sonner";
 
 // Mock comment interface
 interface JobComment {
-  id: string;
-  userId: string;
-  userName: string;
-  userAvatar: string;
-  jobId: string;
-  text: string;
-  rating: number;
-  createdAt: Date;
+  id: string
+  userId: string
+  userName: string
+  userAvatar: string
+  jobId: string
+  text: string
+  rating: number
+  createdAt: Date
 }
 
 const mockComments: JobComment[] = [
@@ -99,21 +99,19 @@ const mockComments: JobComment[] = [
     rating: 5,
     createdAt: new Date("2023-10-28"),
   },
-];
+]
 
 export default function JobDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string }>
 }) {
-  const resolvedParams = use(params);
-  const { user } = useUserStore();
-  const [job, setJob] = useState<JobInterface | null>(null);
-  const [jobEmployer, setJobEmployer] = useState<EmployerInterface | null>(
-    null
-  );
-  const [isApplied, setIsApplied] = useState(false);
-  const [userResumes, setUserResumes] = useState<ResumeInterface[]>([]);
+  const resolvedParams = use(params)
+  const { user } = useUserStore()
+  const [job, setJob] = useState<JobInterface | null>(null)
+  const [jobEmployer, setJobEmployer] = useState<EmployerInterface | null>(null)
+  const [isApplied, setIsApplied] = useState(false)
+  const [userResumes, setUserResumes] = useState<ResumeInterface[]>([])
   const applicationData: ApplicationInterface = {
     jobID: resolvedParams.slug,
     studentID: user?.studentID || "",
@@ -132,56 +130,55 @@ export default function JobDetailPage({
   const [isSaved, setIsSaved] = useState(false);
 
   const fetchResumes = useCallback(async () => {
-    if (!user?.studentID) return;
-    const res = await searchResumes(user.studentID, 1, 10);
-    setUserResumes(res);
-  }, [user?.studentID]);
+    if (!user?.studentID) return
+    const res = await searchResumes(user.studentID, 1, 10)
+    setUserResumes(res)
+  }, [user?.studentID])
 
   useEffect(() => {
     const fetchJob = async (slug: string) => {
-      setIsLoading(true);
-      const fetchedJob = await getJobById(Number(slug));
-      setJob(fetchedJob);
-      setIsLoading(false);
-    };
+      setIsLoading(true)
+      const fetchedJob = await getJobById(Number(slug))
+      setJob(fetchedJob)
+      setIsLoading(false)
+    }
 
     const checkAppliedJob = async () => {
-      if (!user?.studentID) return;
-      const res = await getApplicationsByStudent(1, 10);
+      if (!user?.studentID) return
+      const res = await getApplicationsByStudent(1, 10)
       if (res) {
-        console.log("Fetched applications:", res.items);
-        console.log(resolvedParams.slug);
+        console.log("Fetched applications:", res.items)
+        console.log(resolvedParams.slug)
         const appliedJob = res.items.find(
-          (app: ApplicationInterface) =>
-            String(app.jobID) === String(resolvedParams.slug)
-        );
+          (app: ApplicationInterface) => String(app.jobID) === String(resolvedParams.slug),
+        )
         if (appliedJob) {
-          setIsApplied(true);
+          setIsApplied(true)
         } else {
-          setIsApplied(false);
+          setIsApplied(false)
         }
       }
-    };
-    checkAppliedJob();
+    }
 
-    fetchJob(resolvedParams.slug);
-    fetchResumes();
-  }, [fetchResumes, resolvedParams.slug, user?.studentID]);
+    checkAppliedJob()
+    fetchJob(resolvedParams.slug)
+    fetchResumes()
+  }, [fetchResumes, resolvedParams.slug, user?.studentID])
 
   useEffect(() => {
     const fetchJobEmployer = async () => {
       if (job?.employerID) {
-        console.log("Fetching employer info for ID:", job.employerID);
-        const res = await getEmployerInfoByID(job.employerID);
-        setJobEmployer(res);
+        console.log("Fetching employer info for ID:", job.employerID)
+        const res = await getEmployerInfoByID(job.employerID)
+        setJobEmployer(res)
       }
-    };
+    }
 
-    fetchJobEmployer();
-  }, [job?.employerID]);
+    fetchJobEmployer()
+  }, [job?.employerID])
 
   const handleCommentSubmit = () => {
-    if (newComment.trim() === "" || userRating === 0) return;
+    if (newComment.trim() === "" || userRating === 0) return
 
     const newCommentObj: JobComment = {
       id: `comment-${Date.now()}`,
@@ -192,7 +189,7 @@ export default function JobDetailPage({
       text: newComment,
       rating: userRating,
       createdAt: new Date(),
-    };
+    }
 
     setComments([newCommentObj, ...comments]);
     setNewComment("");
@@ -220,10 +217,7 @@ export default function JobDetailPage({
   };
 
   const averageRating =
-    comments.length > 0
-      ? comments.reduce((sum, comment) => sum + comment.rating, 0) /
-        comments.length
-      : 0;
+    comments.length > 0 ? comments.reduce((sum, comment) => sum + comment.rating, 0) / comments.length : 0
 
   if (isLoading) {
     return (
@@ -243,7 +237,7 @@ export default function JobDetailPage({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -258,7 +252,6 @@ export default function JobDetailPage({
         }}
       >
         <div className="absolute inset-0 bg-black/60 backdrop-blur-md" />
-
         <div className="absolute inset-0"></div>
         {isApplied && (
           <div className="absolute top-4 right-4 flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg shadow-md font-semibold text-base z-10">
@@ -269,11 +262,7 @@ export default function JobDetailPage({
               strokeWidth={2}
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
             Đã ứng tuyển
           </div>
@@ -285,9 +274,7 @@ export default function JobDetailPage({
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               <ColourfulText text={job?.title || "Công việc"} size="2rem" />
-              {isApplied}
             </h1>
-
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
                 <Building className="h-5 w-5" />
@@ -299,25 +286,20 @@ export default function JobDetailPage({
               </div>
               <div className="flex items-center gap-2">
                 <Banknote className="h-5 w-5" />
-                <span className="font-semibold">
-                  {job?.salary.toLocaleString("vi-VN")}₫
-                </span>
+                <span className="font-semibold">{job?.salary.toLocaleString("vi-VN")}₫</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
                 <span>{job?.workingHours}</span>
               </div>
             </div>
-
             <div className="flex items-center gap-2 mt-4">
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <StarIcon
                     key={star}
                     className={`h-5 w-5 ${
-                      star <= Math.round(averageRating)
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-white/40"
+                      star <= Math.round(averageRating) ? "text-yellow-400 fill-yellow-400" : "text-white/40"
                     }`}
                   />
                 ))}
@@ -656,7 +638,7 @@ export default function JobDetailPage({
             </Tabs>
           </div>
 
-          {/* Enhanced Sidebar */}
+          {/* Sidebar */}
           <div className="space-y-6">
             <Card className="shadow-sm">
               <CardHeader className="bg-zinc-100 dark:bg-slate-900 pt-2">
@@ -667,15 +649,10 @@ export default function JobDetailPage({
                   <div className="flex items-center gap-3 p-3 rounded-lg">
                     <Building />
                     <div>
-                      <h3 className="text-sm font-medium text-gray-600">
-                        Công ty
-                      </h3>
-                      <p className="font-semibold">
-                        {jobEmployer?.companyName}
-                      </p>
+                      <h3 className="text-sm font-medium text-gray-600">Công ty</h3>
+                      <p className="font-semibold">{jobEmployer?.companyName}</p>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-3 p-3 rounded-lg">
                     <MapPin />
                     <div>
@@ -695,10 +672,7 @@ export default function JobDetailPage({
                     <div>
                       <h3 className="text-sm font-medium">Quy mô</h3>
                       <p className="font-semibold">
-                        {Number(jobEmployer?.companySize).toLocaleString(
-                          "vi-VN"
-                        )}{" "}
-                        nhân viên
+                        {Number(jobEmployer?.companySize).toLocaleString("vi-VN")} nhân viên
                       </p>
                     </div>
                   </div>
@@ -717,7 +691,6 @@ export default function JobDetailPage({
                   </div>
                 </div>
               </CardContent>
-              <CardFooter></CardFooter>
             </Card>
 
             <Card className="shadow-sm">
@@ -725,37 +698,10 @@ export default function JobDetailPage({
                 <CardTitle className="text-lg">Công việc tương tự</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {/* {jobConst.data.slice(0, 3).map((similarJob) => (
-                    <div
-                      key={similarJob.jobID}
-                      className="p-4 border border-gray-100 rounded-lg hover:shadow-sm transition-shadow cursor-pointer"
-                    >
-                      <div className="flex gap-3">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-gray-900 truncate">
-                            {similarJob.title}
-                          </h4>
-                          <div className="flex items-center gap-1 mt-1">
-                            <MapPin className="h-3 w-3 text-gray-400" />
-                            <span className="text-sm text-gray-600">
-                              {similarJob.location}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1 mt-1">
-                            <Banknote className="h-3 w-3 text-gray-400" />
-                            <span className="text-sm font-medium text-gray-900">
-                              {similarJob.salary.toLocaleString("vi-VN")}₫
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))} */}
-                </div>
+                <div className="space-y-4">{/* Similar jobs would go here */}</div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full bg-transparent">
                   Xem thêm công việc
                 </Button>
               </CardFooter>
@@ -763,6 +709,109 @@ export default function JobDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Reviews Section - Full Width at Bottom */}
+      <div className="bg-gray-50 py-12">
+        <div className="container mx-auto px-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-2xl">Đánh giá từ người dùng</CardTitle>
+              <CardDescription>Chia sẻ trải nghiệm của bạn về công việc này</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-white p-6 rounded-lg mb-6 border">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-2">Đánh giá của bạn</label>
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <StarIcon
+                        key={rating}
+                        className={`h-6 w-6 cursor-pointer transition-colors ${
+                          rating <= (hoveredRating || userRating)
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-gray-300 hover:text-yellow-300"
+                        }`}
+                        onMouseEnter={() => setHoveredRating(rating)}
+                        onMouseLeave={() => setHoveredRating(0)}
+                        onClick={() => setUserRating(rating)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="comment" className="block text-sm font-medium mb-2">
+                    Nhận xét của bạn
+                  </label>
+                  <Textarea
+                    id="comment"
+                    placeholder="Chia sẻ trải nghiệm của bạn về công việc này..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="min-h-[100px] resize-none"
+                  />
+                </div>
+                <Button
+                  onClick={handleCommentSubmit}
+                  disabled={newComment.trim() === "" || userRating === 0}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  Gửi đánh giá
+                </Button>
+              </div>
+
+              <Separator className="my-6" />
+
+              {comments.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {comments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="p-4 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow bg-white"
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <Image
+                          src={comment.userAvatar || "/placeholder.svg"}
+                          alt={comment.userName}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                        <div>
+                          <h4 className="font-medium text-gray-900">{comment.userName}</h4>
+                          <div className="flex items-center gap-2">
+                            <div className="flex">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <StarIcon
+                                  key={star}
+                                  className={`h-4 w-4 ${
+                                    star <= comment.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                            <span className="text-xs text-gray-500">
+                              {comment.createdAt ? new Date(comment.createdAt).toLocaleDateString("vi-VN") : ""}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed">{comment.text}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <StarIcon className="h-8 w-8" />
+                  </div>
+                  <p className="text-lg">Chưa có đánh giá nào cho công việc này</p>
+                  <p className="text-sm mt-1">Hãy là người đầu tiên chia sẻ trải nghiệm của bạn</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
