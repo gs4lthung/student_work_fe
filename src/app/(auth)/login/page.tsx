@@ -67,7 +67,11 @@ export default function LoginPage() {
         } catch (error) {
           console.error("Login error:", error);
           if (error instanceof axios.AxiosError) {
-            toast.error(error.response?.data?.error || "Đăng nhập thất bại");
+            console.error("Axios error:", error.response?.data);
+            toast.error(
+              error.response?.data?.error.errorMessages[0] ||
+                "Đăng nhập thất bại"
+            );
           }
         } finally {
           setSubmitting(false);

@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title:
     "Spart Work: Nền tảng kết nối sinh viên với các công việc bán thời gian tại Việt Nam",
   description:
-    "Spart Work - Nền tảng kết nối sinh viên với các công việc bán thời gian tại Việt Nam.",
+    "Spart Work: Nền tảng kết nối sinh viên với các công việc bán thời gian tại Việt Nam.",
 };
 
 export default function RootLayout({
