@@ -21,7 +21,6 @@ import { PersistStoreBridge } from "@/bridges/bridge-persist-store";
 import Link from "next/link";
 import { VietnameseNumberReader } from "@/utils/n2vi";
 import { jobConst } from "@/const/job-const";
-import { useSubscriptionStore } from "@/stores/subscription-store";
 import { createJob } from "@/api/job-api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -30,10 +29,15 @@ import { useUserStore } from "@/stores/user-store";
 import { createPayment } from "@/api/payment-api";
 import UseBeforeUnloadBridge from "@/bridges/bridge-use-before-unload";
 import CheckWallet from "@/components/check/check-wallet";
+import { SubscriptionInterface } from "@/interfaces/subscription-interface";
+import { getSubscriptions } from "@/api/subscription-api";
 
 export default function JobAddPage() {
   const { user } = useUserStore();
-  const { subscriptions } = useSubscriptionStore();
+  // const { subscriptions } = useSubscriptionStore();
+  const [subscriptions, setSubscriptions] = useState<SubscriptionInterface[]>(
+    []
+  );
 
   const { data, setData } = useDraftJobPostStore();
 
@@ -67,6 +71,18 @@ export default function JobAddPage() {
       imageUrl: "",
     });
   };
+
+  useEffect(() => {
+    async function fetchSubscriptions() {
+      try {
+        const res = await getSubscriptions();
+        setSubscriptions(res);
+      } catch (error) {
+        console.error("Failed to fetch subscriptions:", error);
+      }
+    }
+    fetchSubscriptions();
+  }, []);
 
   useEffect(() => {
     setInitialValues({
