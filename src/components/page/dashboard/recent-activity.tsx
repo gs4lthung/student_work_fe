@@ -1,3 +1,7 @@
+"use client";
+
+import { getWalletTransactionsByWalletId } from "@/api/wallet-api";
+import CheckWallet from "@/components/check/check-wallet";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,58 +11,37 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { WalletTransactionInterface } from "@/interfaces/wallet-interface";
+import { useUserStore } from "@/stores/user-store";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface RecentActivityProps {
   className?: string;
 }
 
 export function RecentActivity({ className }: RecentActivityProps) {
-  const activities = [
-    {
-      id: 1,
-      company: "TechCorp Inc.",
-      position: "Senior Frontend Developer",
-      action: "Ứng tuyển",
-      date: "Hôm nay",
-      time: "10:30 AM",
-    },
-    {
-      id: 2,
-      company: "InnovateSoft",
-      position: "Full Stack Engineer",
-      action: "Phỏng vấn",
-      date: "Hôm nay",
-      time: "9:15 AM",
-    },
-    {
-      id: 3,
-      company: "DataViz Solutions",
-      position: "UI/UX Developer",
-      action: "Nhận offer",
-      date: "Hôm qua",
-      time: "4:45 PM",
-    },
-    {
-      id: 4,
-      company: "CloudNine Systems",
-      position: "React Developer",
-      action: "Đã xem hồ sơ",
-      date: "Hôm qua",
-      time: "11:20 AM",
-    },
-    {
-      id: 5,
-      company: "Quantum Software",
-      position: "Frontend Architect",
-      action: "Ứng tuyển",
-      date: "12 tháng 10",
-      time: "2:30 PM",
-    },
-  ];
+
+  const [walletTransactions, setWalletTransactions] = useState<
+    WalletTransactionInterface[]
+  >([]);
+  const { user } = useUserStore();
+  useEffect(() => {
+    async function fetchTransactions() {
+      if (!user?.walletID) {
+        return;
+      }
+      const response = await getWalletTransactionsByWalletId(user.walletID);
+      if (response) {
+        setWalletTransactions(response);
+      }
+    }
+    fetchTransactions();
+  }, [user?.walletID]);
 
   return (
     <Card className={className}>
+      <CheckWallet />
       <CardHeader>
         <CardTitle>Hoạt động gần đây</CardTitle>
         <CardDescription>
@@ -67,23 +50,51 @@ export function RecentActivity({ className }: RecentActivityProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {activities.map((activity) => (
-            <div key={activity.id} className="flex items-start gap-4">
+          {walletTransactions.map((transaction) => (
+            <div
+              key={transaction.transactionID}
+              className="flex items-start gap-4"
+            >
               <div className="relative mt-1 flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
               </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">{activity.company}</p>
+                  <p className="text-sm font-medium">{transaction.orderCode}</p>
                   <p className="text-xs text-muted-foreground">
-                    {activity.date} lúc {activity.time}
+                    {(() => {
+                      const createdAtDate = new Date(transaction.createdAt);
+                      return (
+                        <>
+                          {createdAtDate.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}{" "}
+                          {createdAtDate.getTime() > Date.now() - 86400000 ? (
+                            <span>Hôm nay</span>
+                          ) : (
+                            <span>{createdAtDate.toLocaleDateString()}</span>
+                          )}
+                        </>
+                      );
+                    })()}
                   </p>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {activity.position}
+                  {transaction.description}
                 </p>
-                <p className="text-xs font-medium">{activity.action}</p>
+                <p className="text-sm font-medium">
+                  {transaction.amount.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </p>
+                <span className="text-xs text-muted-foreground">
+                  {transaction.transactionType === "SUCCESS"
+                    ? "Thành công"
+                    : "Rút tiền"}
+                </span>
               </div>
             </div>
           ))}
