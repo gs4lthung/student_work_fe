@@ -73,6 +73,7 @@ export default function LoginPage() {
           }
 
           console.log("[LoginPage] Login successful, redirecting to:", redirect);
+          router.refresh()
           router.push(redirect);
         } catch (error) {
           console.error("[LoginPage] Login error:", error);
