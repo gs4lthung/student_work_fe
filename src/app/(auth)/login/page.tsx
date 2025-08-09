@@ -9,7 +9,6 @@ import { LoginUser } from "@/interfaces/user-interface";
 import { Form, Formik } from "formik";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import axios from "axios";
 import { useUserStore } from "@/stores/user-store";
@@ -17,7 +16,6 @@ import { toast } from "sonner";
 
 export default function LoginPage() {
   const [redirect, setRedirect] = useState("/");
-  const router = useRouter();
 
   const initialValues: LoginUser = {
     usernameOrEmail: "",
@@ -73,8 +71,7 @@ export default function LoginPage() {
           }
 
           console.log("[LoginPage] Login successful, redirecting to:", redirect);
-          router.refresh()
-          router.push(redirect);
+         window.location.href = redirect
         } catch (error) {
           console.error("[LoginPage] Login error:", error);
           if (axios.isAxiosError(error)) {
