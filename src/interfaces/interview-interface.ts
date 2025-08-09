@@ -6,7 +6,13 @@ export interface InterviewInterface {
   location: string;
   meetingLink: string;
   note?: string;
-  status?: "ACCEPTED" | "REJECTED" | "COMPLETED" | "CANCELED" | "PENDING";
+  status?:
+    | "ACCEPTED"
+    | "REJECTED"
+    | "COMPLETED"
+    | "CANCELED"
+    | "PENDING"
+    | "SCHEDULED";
   createdAt?: Date;
   jobTitle?: string;
   studentName?: string;

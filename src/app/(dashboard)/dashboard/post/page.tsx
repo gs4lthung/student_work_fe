@@ -943,10 +943,10 @@ const AcceptForWorkingAlertDialog = ({
               const interview = await getInterviewsByApplicationId(
                 String(app.stt)
               );
-              console.log("Accepting application:", interview);
-              if (interview.interviewID !== undefined) {
+              console.log("Accepting application:", interview.result[0].interviewID);
+              if (interview.result[0].interviewID !== undefined) {
                 const res = await acceptApplicationForInterview(
-                  Number(interview.interviewID)
+                  Number(interview.result[0].interviewID)
                 );
                 if (res) {
                   toast.success(

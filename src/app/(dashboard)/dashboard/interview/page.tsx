@@ -72,6 +72,7 @@ function InterviewTable({
           <TableHead>Địa điểm hẹn</TableHead>
           <TableHead>Thời gian phỏng vấn</TableHead>
           <TableHead>Link trực tuyến</TableHead>
+          <TableHead>Trạng thái</TableHead>
           {user.role === "Employer" && <TableHead>Ứng viên</TableHead>}
           {user.role === "Employer" && <TableHead>Hành động</TableHead>}
         </TableRow>
@@ -103,8 +104,11 @@ function InterviewTable({
                   "Không có"
                 )}
               </TableHead>
+              <TableHead>
+                {interview.status}
+              </TableHead>
               <TableHead>{interview.studentName}</TableHead>
-              {user.role === "Employer" && (
+              {user.role === "Employer" && interview.status === "SCHEDULED" && (
                 <TableHead>
                   <div className="flex gap-2">
                     <Button

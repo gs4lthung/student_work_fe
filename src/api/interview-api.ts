@@ -88,5 +88,6 @@ export const acceptApplicationForInterview = async (interviewID: number) => {
       requiresAuth: true,
     }
   );
+  console.log("Accept application for interview response:", response.data);
   return response.data;
 };

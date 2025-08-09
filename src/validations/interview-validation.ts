@@ -4,8 +4,7 @@ import * as Yup from "yup";
 export const CreateInterviewSchema: Yup.ObjectSchema<InterviewInterface> =
   Yup.object({
     interviewID: Yup.string().optional(),
-    applicationID: Yup.string()
-      .required("ID ứng tuyển không được để trống"),
+    applicationID: Yup.string().required("ID ứng tuyển không được để trống"),
     scheduledTime: Yup.date()
       .required("Thời gian phỏng vấn không được để trống")
       .min(new Date(), "Thời gian phỏng vấn phải là thời gian trong tương lai"),
@@ -23,14 +22,26 @@ export const CreateInterviewSchema: Yup.ObjectSchema<InterviewInterface> =
       .required("Đường dẫn cuộc họp không được để trống"),
     note: Yup.string().optional().max(500, "Ghi chú không được quá 500 ký tự"),
     status: Yup.mixed<
-      "PENDING" | "ACCEPTED" | "REJECTED" | "COMPLETED" | "CANCELED"
+      | "PENDING"
+      | "ACCEPTED"
+      | "REJECTED"
+      | "COMPLETED"
+      | "CANCELED"
+      | "SCHEDULED"
     >()
       .oneOf(
-        ["PENDING", "ACCEPTED", "REJECTED", "COMPLETED", "CANCELED"],
+        [
+          "PENDING",
+          "ACCEPTED",
+          "REJECTED",
+          "COMPLETED",
+          "CANCELED",
+          "SCHEDULED",
+        ],
         "Trạng thái không hợp lệ"
       )
       .optional(),
-    createdAt: Yup.date().optional(), 
+    createdAt: Yup.date().optional(),
     jobTitle: Yup.string().optional(),
     studentName: Yup.string().optional(),
   });
