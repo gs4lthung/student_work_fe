@@ -16,20 +16,30 @@ import { useUserStore } from "@/stores/user-store";
 import { toast } from "sonner";
 
 export default function LoginPage() {
-  const [redirect, setRedirect] = useState("/"); // Default redirect
+  const [redirect, setRedirect] = useState("/");
   const router = useRouter();
+
   const initialValues: LoginUser = {
     usernameOrEmail: "",
     password: "",
   };
+
   useEffect(() => {
     window.localStorage.setItem("isCheckedRoles", "false");
+
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const redirectParam = params.get("redirect") || "/";
-      console.log("Redirect param:", redirectParam);
+      let redirectParam = params.get("redirect") || "/";
+
+      // ✅ Ensure it's a relative path
+      if (!redirectParam.startsWith("/")) {
+        redirectParam = "/";
+      }
+
+      console.log("[LoginPage] Redirect param:", redirectParam);
       setRedirect(redirectParam);
 
+      // Show toast based on path
       if (redirectParam.includes("cv")) {
         toast.error("Bạn cần đăng nhập để xem CV");
       } else if (redirectParam.includes("job")) {
@@ -52,26 +62,27 @@ export default function LoginPage() {
         setSubmitting(true);
         try {
           const res = await axios.post("/api/auth/login", values, {
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true, // ✅ Ensures cookies are sent & received
           });
-          if (res) {
-            console.log("Login response:", res.data);
+
+          if (res?.data?.result?.user) {
+            console.log("[LoginPage] Login response:", res.data);
             useUserStore.getState().setUser(res.data.result.user);
             toast.success("Đăng nhập thành công");
           }
-          setSubmitting(false);
-          console.log("Login successful, redirecting to:", redirect);
+
+          console.log("[LoginPage] Login successful, redirecting to:", redirect);
           router.push(redirect);
         } catch (error) {
-          console.error("Login error:", error);
-          if (error instanceof axios.AxiosError) {
-            console.error("Axios error:", error.response?.data);
+          console.error("[LoginPage] Login error:", error);
+          if (axios.isAxiosError(error)) {
             toast.error(
-              error.response?.data?.error.errorMessages[0] ||
+              error.response?.data?.error?.errorMessages?.[0] ||
                 "Đăng nhập thất bại"
             );
+          } else {
+            toast.error("Đăng nhập thất bại");
           }
         } finally {
           setSubmitting(false);
@@ -86,75 +97,83 @@ export default function LoginPage() {
         handleSubmit,
         isSubmitting,
         values,
-      }) => {
-        return (
-          <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <TypographyH2>Chào mừng bạn đã quay trở lại</TypographyH2>
-            <p className="text-gray-500 text-sm mb-4">
-              Đăng nhập để tiếp tục sử dụng ứng dụng của chúng tôi
-            </p>
-            <Input
-              name="usernameOrEmail"
-              placeholder="Username hoặc Email"
-              type="text"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.usernameOrEmail}
-            />
-            {errors.usernameOrEmail && touched.usernameOrEmail && (
-              <p className="text-red-500 text-sm">{errors.usernameOrEmail}</p>
-            )}
-            <PasswordInput
-              name="password"
-              placeholder="Mật khẩu"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.password}
-            />
-            {errors.password && touched.password && (
-              <p className="text-red-500 text-sm">{errors.password}</p>
-            )}
-            <Button
-              disabled={isSubmitting}
-              className="w-full hover:bg-green-300"
-              variant="secondary"
-              type="submit"
-            >
-              {isSubmitting ? <LoadingSpinner /> : <p>Đăng nhập</p>}
+      }) => (
+        <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <TypographyH2>Chào mừng bạn đã quay trở lại</TypographyH2>
+          <p className="text-gray-500 text-sm mb-4">
+            Đăng nhập để tiếp tục sử dụng ứng dụng của chúng tôi
+          </p>
+
+          {/* Username or Email */}
+          <Input
+            name="usernameOrEmail"
+            placeholder="Username hoặc Email"
+            type="text"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.usernameOrEmail}
+          />
+          {errors.usernameOrEmail && touched.usernameOrEmail && (
+            <p className="text-red-500 text-sm">{errors.usernameOrEmail}</p>
+          )}
+
+          {/* Password */}
+          <PasswordInput
+            name="password"
+            placeholder="Mật khẩu"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.password}
+          />
+          {errors.password && touched.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
+
+          {/* Submit */}
+          <Button
+            disabled={isSubmitting}
+            className="w-full hover:bg-green-300"
+            variant="secondary"
+            type="submit"
+          >
+            {isSubmitting ? <LoadingSpinner /> : <p>Đăng nhập</p>}
+          </Button>
+
+          {/* Links */}
+          <div className="flex items-center justify-between w-full">
+            <Button variant="link" className="text-gray-500">
+              Quên mật khẩu?
             </Button>
-            <div className="flex items-center justify-between w-full">
-              <Button variant="link" className="text-gray-500">
-                Quên mật khẩu?
+            <Link href="/register">
+              <Button variant="link" className="text-blue-500">
+                Đăng ký ngay
               </Button>
-              <Link href="/register">
-                <Button variant="link" className="text-blue-500">
-                  Đăng ký ngay
-                </Button>
-              </Link>
-            </div>
-            <Button
-              className="w-full bg-red-400 hover:bg-red-500 dark:bg-red-400 dark:hover:bg-red-500 text-white"
-              variant="secondary"
-              type="submit"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                <path
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="35"
-                  d="M488 261.8C488 403.3 391.1 504 248 504 
-            110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 
-            123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 
-            94.3 116.6 94.3 256c0 86.5 69.1 156.6 
-            153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 
-            12.7 3.9 24.9 3.9 41.4z"
-                />
-              </svg>
-              <p>Đăng nhập với Google</p>
-            </Button>
-          </Form>
-        );
-      }}
+            </Link>
+          </div>
+
+          {/* Google Login */}
+          <Button
+            className="w-full bg-red-400 hover:bg-red-500 dark:bg-red-400 dark:hover:bg-red-500 text-white"
+            variant="secondary"
+            type="button"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+              <path
+                fill="none"
+                stroke="white"
+                strokeWidth="35"
+                d="M488 261.8C488 403.3 391.1 504 248 504 
+                110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 
+                123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 
+                94.3 116.6 94.3 256c0 86.5 69.1 156.6 
+                153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 
+                12.7 3.9 24.9 3.9 41.4z"
+              />
+            </svg>
+            <p>Đăng nhập với Google</p>
+          </Button>
+        </Form>
+      )}
     </Formik>
   );
 }
