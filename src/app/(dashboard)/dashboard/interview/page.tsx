@@ -104,34 +104,35 @@ function InterviewTable({
                 )}
               </TableHead>
               <TableHead>{interview.studentName}</TableHead>
-              <TableHead>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={async () => {
-                      try {
-                        if (interview.interviewID !== undefined) {
-                          await doneInterview(Number(interview.interviewID));
-                        } else {
-                          throw new Error("interviewID is undefined");
+              {user.role === "Employer" && (
+                <TableHead>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={async () => {
+                        try {
+                          if (interview.interviewID !== undefined) {
+                            await doneInterview(Number(interview.interviewID));
+                          } else {
+                            throw new Error("interviewID is undefined");
+                          }
+                          alert("Phỏng vấn đã được đánh dấu là hoàn thành.");
+                          window.location.reload();
+                        } catch (error) {
+                          console.error(
+                            "Error marking interview as done:",
+                            error
+                          );
+                          alert("Đã xảy ra lỗi khi đánh dấu phỏng vấn.");
                         }
-                        alert("Phỏng vấn đã được đánh dấu là hoàn thành.");
-                        // Refresh the interviews list
-                        window.location.reload();
-                      } catch (error) {
-                        console.error(
-                          "Error marking interview as done:",
-                          error
-                        );
-                        alert("Đã xảy ra lỗi khi đánh dấu phỏng vấn.");
-                      }
-                    }}
-                  >
-                    Chấp nhận
-                  </Button>
-                  <Button variant="destructive">Hủy phỏng vấn</Button>
-                </div>
-              </TableHead>
+                      }}
+                    >
+                      Chấp nhận
+                    </Button>
+                    <Button variant="destructive">Hủy phỏng vấn</Button>
+                  </div>
+                </TableHead>
+              )}
             </TableRow>
           ))
         ) : (
