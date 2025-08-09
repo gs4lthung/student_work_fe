@@ -56,7 +56,11 @@ import { CreateInterviewSchema } from "@/validations/interview-validation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { createInterview } from "@/api/interview-api";
+import {
+  acceptApplicationForInterview,
+  createInterview,
+  getInterviewsByApplicationId,
+} from "@/api/interview-api";
 import Image from "next/image";
 import { JobValidationSchema } from "@/validations/job-validation";
 import { AxiosError } from "axios";
@@ -932,11 +936,17 @@ const AcceptForWorkingAlertDialog = ({
           <AlertDialogCancel>Đóng</AlertDialogCancel>
           <AlertDialogAction
             onClick={async () => {
-              console.log("Accepting application:", app);
-              if (app.stt !== undefined) {
-                const res = await updateApplicationStatus(
-                  Number(app.stt),
-                  "WORKING"
+              if (!app.stt) {
+                toast.error("Không tìm thấy mã ứng viên.");
+                return;
+              }
+              const interview = await getInterviewsByApplicationId(
+                String(app.stt)
+              );
+              console.log("Accepting application:", interview);
+              if (interview.interviewID !== undefined) {
+                const res = await acceptApplicationForInterview(
+                  Number(interview.interviewID)
                 );
                 if (res) {
                   toast.success(

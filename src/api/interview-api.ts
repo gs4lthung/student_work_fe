@@ -76,3 +76,17 @@ export const doneInterview = async (interviewID: number) => {
   );
   return response.data;
 };
+
+export const acceptApplicationForInterview = async (interviewID: number) => {
+  const url = `/api/Interview/${interviewID}/status`;
+  const response = await api.put(
+    url,
+    {
+      newStatus: 2,
+    },
+    {
+      requiresAuth: true,
+    }
+  );
+  return response.data;
+};

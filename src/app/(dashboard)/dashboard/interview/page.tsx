@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  doneInterview,
   getInterviewsByEmployerId,
   getInterviewsByStudentId,
 } from "@/api/interview-api";
+import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import {
   Table,
@@ -71,6 +73,7 @@ function InterviewTable({
           <TableHead>Thời gian phỏng vấn</TableHead>
           <TableHead>Link trực tuyến</TableHead>
           {user.role === "Employer" && <TableHead>Ứng viên</TableHead>}
+          {user.role === "Employer" && <TableHead>Hành động</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -99,6 +102,35 @@ function InterviewTable({
                 ) : (
                   "Không có"
                 )}
+              </TableHead>
+              <TableHead>{interview.studentName}</TableHead>
+              <TableHead>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      try {
+                        if (interview.interviewID !== undefined) {
+                          await doneInterview(Number(interview.interviewID));
+                        } else {
+                          throw new Error("interviewID is undefined");
+                        }
+                        alert("Phỏng vấn đã được đánh dấu là hoàn thành.");
+                        // Refresh the interviews list
+                        window.location.reload();
+                      } catch (error) {
+                        console.error(
+                          "Error marking interview as done:",
+                          error
+                        );
+                        alert("Đã xảy ra lỗi khi đánh dấu phỏng vấn.");
+                      }
+                    }}
+                  >
+                    Chấp nhận
+                  </Button>
+                  <Button variant="destructive">Hủy phỏng vấn</Button>
+                </div>
               </TableHead>
             </TableRow>
           ))
