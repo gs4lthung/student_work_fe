@@ -100,6 +100,10 @@ export default function AppliedJobsPage() {
                       <Badge variant={"outline"} className="text-blue-500">
                         Đã mời phỏng vấn
                       </Badge>
+                    ) : application.status === "WORKING" ? (
+                      <Badge variant={"outline"} className="text-red-500">
+                        Đang làm việc
+                      </Badge>
                     ) : (
                       <Badge variant={"outline"} className="text-red-500">
                         Đã từ chối
