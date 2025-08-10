@@ -108,7 +108,7 @@ function InterviewTable({
                 {interview.status}
               </TableHead>
               <TableHead>{interview.studentName}</TableHead>
-              {user.role === "Employer" && interview.status === "SCHEDULED" && (
+              {user.role === "Employer" && interview.status === "PENDING" && (
                 <TableHead>
                   <div className="flex gap-2">
                     <Button
